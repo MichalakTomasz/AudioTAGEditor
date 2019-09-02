@@ -19,6 +19,13 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Ribbon Grid.Row="0">
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu>
+                    <RibbonApplicationMenuItem 
+                        Header="Exit"
+                        Command="{Binding ExitCommand, Mode=OneWay}" />
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
             <RibbonTab Header="Edit">
                 
             </RibbonTab>
@@ -66,27 +73,32 @@
                         </DataGridCheckBoxColumn.Header>
                     </DataGridCheckBoxColumn>
                     <DataGridCheckBoxColumn
-                        Header="Has Tag"
+                        Header="Tag"
                         Binding="{Binding Tag}"/>
                     <DataGridTextColumn
                         Header="File Name"
-                        Binding="{Binding FileName}"/>
+                        Binding="{Binding FileName}"
+                        Width="260"/>
                     <DataGridTextColumn
                         Header="Title"
-                        Binding="{Binding Title}"/>
+                        Binding="{Binding Title}"
+                        Width="150"/>
                     <DataGridTextColumn
                         Header="Album"
-                        Binding="{Binding Album}"/>
+                        Binding="{Binding Album}"
+                        Width="180"/>
                     <DataGridTextColumn
                         Header="Artist"
-                        Binding="{Binding Artist}"/>
+                        Binding="{Binding Artist}"
+                        Width="100"/>
                     <DataGridTextColumn
                         Header="No."
                         Binding="{Binding TrackNumber}"/>
                     <DataGridComboBoxColumn
                         Header="Genre"
                         ItemsSource="{Binding Genres}"
-                        SelectedItemBinding="{Binding Genre}"/>
+                        SelectedItemBinding="{Binding Genre}"
+                        Width="80"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
@@ -94,7 +106,7 @@
             Grid.Row="3"
             Height="20">
             <TextBlock
-                Text="{Binding SelectedNode.Path, ElementName=tree}"/>
+                Text="{Binding ExpandPath, ElementName=tree}"/>
         </StatusBar>
     </Grid>
 </RibbonWindow>

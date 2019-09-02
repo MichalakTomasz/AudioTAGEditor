@@ -108,6 +108,17 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
+        private ICommand exitCommand;
+        public ICommand ExitCommand
+        {
+            get
+            {
+                if (exitCommand == null)
+                    exitCommand = new DelegateCommand(() => App.Current.MainWindow.Close());
+                return exitCommand;
+            }
+        }
+
         #endregion//Commands
 
         #region Methods
