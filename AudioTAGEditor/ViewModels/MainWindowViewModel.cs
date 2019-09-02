@@ -83,6 +83,7 @@ namespace AudioTAGEditor.ViewModels
         }
 
         #endregion//Properties
+
         #region Commands
 
         private ICommand expandNodeCommand;
@@ -116,6 +117,7 @@ namespace AudioTAGEditor.ViewModels
             IsEnabledDataGrid = (filePathCollection?.Count() > 0);
             if (IsEnabledDataGrid)
             {
+                AudioFiles.Clear();
                 foreach (var filePath in FilePathCollection)
                 {
                     var tempAudioFile = audioTAGService.GetTagData(filePath, TAGType);

@@ -38,9 +38,8 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
-    <Reference Include="ExplorerTreeView, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ExplorerTreeView\ExplorerTreeView\bin\Debug\ExplorerTreeView.dll</HintPath>
+    <Reference Include="ExplorerTreeView">
+      <HintPath>..\..\TreeViewExplorer\ExplorerTreeView\bin\Debug\ExplorerTreeView.dll</HintPath>
     </Reference>
     <Reference Include="IdSharp.Common-core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IdSharp.Common.1.0.1\lib\netstandard2.0\IdSharp.Common-core.dll</HintPath>
@@ -101,6 +100,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Resources\ResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -147,5 +150,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\id3v1-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\id3v2-logo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

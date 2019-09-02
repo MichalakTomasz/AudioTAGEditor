@@ -4,6 +4,6 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:local="clr-namespace:AudioTAGEditor">
     <Application.Resources>
-         
+        <ResourceDictionary Source="/Resources/ResourceDictionary.xaml" />
     </Application.Resources>
 </prism:PrismApplication>
