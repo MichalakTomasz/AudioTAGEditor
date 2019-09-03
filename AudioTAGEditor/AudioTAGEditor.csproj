@@ -39,7 +39,7 @@
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
     <Reference Include="ExplorerTreeView">
-      <HintPath>..\..\TreeViewExplorer\ExplorerTreeView\bin\Debug\ExplorerTreeView.dll</HintPath>
+      <HintPath>..\..\ExplorerTreeView\ExplorerTreeView\bin\Debug\ExplorerTreeView.dll</HintPath>
     </Reference>
     <Reference Include="IdSharp.Common-core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IdSharp.Common.1.0.1\lib\netstandard2.0\IdSharp.Common-core.dll</HintPath>
@@ -113,9 +113,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\AudioFile.cs" />
-    <Compile Include="Models\TAGType.cs" />
+    <Compile Include="Models\TagVersion.cs" />
+    <Compile Include="Models\TagType.cs" />
     <Compile Include="Services\AudioTAGService.cs" />
     <Compile Include="Services\IAudioTAGService.cs" />
+    <Compile Include="Services\ID3V1Service.cs" />
+    <Compile Include="Services\ID3V2Service.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

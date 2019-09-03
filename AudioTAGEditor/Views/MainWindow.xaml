@@ -61,20 +61,21 @@
                 Grid.Column="1"
                 AutoGenerateColumns="False"
                 IsEnabled="{Binding IsEnabledDataGrid}"
-                ItemsSource="{Binding AudioFiles, Mode=TwoWay}">
+                ItemsSource="{Binding AudioFiles, Mode=TwoWay}"
+                CanUserAddRows="False">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Binding="{Binding IsSelected}">
                         <DataGridCheckBoxColumn.Header>
                             <CheckBox 
                                 DataContext="{Binding DataContext, ElementName=FilesDataGrid}"
                                 IsThreeState="False"
-                                IsChecked="{Binding SelectAll, Mode=TwoWay}"
+                                IsChecked="{Binding IsSelectAllChecked, Mode=TwoWay}"
                                 Command="{Binding SelectAllCommand, Mode=OneWay}"/>
                         </DataGridCheckBoxColumn.Header>
                     </DataGridCheckBoxColumn>
                     <DataGridCheckBoxColumn
                         Header="Tag"
-                        Binding="{Binding Tag}"/>
+                        Binding="{Binding HasTag}"/>
                     <DataGridTextColumn
                         Header="File Name"
                         Binding="{Binding FileName}"
@@ -82,7 +83,7 @@
                     <DataGridTextColumn
                         Header="Title"
                         Binding="{Binding Title}"
-                        Width="150"/>
+                        Width="220"/>
                     <DataGridTextColumn
                         Header="Album"
                         Binding="{Binding Album}"
@@ -99,6 +100,13 @@
                         ItemsSource="{Binding Genres}"
                         SelectedItemBinding="{Binding Genre}"
                         Width="80"/>
+                    <DataGridTextColumn
+                        Header="Year"
+                        Binding="{Binding Year}"
+                        Width="40"/>
+                    <DataGridTextColumn
+                        Header="Tag version"
+                        Width="40"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

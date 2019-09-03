@@ -15,11 +15,11 @@ namespace AudioTAGEditor.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        #region Properties
+        #region Fields
 
         IAudioTAGService audioTAGService;
 
-        #endregion//Properties
+        #endregion//Fields
 
         #region Constructor
 
@@ -61,15 +61,15 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref isEnabledDataGrid, value); }
         }
 
-        private bool selectAll;
-        public bool SelectAll
+        private bool isSelectAllChecked;
+        public bool IsSelectAllChecked
         {
-            get { return selectAll; }
-            set { SetProperty(ref selectAll, value); }
+            get { return isSelectAllChecked; }
+            set { SetProperty(ref isSelectAllChecked, value); }
         }
 
-        private TAGType tagType;
-        public TAGType TAGType
+        private TagType tagType;
+        public TagType TAGType
         {
             get { return tagType; }
             set { SetProperty(ref tagType, value); }
@@ -125,21 +125,34 @@ namespace AudioTAGEditor.ViewModels
 
         private void ExpandCommandExecute()
         {
+            IsSelectAllChecked = false;
+            AudioFiles.Clear();
             IsEnabledDataGrid = (filePathCollection?.Count() > 0);
             if (IsEnabledDataGrid)
             {
-                AudioFiles.Clear();
                 foreach (var filePath in FilePathCollection)
                 {
                     var tempAudioFile = audioTAGService.GetTagData(filePath, TAGType);
                     AudioFiles.Add(tempAudioFile);
                 }
+                IsSelectAllChecked = true;
             }  
         }
 
         private void SelectAllCommandExecute()
         {
-           
+            if (IsSelectAllChecked)
+            {
+                if (AudioFiles?.Count > 0)
+                    foreach (var item in AudioFiles)
+                        item.IsSelected = true;
+            }
+            else
+            {
+                if (AudioFiles?.Count > 0)
+                    foreach (var item in AudioFiles)
+                        item.IsSelected = false;
+            }
         }
 
         #endregion//Methods

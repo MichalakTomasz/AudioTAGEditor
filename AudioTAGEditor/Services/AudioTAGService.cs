@@ -12,17 +12,55 @@ namespace AudioTAGEditor.Services
 {
     class AudioTAGService : IAudioTAGService
     {
-        public AudioFile GetTagData(string filePath, TAGType tagType)
+        public AudioFile GetTagData(string filePath, TagType tagType)
         {
             switch (tagType)
             {
-                case TAGType.ID3V1:
+                case TagType.ID3V1:
                     return GetID3V1Tag(filePath);
-                case TAGType.ID3V2:
+                case TagType.ID3V2:
                     return GetID3V2Tag(filePath);
                 default: return default(AudioFile);
             }
         }
+
+        public bool HasTAGV1TAG(string filePath)
+            => ID3v1Tag.DoesTagExist(filePath);
+
+        public bool HasTAGV2TAG(string filePath)
+            => ID3v2Tag.DoesTagExist(filePath);
+
+        public TagType ID3V1TAGVesrsion(string filePath)
+        {
+            if (HasTAGV1TAG(filePath))
+            {
+                var tag = new ID3v1Tag(filePath);
+                
+                switch (tag.TagVersion)
+                {
+                    case ID3v1TagVersion.ID3v10:
+                        return TagType.ID3V10;
+                    case ID3v1TagVersion.ID3v11:
+                        return TagType.ID3V11;
+                }
+            }
+            return TagType.none;
+        }
+
+        //public TAGType ID3V2TAGVersion(string filePath)
+        //{
+        //    if (HasTAGV2TAG(filePath))
+        //    {
+        //        var tag = new ID3v2Tag(filePath);
+               
+        //        switch (tag)
+        //        {
+        //            default:
+        //                break;
+        //        }
+        //    }
+        //    return TAGType.none;
+        //}
 
         AudioFile GetID3V1Tag(string filePath)
         {
@@ -38,8 +76,10 @@ namespace AudioTAGEditor.Services
                     Title = tag.Title,
                     Artist = tag.Artist,
                     Album = tag.Album,
+                    TrackNumber = tag.TrackNumber.ToString(),
                     Genre = GenreHelper.GenreByIndex[tag.GenreIndex],
-                    Comment = tag.Comment
+                    Comment = tag.Comment,
+                    Year = tag.Year
                 };
             }
             else
@@ -66,8 +106,10 @@ namespace AudioTAGEditor.Services
                     Title = tag.Title,
                     Artist = tag.Artist,
                     Album = tag.Album,
+                    TrackNumber = tag.TrackNumber,
                     Genre = tag.Genre,
-                    Comment = tag.CommentsList[0].Value
+                    Comment = tag.CommentsList[0].Value,
+                    Year = tag.Year
                 };
             }
             else
