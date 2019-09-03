@@ -1,15 +1,11 @@
 ﻿using AudioTAGEditor.Models;
 using IdSharp.Tagging.ID3v2;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AudioTAGEditor.Services
 {
-    class ID3V2Service
+    class ID3V2Service : IID3Service
     {
         public bool HasTag(string filePath)
             => ID3v2Tag.DoesTagExist(filePath);
@@ -52,5 +48,8 @@ namespace AudioTAGEditor.Services
                 .Where(t => char.IsDigit(t))
                 .ToString();
         }
+
+        public TagVersion GetTagVersion(string filePath)
+            => TagVersion.unknown;
     }  
 }

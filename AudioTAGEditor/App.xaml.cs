@@ -20,7 +20,8 @@ namespace AudioTAGEditor
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.Register<IAudioTAGService, AudioTAGService>();
+            containerRegistry.Register<IID3Service, ID3V1Service>(nameof(ID3V1Service));
+            containerRegistry.Register<IID3Service, ID3V2Service>(nameof(ID3V2Service));
         }
     }
 }

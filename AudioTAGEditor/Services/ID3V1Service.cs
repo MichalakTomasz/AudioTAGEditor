@@ -1,15 +1,10 @@
 ﻿using AudioTAGEditor.Models;
 using IdSharp.Tagging.ID3v1;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AudioTAGEditor.Services
 {
-    class ID3V1Service
+    class ID3V1Service : IID3Service
     {
         public bool HasTag(string filePath)
             => ID3v1Tag.DoesTagExist(filePath);

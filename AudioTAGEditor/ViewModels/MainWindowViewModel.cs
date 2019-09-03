@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Unity;
 
 namespace AudioTAGEditor.ViewModels
 {
@@ -17,16 +18,20 @@ namespace AudioTAGEditor.ViewModels
     {
         #region Fields
 
-        IAudioTAGService audioTAGService;
+        private readonly IID3Service id3V1Servece;
+        private readonly IID3Service id3V2Service;
 
         #endregion//Fields
 
         #region Constructor
 
-        public MainWindowViewModel(IAudioTAGService audioTAGService)
+        public MainWindowViewModel(
+            [Dependency(nameof(ID3V1Service))]IID3Service id3v1Servece,
+            [Dependency(nameof(ID3V2Service))]IID3Service id3v2Service)
         {
-            this.audioTAGService = audioTAGService;
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
+            id3V1Servece = id3v1Servece;
+            id3V2Service = id3v2Service;
         }
 
         #endregion//Constructor
@@ -132,8 +137,6 @@ namespace AudioTAGEditor.ViewModels
             {
                 foreach (var filePath in FilePathCollection)
                 {
-                    var tempAudioFile = audioTAGService.GetTagData(filePath, TAGType);
-                    AudioFiles.Add(tempAudioFile);
                 }
                 IsSelectAllChecked = true;
             }  
@@ -153,6 +156,20 @@ namespace AudioTAGEditor.ViewModels
                     foreach (var item in AudioFiles)
                         item.IsSelected = false;
             }
+        }
+
+        private TagType ActivateTag(IEnumerable<string> filePathCollection)
+        {
+            var hasID3v2 = filePathCollection.Any(f => id3V2Service.HasTag(f));
+            if (hasID3v2)
+            {
+                return TagType.ID2V22;
+            }
+            else
+            {
+                return TagType.none;
+            }
+
         }
 
         #endregion//Methods
