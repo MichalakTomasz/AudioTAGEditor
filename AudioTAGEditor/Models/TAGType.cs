@@ -2,10 +2,10 @@
 {
     public enum TagType
     {
-        ID3V1,
-        ID3V2,
         none,
         unknown,
+        ID3V1,
+        ID3V2,
         ID3V10,
         ID3V11,
         ID3V20,

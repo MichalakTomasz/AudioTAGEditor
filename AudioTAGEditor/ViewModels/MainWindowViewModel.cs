@@ -1,14 +1,10 @@
 ﻿using AudioTAGEditor.Models;
 using AudioTAGEditor.Services;
-using ExplorerTreeView;
 using Prism.Commands;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Unity;
 
@@ -38,6 +34,26 @@ namespace AudioTAGEditor.ViewModels
 
         #region Properties
 
+        #region ToolBar
+
+        private bool isCheckedID3v1;
+        public bool IsCheckedID3v1
+        {
+            get { return isCheckedID3v1; }
+            set { SetProperty(ref isCheckedID3v1, value); }
+        }
+
+        private bool isCheckedID3v2;
+        public bool IsCheckedID3v2
+        {
+            get { return isCheckedID3v2; }
+            set { SetProperty(ref isCheckedID3v2, value); }
+        }
+
+        #endregion//ToolBar
+
+        #region TreeViewExplorer
+
         private string filesFilter;
         public string FilesFilter
         {
@@ -52,7 +68,12 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref filePathCollection, value); }
         }
 
-        private ObservableCollection<AudioFile> audioFiles = new ObservableCollection<AudioFile>();
+        #endregion//TreeViewExplorer
+
+        #region DataGreidFiles
+
+        private ObservableCollection<AudioFile> audioFiles
+            = new ObservableCollection<AudioFile>();
         public ObservableCollection<AudioFile> AudioFiles
         {
             get { return audioFiles; }
@@ -67,17 +88,10 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private bool isSelectAllChecked;
-        public bool IsSelectAllChecked
+        public bool IsSelectAllFilesChecked
         {
             get { return isSelectAllChecked; }
             set { SetProperty(ref isSelectAllChecked, value); }
-        }
-
-        private TagType tagType;
-        public TagType TAGType
-        {
-            get { return tagType; }
-            set { SetProperty(ref tagType, value); }
         }
 
         private ObservableCollection<string> genres;
@@ -86,6 +100,8 @@ namespace AudioTAGEditor.ViewModels
             get { return genres; }
             set { SetProperty(ref genres, value); }
         }
+
+        #endregion//DataGridFiles
 
         #endregion//Properties
 
@@ -102,14 +118,14 @@ namespace AudioTAGEditor.ViewModels
             }       
         }
 
-        private ICommand selectAllCommand;
-        public ICommand SelectAllCommand
+        private ICommand selectAllFilesCommand;
+        public ICommand SelectAllFilesCommand
         {
             get
             {
-                if (selectAllCommand == null)
-                    selectAllCommand = new DelegateCommand(SelectAllCommandExecute);
-                return selectAllCommand;
+                if (selectAllFilesCommand == null)
+                    selectAllFilesCommand = new DelegateCommand(SelectAllFilesCommandExecute);
+                return selectAllFilesCommand;
             }
         }
 
@@ -130,21 +146,28 @@ namespace AudioTAGEditor.ViewModels
 
         private void ExpandCommandExecute()
         {
-            IsSelectAllChecked = false;
+            IsSelectAllFilesChecked = false;
             AudioFiles.Clear();
             IsEnabledDataGrid = (filePathCollection?.Count() > 0);
             if (IsEnabledDataGrid)
             {
+                var selectedTag = ActivateTag(filePathCollection);
+                AudioFile audioFile = null;
                 foreach (var filePath in FilePathCollection)
                 {
+                    if (selectedTag == TagType.ID3V1)
+                        audioFile = id3V1Servece.GetTag(filePath);
+                    else
+                        audioFile = id3V2Service.GetTag(filePath);
+                    AudioFiles.Add(audioFile);
                 }
-                IsSelectAllChecked = true;
+                IsSelectAllFilesChecked = true;
             }  
         }
 
-        private void SelectAllCommandExecute()
+        private void SelectAllFilesCommandExecute()
         {
-            if (IsSelectAllChecked)
+            if (IsSelectAllFilesChecked)
             {
                 if (AudioFiles?.Count > 0)
                     foreach (var item in AudioFiles)
@@ -163,13 +186,14 @@ namespace AudioTAGEditor.ViewModels
             var hasID3v2 = filePathCollection.Any(f => id3V2Service.HasTag(f));
             if (hasID3v2)
             {
-                return TagType.ID2V22;
+                IsCheckedID3v2 = true;
+                return TagType.ID3V2;
             }
             else
             {
-                return TagType.none;
+                IsCheckedID3v1 = true;
+                return TagType.ID3V1;
             }
-
         }
 
         #endregion//Methods

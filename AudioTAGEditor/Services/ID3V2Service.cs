@@ -24,9 +24,11 @@ namespace AudioTAGEditor.Services
                     Title = tag.Title,
                     Artist = tag.Artist,
                     Album = tag.Album,
-                    TrackNumber = GetDigitsFromTrackNumber(tag.TrackNumber),
+                    TrackNumber = string.IsNullOrWhiteSpace(tag.TrackNumber) ? 
+                        null : GetDigitsFromTrackNumber(tag.TrackNumber),
                     Genre = tag.Genre,
-                    Comment = tag.CommentsList[0].Value,
+                    Comment = tag.CommentsList?.Count > 0 ? 
+                        tag.CommentsList[0].Value : null,
                     Year = tag.Year,
                     TagType = TagType.ID3V2
                 };
@@ -43,10 +45,10 @@ namespace AudioTAGEditor.Services
 
         string GetDigitsFromTrackNumber(string trackNumber)
         {
-            return trackNumber
+            var result = trackNumber
                 .Trim()
-                .Where(t => char.IsDigit(t))
-                .ToString();
+                .Where(t => char.IsDigit(t)).ToArray();
+            return new string(result);
         }
 
         public TagVersion GetTagVersion(string filePath)
