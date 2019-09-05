@@ -2,6 +2,7 @@
 using AudioTAGEditor.Services;
 using Prism.Commands;
 using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace AudioTAGEditor.ViewModels
     {
         #region Fields
 
-        private readonly IID3Service id3V1Servece;
+        private readonly IID3Service id3V1Service;
         private readonly IID3Service id3V2Service;
 
         #endregion//Fields
@@ -26,7 +27,7 @@ namespace AudioTAGEditor.ViewModels
             [Dependency(nameof(ID3V2Service))]IID3Service id3v2Service)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
-            id3V1Servece = id3v1Servece;
+            id3V1Service = id3v1Servece;
             id3V2Service = id3v2Service;
         }
 
@@ -118,14 +119,36 @@ namespace AudioTAGEditor.ViewModels
             }       
         }
 
-        private ICommand selectAllFilesCommand;
-        public ICommand SelectAllFilesCommand
+        private ICommand checkAllFilesCommand;
+        public ICommand CheckAllFilesCommand
         {
             get
             {
-                if (selectAllFilesCommand == null)
-                    selectAllFilesCommand = new DelegateCommand(SelectAllFilesCommandExecute);
-                return selectAllFilesCommand;
+                if (checkAllFilesCommand == null)
+                    checkAllFilesCommand = new DelegateCommand(CheckAllFilesCommandExecute);
+                return checkAllFilesCommand;
+            }
+        }
+
+        private ICommand checkID3v1Command;
+        public ICommand CheckID3v1Command
+        {
+            get
+            {
+                if (checkID3v1Command == null)
+                    checkID3v1Command = new DelegateCommand(CheckID3v1CommandExecute);
+                return checkID3v1Command;
+            }
+        }
+
+        private ICommand checkID3v2Command;
+        public ICommand CheckID3v2Command
+        {
+            get
+            {
+                if (checkID3v2Command == null)
+                    checkID3v2Command = new DelegateCommand(CheckID3v2CommandExecute);
+                return checkID3v2Command;
             }
         }
 
@@ -156,7 +179,7 @@ namespace AudioTAGEditor.ViewModels
                 foreach (var filePath in FilePathCollection)
                 {
                     if (selectedTag == TagType.ID3V1)
-                        audioFile = id3V1Servece.GetTag(filePath);
+                        audioFile = id3V1Service.GetTag(filePath);
                     else
                         audioFile = id3V2Service.GetTag(filePath);
                     AudioFiles.Add(audioFile);
@@ -165,19 +188,19 @@ namespace AudioTAGEditor.ViewModels
             }  
         }
 
-        private void SelectAllFilesCommandExecute()
+        private void CheckAllFilesCommandExecute()
         {
             if (IsSelectAllFilesChecked)
             {
                 if (AudioFiles?.Count > 0)
                     foreach (var item in AudioFiles)
-                        item.IsSelected = true;
+                        item.IsChecked = true;
             }
             else
             {
                 if (AudioFiles?.Count > 0)
                     foreach (var item in AudioFiles)
-                        item.IsSelected = false;
+                        item.IsChecked = false;
             }
         }
 
@@ -193,6 +216,28 @@ namespace AudioTAGEditor.ViewModels
             {
                 IsCheckedID3v1 = true;
                 return TagType.ID3V1;
+            }
+        }
+
+        private void CheckID3v1CommandExecute()
+        {
+            AudioFile audioFile;
+            audioFiles.Clear();
+            foreach (var file in FilePathCollection)
+            {
+                audioFile = id3V1Service.GetTag(file);
+                AudioFiles.Add(audioFile);
+            }
+        }
+
+        private void CheckID3v2CommandExecute()
+        {
+            AudioFile audioFile;
+            audioFiles.Clear();
+            foreach (var file in FilePathCollection)
+            {
+                audioFile = id3V2Service.GetTag(file);
+                AudioFiles.Add(audioFile);
             }
         }
 

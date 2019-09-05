@@ -36,14 +36,16 @@
         <ToolBar Grid.Row="1">
             <RadioButton
                 GroupName="ID3Group"
-                IsChecked="{Binding IsCheckedID3v1, Mode=TwoWay}">
+                IsChecked="{Binding IsCheckedID3v1, Mode=TwoWay}"
+                Command="{Binding CheckID3v1Command, Mode=OneWay}">
                 <Image Source="{StaticResource id3v1-logo}"
                        Width="32" />
             </RadioButton>
             
             <RadioButton
                 GroupName="ID3Group"
-                IsChecked="{Binding IsCheckedID3v2, Mode=TwoWay}">
+                IsChecked="{Binding IsCheckedID3v2, Mode=TwoWay}"
+                Command="{Binding CheckID3v2Command, Mode=OneWay}">
                 <Image Source="{StaticResource id3v2-logo}"
                        Width="32" />
             </RadioButton>
@@ -66,16 +68,16 @@
                       ItemsSource="{Binding AudioFiles, Mode=TwoWay}"
                       CanUserAddRows="False">
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Binding="{Binding IsSelected}">
+                    <DataGridCheckBoxColumn Binding="{Binding IsChecked, Mode=TwoWay}">
                         <DataGridCheckBoxColumn.Header>
                             <CheckBox DataContext="{Binding DataContext, ElementName=FilesDataGrid}"
                                       IsThreeState="False"
                                       IsChecked="{Binding IsSelectAllFilesChecked, Mode=TwoWay}"
-                                      Command="{Binding SelectAllFilesCommand, Mode=OneWay}" />
+                                      Command="{Binding CheckAllFilesCommand, Mode=OneWay}" />
                         </DataGridCheckBoxColumn.Header>
                     </DataGridCheckBoxColumn>
                     <DataGridCheckBoxColumn Header="Tag"
-                                            Binding="{Binding HasTag}" />
+                                            Binding="{Binding HasTag, Mode=TwoWay}" />
                     <DataGridTextColumn Header="File Name"
                                         Binding="{Binding FileName}"
                                         Width="260" />
