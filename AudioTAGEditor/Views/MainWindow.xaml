@@ -6,11 +6,13 @@
               xmlns:local="clr-namespace:AudioTAGEditor"
               xmlns:prism="http://prismlibrary.com/"
               prism:ViewModelLocator.AutoWireViewModel="True"
+              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
               xmlns:tx="clr-namespace:ExplorerTreeView;assembly=ExplorerTreeView"
               mc:Ignorable="d"
               Title="Audio TAG Editor"
-              Height="450"
-              Width="800">
+              Height="600"
+              Width="1200"
+              x:Name="MainRibbonWindow">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -55,53 +57,100 @@
                 <ColumnDefinition Width=".3*" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <tx:ExplorerTreeView x:Name="tree"
-                                 Grid.Column="0"
-                                 Command="{Binding ExpandNodeCommand, Mode=OneWay}"
-                                 FilesFullPath="{Binding FilePathCollection, Mode=OneWayToSource}"
-                                 FilesFilter="{Binding FilesFilter, Mode=OneTime}">
+            <tx:ExplorerTreeView 
+                x:Name="tree"
+                Grid.Column="0"
+                Command="{Binding ExpandNodeCommand, Mode=OneWay}"
+                FilesFullPath="{Binding FilePathCollection, Mode=OneWayToSource}"
+                FilesFilter="{Binding FilesFilter, Mode=OneTime}">
             </tx:ExplorerTreeView>
-            <DataGrid x:Name="FilesDataGrid"
-                      Grid.Column="1"
-                      AutoGenerateColumns="False"
-                      IsEnabled="{Binding IsEnabledDataGrid}"
-                      ItemsSource="{Binding AudioFiles, Mode=TwoWay}"
-                      CanUserAddRows="False">
+            <DataGrid
+                Grid.Column="1"
+                AutoGenerateColumns="False"
+                IsEnabled="{Binding IsEnabledDataGrid}"
+                ItemsSource="{Binding AudioFiles, Mode=TwoWay}"
+                CanUserAddRows="False">
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Binding="{Binding IsChecked, Mode=TwoWay}">
+                    <DataGridCheckBoxColumn
+                        Binding="{Binding IsChecked, Mode=TwoWay}">
                         <DataGridCheckBoxColumn.Header>
-                            <CheckBox DataContext="{Binding DataContext, ElementName=FilesDataGrid}"
-                                      IsThreeState="False"
-                                      IsChecked="{Binding IsSelectAllFilesChecked, Mode=TwoWay}"
-                                      Command="{Binding CheckAllFilesCommand, Mode=OneWay}" />
+                            <CheckBox 
+                                DataContext="{Binding 
+                                DataContext, 
+                                ElementName=MainRibbonWindow}"
+                                IsThreeState="False"
+                                IsChecked="{Binding AllFilesChecked, Mode=TwoWay}"
+                                Command="{Binding CheckAllFilesCommand, Mode=OneWay}" />
                         </DataGridCheckBoxColumn.Header>
                     </DataGridCheckBoxColumn>
-                    <DataGridCheckBoxColumn Header="Tag"
-                                            Binding="{Binding HasTag, Mode=TwoWay}" />
-                    <DataGridTextColumn Header="File Name"
-                                        Binding="{Binding FileName}"
-                                        Width="260" />
-                    <DataGridTextColumn Header="Title"
-                                        Binding="{Binding Title}"
-                                        Width="220" />
-                    <DataGridTextColumn Header="Album"
-                                        Binding="{Binding Album}"
-                                        Width="180" />
-                    <DataGridTextColumn Header="Artist"
-                                        Binding="{Binding Artist}"
-                                        Width="100" />
-                    <DataGridTextColumn Header="No."
-                                        Binding="{Binding TrackNumber}" />
-                    <DataGridComboBoxColumn Header="Genre"
-                                            ItemsSource="{Binding Genres}"
-                                            SelectedItemBinding="{Binding Genre}"
-                                            Width="80" />
-                    <DataGridTextColumn Header="Year"
-                                        Binding="{Binding Year}"
-                                        Width="40" />
-                    <DataGridTextColumn Header="Tag version"
-                                        Binding="{Binding TagVersion}"
-                                        Width="80" />
+                    <DataGridCheckBoxColumn 
+                        Header="Tag"
+                        Binding="{Binding HasTag, Mode=TwoWay}" />
+                    <DataGridTextColumn 
+                        Header="File Name"
+                        Binding="{Binding FileName}"
+                        Width="260" />
+                    <DataGridTextColumn 
+                        Header="Title"
+                        Binding="{Binding Title}"
+                        Width="220" />
+                    <DataGridTextColumn 
+                        Header="Album"
+                        Binding="{Binding Album}"
+                        Width="180" />
+                    <DataGridTextColumn 
+                        Header="Artist"
+                        Binding="{Binding Artist}"
+                        Width="100" />
+                    <DataGridTextColumn 
+                        Header="No."
+                        Binding="{Binding TrackNumber}" />
+                    <!--<DataGridComboBoxColumn 
+                        Header="Genre"
+                        SelectedItemBinding="{
+                        Binding Genre, 
+                        Mode=TwoWay, 
+                        NotifyOnSourceUpdated=True, 
+                        UpdateSourceTrigger=PropertyChanged}"
+                        DisplayMemberPath="Value"
+                        SelectedValuePath="Key"
+                        Width="100">
+                        <DataGridComboBoxColumn.EditingElementStyle>
+                            <Style TargetType="ComboBox">
+                                <Setter 
+                                    Property="ItemsSource" 
+                                    Value="{Binding 
+                                    DataContext.Genres, 
+                                    ElementName=MainRibbonWindow}"/>
+                                <Setter
+                                    Property="IsEditable"
+                                    Value="True"/>
+                            </Style>
+                        </DataGridComboBoxColumn.EditingElementStyle>
+                        <DataGridComboBoxColumn.ElementStyle>
+                            <Style TargetType="ComboBox">
+                                <Setter 
+                                    Property="ItemsSource" 
+                                    Value="{Binding 
+                                    DataContext.Genres, 
+                                    ElementName=MainRibbonWindow}"/>
+                            </Style>
+                        </DataGridComboBoxColumn.ElementStyle>
+                    </DataGridComboBoxColumn>-->
+                    <DataGridComboBoxColumn 
+                        Header="Genre"
+                        ItemsSource="{Binding DataContext.Genres, ElementName=MainRibbonWindow, Mode=TwoWay}"
+                        SelectedItemBinding="{Binding Genre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"
+                        DisplayMemberPath="Value"
+                        SelectedValuePath="Key"/>
+                    <DataGridTextColumn 
+                        Header="Year"
+                        Binding="{Binding Year}"
+                        Width="40" />
+                    <DataGridTextColumn 
+                        Header="Tag version"
+                        Binding="{Binding TagVersion}"
+                        Width="80" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

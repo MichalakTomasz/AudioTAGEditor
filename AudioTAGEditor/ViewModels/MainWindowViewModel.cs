@@ -81,6 +81,13 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref audioFiles, value); }
         }
 
+        private IDictionary<int, string> genres;
+        public IDictionary<int, string> Genres
+        {
+            get { return genres; }
+            set { SetProperty(ref genres, value); }
+        }
+
         private bool isEnabledDataGrid;
         public bool IsEnabledDataGrid
         {
@@ -88,18 +95,11 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref isEnabledDataGrid, value); }
         }
 
-        private bool isSelectAllChecked;
-        public bool IsSelectAllFilesChecked
+        private bool allFilesChecked;
+        public bool AllFilesChecked
         {
-            get { return isSelectAllChecked; }
-            set { SetProperty(ref isSelectAllChecked, value); }
-        }
-
-        private ObservableCollection<string> genres;
-        public ObservableCollection<string> Genres
-        {
-            get { return genres; }
-            set { SetProperty(ref genres, value); }
+            get { return allFilesChecked; }
+            set { SetProperty(ref allFilesChecked, value); }
         }
 
         #endregion//DataGridFiles
@@ -168,29 +168,11 @@ namespace AudioTAGEditor.ViewModels
         #region Methods
 
         private void ExpandCommandExecute()
-        {
-            IsSelectAllFilesChecked = false;
-            AudioFiles.Clear();
-            IsEnabledDataGrid = (filePathCollection?.Count() > 0);
-            if (IsEnabledDataGrid)
-            {
-                var selectedTag = ActivateTag(filePathCollection);
-                AudioFile audioFile = null;
-                foreach (var filePath in FilePathCollection)
-                {
-                    if (selectedTag == TagType.ID3V1)
-                        audioFile = id3V1Service.GetTag(filePath);
-                    else
-                        audioFile = id3V2Service.GetTag(filePath);
-                    AudioFiles.Add(audioFile);
-                }
-                IsSelectAllFilesChecked = true;
-            }  
-        }
+            => RefreshMainGrid();
 
         private void CheckAllFilesCommandExecute()
         {
-            if (IsSelectAllFilesChecked)
+            if (AllFilesChecked)
             {
                 if (AudioFiles?.Count > 0)
                     foreach (var item in AudioFiles)
@@ -204,9 +186,9 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
-        private TagType ActivateTag(IEnumerable<string> filePathCollection)
+        private TagType ResolveTagToActivata()
         {
-            var hasID3v2 = filePathCollection.Any(f => id3V2Service.HasTag(f));
+            var hasID3v2 = FilePathCollection.Any(f => id3V2Service.HasTag(f));
             if (hasID3v2)
             {
                 IsCheckedID3v2 = true;
@@ -220,27 +202,77 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private void CheckID3v1CommandExecute()
-        {
-            AudioFile audioFile;
-            audioFiles.Clear();
-            foreach (var file in FilePathCollection)
-            {
-                audioFile = id3V1Service.GetTag(file);
-                AudioFiles.Add(audioFile);
-            }
-        }
+            => RefreshMainGrid(TagType.ID3V1);
+           
 
         private void CheckID3v2CommandExecute()
+            => RefreshMainGrid(TagType.ID3V2);
+
+        private void RefreshGenres(TagType tagType)
         {
-            AudioFile audioFile;
-            audioFiles.Clear();
-            foreach (var file in FilePathCollection)
+            switch (tagType)
             {
-                audioFile = id3V2Service.GetTag(file);
-                AudioFiles.Add(audioFile);
+                case TagType.ID3V1:
+                    Genres = id3V1Service.GetGenres();
+                    break;
+                case TagType.ID3V2:
+                    Genres = id3V2Service.GetGenres();
+                    break;
             }
         }
 
+        private void RefreshMainGrid(TagType tagType = TagType.none)
+        {
+            ResetMainGrid();
+
+            IsEnabledDataGrid = (FilePathCollection?.Count() > 0);
+            if (!IsEnabledDataGrid) return;
+
+            var localTagType = tagType;
+            if (localTagType == TagType.none)
+                localTagType = ResolveTagToActivata();
+
+            CheckTag(localTagType);
+
+            RefreshGenres(localTagType);
+            var audioFiles = new List<AudioFile>();
+            switch (localTagType)
+            {
+                case TagType.ID3V1:
+                    FilePathCollection.ToList().ForEach(file =>
+                        audioFiles.Add(id3V1Service.GetTag(file)));
+                    break;
+                case TagType.ID3V2:
+                    FilePathCollection.ToList().ForEach(file =>
+                        audioFiles.Add(id3V2Service.GetTag(file)));
+                    break;
+            }
+
+            AudioFiles.AddRange(audioFiles);
+            AllFilesChecked = true;
+            CheckAllFilesCommandExecute();
+        }
+
+        private void CheckTag(TagType tagType)
+        {
+            switch (tagType)
+            {
+                case TagType.ID3V1:
+                    IsCheckedID3v1 = true;
+                    break;
+                case TagType.ID3V2:
+                    IsCheckedID3v2 = true;
+                    break;
+            }
+        }
+
+        private void ResetMainGrid()
+        {
+            AudioFiles.Clear();
+            AllFilesChecked = false;
+            IsCheckedID3v1 = false;
+            IsCheckedID3v2 = false;
+        }
         #endregion//Methods
     }
 }

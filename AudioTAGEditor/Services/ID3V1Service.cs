@@ -1,11 +1,17 @@
 ﻿using AudioTAGEditor.Models;
 using IdSharp.Tagging.ID3v1;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AudioTAGEditor.Services
 {
     class ID3V1Service : IID3Service
     {
+        private readonly IGenreService genreService;
+
+        public ID3V1Service(IGenreService genreService)
+            => this.genreService = genreService;
+
         public bool HasTag(string filePath)
             => ID3v1Tag.DoesTagExist(filePath);
 
@@ -57,5 +63,9 @@ namespace AudioTAGEditor.Services
                 };
             }
         }
+
+        public IDictionary<int, string> GetGenres()
+            => genreService.GetID3v1Genres();
+            
     }
 }

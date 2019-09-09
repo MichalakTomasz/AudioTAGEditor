@@ -1,15 +1,9 @@
 ﻿using Prism.Unity;
-using Prism.Modularity;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using Prism.Ioc;
 using AudioTAGEditor.Views;
 using AudioTAGEditor.Services;
+using IdSharp.Tagging.ID3v1;
 
 namespace AudioTAGEditor
 {
@@ -22,6 +16,7 @@ namespace AudioTAGEditor
         {
             containerRegistry.Register<IID3Service, ID3V1Service>(nameof(ID3V1Service));
             containerRegistry.Register<IID3Service, ID3V2Service>(nameof(ID3V2Service));
+            containerRegistry.Register<IGenreService, GenreService>();
         }
     }
 }

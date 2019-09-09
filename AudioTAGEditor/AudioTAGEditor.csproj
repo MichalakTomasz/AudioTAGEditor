@@ -113,10 +113,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\AudioFile.cs" />
+    <Compile Include="Services\GenreService.cs" />
+    <Compile Include="Services\IGenreService.cs" />
     <Compile Include="Models\TagVersion.cs" />
     <Compile Include="Models\TagType.cs" />
-    <Compile Include="Services\AudioTAGService.cs" />
-    <Compile Include="Services\IAudioTAGService.cs" />
     <Compile Include="Services\ID3V1Service.cs" />
     <Compile Include="Services\ID3V2Service.cs" />
     <Compile Include="Services\IID3Service.cs" />

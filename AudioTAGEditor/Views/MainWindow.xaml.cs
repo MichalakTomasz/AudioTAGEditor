@@ -5,8 +5,6 @@ namespace AudioTAGEditor.Views
     public partial class MainWindow : RibbonWindow
     {
         public MainWindow()
-        {
-            InitializeComponent();
-        }
+            => InitializeComponent();
     }
 }
