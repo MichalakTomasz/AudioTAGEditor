@@ -105,44 +105,39 @@
                     <DataGridTextColumn 
                         Header="No."
                         Binding="{Binding TrackNumber}" />
-                    <!--<DataGridComboBoxColumn 
+                    <DataGridComboBoxColumn 
                         Header="Genre"
                         SelectedItemBinding="{
                         Binding Genre, 
                         Mode=TwoWay, 
-                        NotifyOnSourceUpdated=True, 
-                        UpdateSourceTrigger=PropertyChanged}"
+                        NotifyOnSourceUpdated=True,
+                        NotifyOnTargetUpdated=True,
+                        UpdateSourceTrigger=Explicit}"
                         DisplayMemberPath="Value"
                         SelectedValuePath="Key"
                         Width="100">
                         <DataGridComboBoxColumn.EditingElementStyle>
-                            <Style TargetType="ComboBox">
+                            <Style TargetType="{x:Type ComboBox}">
                                 <Setter 
                                     Property="ItemsSource" 
                                     Value="{Binding 
-                                    DataContext.Genres, 
+                                    DataContext.Genres,
                                     ElementName=MainRibbonWindow}"/>
                                 <Setter
                                     Property="IsEditable"
-                                    Value="True"/>
+                                    Value="False"/>
                             </Style>
                         </DataGridComboBoxColumn.EditingElementStyle>
                         <DataGridComboBoxColumn.ElementStyle>
-                            <Style TargetType="ComboBox">
+                            <Style TargetType="{x:Type ComboBox}">
                                 <Setter 
                                     Property="ItemsSource" 
                                     Value="{Binding 
-                                    DataContext.Genres, 
+                                    DataContext.Genres,
                                     ElementName=MainRibbonWindow}"/>
                             </Style>
                         </DataGridComboBoxColumn.ElementStyle>
-                    </DataGridComboBoxColumn>-->
-                    <DataGridComboBoxColumn 
-                        Header="Genre"
-                        ItemsSource="{Binding DataContext.Genres, ElementName=MainRibbonWindow, Mode=TwoWay}"
-                        SelectedItemBinding="{Binding Genre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"
-                        DisplayMemberPath="Value"
-                        SelectedValuePath="Key"/>
+                    </DataGridComboBoxColumn>
                     <DataGridTextColumn 
                         Header="Year"
                         Binding="{Binding Year}"
