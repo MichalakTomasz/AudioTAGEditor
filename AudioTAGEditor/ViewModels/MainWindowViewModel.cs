@@ -1,8 +1,11 @@
 ﻿using AudioTAGEditor.Models;
 using AudioTAGEditor.Services;
+using AutoMapper;
+using Commons;
+using EventAggregator;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,6 +20,8 @@ namespace AudioTAGEditor.ViewModels
 
         private readonly IID3Service id3V1Service;
         private readonly IID3Service id3V2Service;
+        private readonly IEventAggregator eventAggregator;
+        private readonly IMapper mapper;
 
         #endregion//Fields
 
@@ -24,11 +29,17 @@ namespace AudioTAGEditor.ViewModels
 
         public MainWindowViewModel(
             [Dependency(nameof(ID3V1Service))]IID3Service id3v1Servece,
-            [Dependency(nameof(ID3V2Service))]IID3Service id3v2Service)
+            [Dependency(nameof(ID3V2Service))]IID3Service id3v2Service,
+            IEventAggregator eventAggregator,
+            IMapper mapper)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
             id3V1Service = id3v1Servece;
             id3V2Service = id3v2Service;
+            this.eventAggregator = eventAggregator;
+            this.mapper = mapper;
+            eventAggregator.GetEvent<AudioFileMessageSentEvent>()
+                .Subscribe(ExecuteMessage);
         }
 
         #endregion//Constructor
@@ -73,9 +84,9 @@ namespace AudioTAGEditor.ViewModels
 
         #region DataGreidFiles
 
-        private ObservableCollection<AudioFile> audioFiles
-            = new ObservableCollection<AudioFile>();
-        public ObservableCollection<AudioFile> AudioFiles
+        private ObservableCollection<AudioFileViewModel> audioFiles
+            = new ObservableCollection<AudioFileViewModel>();
+        public ObservableCollection<AudioFileViewModel> AudioFiles
         {
             get { return audioFiles; }
             set { SetProperty(ref audioFiles, value); }
@@ -116,7 +127,7 @@ namespace AudioTAGEditor.ViewModels
                 if (expandNodeCommand == null)
                     expandNodeCommand = new DelegateCommand(ExpandCommandExecute);
                 return expandNodeCommand;
-            }       
+            }
         }
 
         private ICommand checkAllFilesCommand;
@@ -125,7 +136,8 @@ namespace AudioTAGEditor.ViewModels
             get
             {
                 if (checkAllFilesCommand == null)
-                    checkAllFilesCommand = new DelegateCommand(CheckAllFilesCommandExecute);
+                    checkAllFilesCommand = new DelegateCommand(CheckAllFilesCommandExecute)
+                        .ObservesProperty(() => AllFilesChecked);
                 return checkAllFilesCommand;
             }
         }
@@ -158,7 +170,8 @@ namespace AudioTAGEditor.ViewModels
             get
             {
                 if (exitCommand == null)
-                    exitCommand = new DelegateCommand(() => App.Current.MainWindow.Close());
+                    exitCommand = new DelegateCommand(() => 
+                    App.Current.MainWindow.Close());
                 return exitCommand;
             }
         }
@@ -203,7 +216,7 @@ namespace AudioTAGEditor.ViewModels
 
         private void CheckID3v1CommandExecute()
             => RefreshMainGrid(TagType.ID3V1);
-           
+
 
         private void CheckID3v2CommandExecute()
             => RefreshMainGrid(TagType.ID3V2);
@@ -235,16 +248,26 @@ namespace AudioTAGEditor.ViewModels
             CheckTag(localTagType);
 
             RefreshGenres(localTagType);
-            var audioFiles = new List<AudioFile>();
+            var audioFiles = new List<AudioFileViewModel>();
             switch (localTagType)
             {
                 case TagType.ID3V1:
                     FilePathCollection.ToList().ForEach(file =>
-                        audioFiles.Add(id3V1Service.GetTag(file)));
+                    {
+                        var audioFile = id3V1Service.GetTag(file);
+                        var audioFileViewModel =
+                        mapper.Map(audioFile, new AudioFileViewModel(eventAggregator));
+                        audioFiles.Add(audioFileViewModel);
+                    }); 
                     break;
                 case TagType.ID3V2:
                     FilePathCollection.ToList().ForEach(file =>
-                        audioFiles.Add(id3V2Service.GetTag(file)));
+                    {
+                        var audioFile = id3V2Service.GetTag(file);
+                        var audioFileViewModel = 
+                        mapper.Map(audioFile, new AudioFileViewModel(eventAggregator));
+                        audioFiles.Add(audioFileViewModel);
+                    });
                     break;
             }
 
@@ -273,6 +296,18 @@ namespace AudioTAGEditor.ViewModels
             IsCheckedID3v1 = false;
             IsCheckedID3v2 = false;
         }
+
+        private void ExecuteMessage(AudioFileMessage message)
+        {
+            if (!message.IsSelectedFile)
+                AllFilesChecked = false;
+            else
+            {
+                if (!AudioFiles.Any(a => !a.IsChecked))
+                    AllFilesChecked = true;
+            }
+        }
+
         #endregion//Methods
     }
 }

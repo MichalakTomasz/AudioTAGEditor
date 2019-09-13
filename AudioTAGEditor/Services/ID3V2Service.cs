@@ -1,4 +1,5 @@
 ﻿using AudioTAGEditor.Models;
+using AudioTAGEditor.ViewModels;
 using IdSharp.Tagging.ID3v2;
 using System.Collections.Generic;
 using System.IO;
@@ -19,14 +20,14 @@ namespace AudioTAGEditor.Services
         public AudioFile GetTag(string filePath)
         {
             var hasTag = ID3v2Tag.DoesTagExist(filePath);
-            var fileName = Path.GetFileName(filePath);
+            var filename = Path.GetFileName(filePath);
             if (hasTag)
             {
                 var tag = new ID3v2Tag(filePath);
                 return new AudioFile
                 {
                     HasTag = true,
-                    FileName = fileName,
+                    Filename = filename,
                     Title = tag.Title,
                     Artist = tag.Artist,
                     Album = tag.Album,
@@ -44,7 +45,7 @@ namespace AudioTAGEditor.Services
                 return new AudioFile
                 {
                     HasTag = false,
-                    FileName = fileName
+                    Filename = filename
                 };
             }
         }

@@ -35,14 +35,14 @@ namespace AudioTAGEditor.Services
         public AudioFile GetTag(string filePath)
         {
             var hasTag = ID3v1Tag.DoesTagExist(filePath);
-            var fileName = Path.GetFileName(filePath);
+            var filename = Path.GetFileName(filePath);
             if (hasTag)
             {
                 var tag = new ID3v1Tag(filePath);
                 return new AudioFile
                 {
                     HasTag = true,
-                    FileName = fileName,
+                    Filename = filename,
                     Title = tag.Title,
                     Artist = tag.Artist,
                     Album = tag.Album,
@@ -59,7 +59,7 @@ namespace AudioTAGEditor.Services
                 return new AudioFile
                 {
                     HasTag = false,
-                    FileName = fileName
+                    Filename = filename
                 };
             }
         }

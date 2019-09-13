@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=9.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.9.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
@@ -113,6 +116,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\AudioFile.cs" />
+    <Compile Include="ViewModels\AudioFileViewModel.cs" />
     <Compile Include="Services\GenreService.cs" />
     <Compile Include="Services\IGenreService.cs" />
     <Compile Include="Models\TagVersion.cs" />
@@ -153,12 +157,21 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Resource Include="Images\id3v1-logo.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\id3v2-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Commons\Commons.csproj">
+      <Project>{A1C5BF91-3594-4999-8B88-99CDE6AC573F}</Project>
+      <Name>Commons</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EventAggregator\EventAggregator.csproj">
+      <Project>{D321FA58-DF7D-42EB-A5F9-42C3FD05F19E}</Project>
+      <Name>EventAggregator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

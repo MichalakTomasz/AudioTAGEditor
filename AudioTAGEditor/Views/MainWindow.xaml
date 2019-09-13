@@ -72,7 +72,11 @@
                 CanUserAddRows="False">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
-                        Binding="{Binding IsChecked, Mode=TwoWay}">
+                        Binding="{
+                        Binding IsChecked, 
+                        Mode=TwoWay,
+                        NotifyOnSourceUpdated=True,
+                        UpdateSourceTrigger=PropertyChanged}">
                         <DataGridCheckBoxColumn.Header>
                             <CheckBox 
                                 DataContext="{Binding 
@@ -88,7 +92,7 @@
                         Binding="{Binding HasTag, Mode=TwoWay}" />
                     <DataGridTextColumn 
                         Header="File Name"
-                        Binding="{Binding FileName}"
+                        Binding="{Binding Filename}"
                         Width="260" />
                     <DataGridTextColumn 
                         Header="Title"
@@ -111,8 +115,7 @@
                         Binding Genre, 
                         Mode=TwoWay, 
                         NotifyOnSourceUpdated=True,
-                        NotifyOnTargetUpdated=True,
-                        UpdateSourceTrigger=Explicit}"
+                        UpdateSourceTrigger=PropertyChanged}"
                         DisplayMemberPath="Value"
                         SelectedValuePath="Key"
                         Width="100">
