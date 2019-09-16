@@ -6,9 +6,11 @@ using EventAggregator;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Unity;
 
@@ -84,9 +86,8 @@ namespace AudioTAGEditor.ViewModels
 
         #region DataGreidFiles
 
-        private ObservableCollection<AudioFileViewModel> audioFiles
-            = new ObservableCollection<AudioFileViewModel>();
-        public ObservableCollection<AudioFileViewModel> AudioFiles
+        private IEnumerable<AudioFileViewModel> audioFiles;
+        public IEnumerable<AudioFileViewModel> AudioFiles
         {
             get { return audioFiles; }
             set { SetProperty(ref audioFiles, value); }
@@ -176,6 +177,26 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
+        private ICommand cellEditEndingCommand;
+        public ICommand CellEditEndingCommand
+        {
+            get
+            {
+                if (cellEditEndingCommand == null)
+                    cellEditEndingCommand = 
+                        new DelegateCommand<DataGridCellEditEndingEventArgs>(CellEditEndingCommandExecute);
+                return cellEditEndingCommand;
+            }
+        }
+
+        private void CellEditEndingCommandExecute(DataGridCellEditEndingEventArgs e)
+        {
+            if (e.EditAction == DataGridEditAction.Commit)
+            {
+               
+            }
+        }
+
         #endregion//Commands
 
         #region Methods
@@ -187,13 +208,13 @@ namespace AudioTAGEditor.ViewModels
         {
             if (AllFilesChecked)
             {
-                if (AudioFiles?.Count > 0)
+                if (AudioFiles?.Count() > 0)
                     foreach (var item in AudioFiles)
                         item.IsChecked = true;
             }
             else
             {
-                if (AudioFiles?.Count > 0)
+                if (AudioFiles?.Count() > 0)
                     foreach (var item in AudioFiles)
                         item.IsChecked = false;
             }
@@ -271,7 +292,7 @@ namespace AudioTAGEditor.ViewModels
                     break;
             }
 
-            AudioFiles.AddRange(audioFiles);
+            AudioFiles = audioFiles;
             AllFilesChecked = true;
             CheckAllFilesCommandExecute();
         }
@@ -291,7 +312,7 @@ namespace AudioTAGEditor.ViewModels
 
         private void ResetMainGrid()
         {
-            AudioFiles.Clear();
+            AudioFiles = null;
             AllFilesChecked = false;
             IsCheckedID3v1 = false;
             IsCheckedID3v2 = false;

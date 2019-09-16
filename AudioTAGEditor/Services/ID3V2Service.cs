@@ -1,5 +1,7 @@
 ﻿using AudioTAGEditor.Models;
 using AudioTAGEditor.ViewModels;
+using AutoMapper;
+using IdSharp.Tagging.ID3v1;
 using IdSharp.Tagging.ID3v2;
 using System.Collections.Generic;
 using System.IO;
@@ -7,12 +9,19 @@ using System.Linq;
 
 namespace AudioTAGEditor.Services
 {
-    class ID3V2Service : IID3Service
+    public class ID3V2Service : IID3Service
     {
         private readonly IGenreService genreService;
+        private readonly IMapper mapper;
 
-        public ID3V2Service(IGenreService genreService)
-            => this.genreService = genreService;
+        public ID3V2Service(
+            IGenreService genreService,
+            IMapper mapper)
+        {
+            this.genreService = genreService;
+            this.mapper = mapper;
+        }
+            
 
         public bool HasTag(string filePath)
             => ID3v2Tag.DoesTagExist(filePath);

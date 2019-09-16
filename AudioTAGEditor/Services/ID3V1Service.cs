@@ -5,7 +5,7 @@ using System.IO;
 
 namespace AudioTAGEditor.Services
 {
-    class ID3V1Service : IID3Service
+    public class ID3V1Service : IID3Service
     {
         private readonly IGenreService genreService;
 
