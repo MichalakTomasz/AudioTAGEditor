@@ -69,7 +69,16 @@
                 AutoGenerateColumns="False"
                 IsEnabled="{Binding IsEnabledDataGrid}"
                 ItemsSource="{Binding AudioFiles, Mode=TwoWay}"
-                CanUserAddRows="False">
+                CanUserAddRows="False"
+                CanUserSortColumns="False"
+                SelectionMode="Single">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="CellEditEnding">
+                        <prism:InvokeCommandAction
+                            Command="{Binding CellEditEndingCommand, Mode=OneWay}"
+                            TriggerParameterPath=""/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
                         Binding="{
