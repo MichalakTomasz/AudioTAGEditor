@@ -60,6 +60,7 @@
       <HintPath>..\packages\Prism.Wpf.7.2.0.1367\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -175,6 +176,10 @@
     <ProjectReference Include="..\EventAggregator\EventAggregator.csproj">
       <Project>{D321FA58-DF7D-42EB-A5F9-42C3FD05F19E}</Project>
       <Name>EventAggregator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LibValidation\LibValidation.csproj">
+      <Project>{65D38AFA-92D4-4B36-8E31-F27543041A62}</Project>
+      <Name>LibValidation</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

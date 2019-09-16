@@ -189,14 +189,6 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
-        private void CellEditEndingCommandExecute(DataGridCellEditEndingEventArgs e)
-        {
-            if (e.EditAction == DataGridEditAction.Commit)
-            {
-               
-            }
-        }
-
         #endregion//Commands
 
         #region Methods
@@ -326,6 +318,14 @@ namespace AudioTAGEditor.ViewModels
             {
                 if (!AudioFiles.Any(a => !a.IsChecked))
                     AllFilesChecked = true;
+            }
+        }
+
+        private void CellEditEndingCommandExecute(DataGridCellEditEndingEventArgs e)
+        {
+            if (e.EditAction == DataGridEditAction.Commit)
+            {
+
             }
         }
 

@@ -1,11 +1,16 @@
 ﻿using AudioTAGEditor.Models;
 using EventAggregator;
+using LibValidation;
 using Prism.Events;
 using Prism.Mvvm;
+using System;
+using System.Collections;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace AudioTAGEditor.ViewModels
 {
-    public class AudioFileViewModel : BindableBase
+    public class AudioFileViewModel : BindableBaseWithValidation
     {
         #region Constructor
 
@@ -36,10 +41,15 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private string filename;
+        [Required]
         public string Filename
         {
             get { return filename; }
-            set { SetProperty(ref filename, value); }
+            set
+            {
+                Validate(value, nameof(Filename));
+                SetProperty(ref filename, value);
+            }
         }
 
         private string title;
@@ -107,17 +117,26 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref tagVersion, value); }
         }
 
+        public bool HasErrors => throw new NotImplementedException();
+
         #endregion//Properties
 
         #region Methods
 
-        
+
 
         #endregion//Methods
 
         #region Fields
 
         private readonly IEventAggregator eventAggregator;
+
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        public IEnumerable GetErrors(string propertyName)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion//Fields
     }
