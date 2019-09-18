@@ -101,7 +101,9 @@
                         Binding="{Binding HasTag, Mode=TwoWay}" />
                     <DataGridTextColumn 
                         Header="File Name"
-                        Binding="{Binding Filename}"
+                        Binding="{
+                        Binding Filename,
+                        UpdateSourceTrigger=PropertyChanged}"
                         Width="260" />
                     <DataGridTextColumn 
                         Header="Title"

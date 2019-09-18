@@ -21,6 +21,7 @@ namespace AudioTAGEditor
             containerRegistry.Register<IID3Service, ID3V1Service>(nameof(ID3V1Service));
             containerRegistry.Register<IID3Service, ID3V2Service>(nameof(ID3V2Service));
             containerRegistry.Register<IGenreService, GenreService>();
+            containerRegistry.Register<IAudioFileViewModelFactory, AudioFileViewModelFactory>();
 
             var config = new MapperConfiguration(c =>
             {

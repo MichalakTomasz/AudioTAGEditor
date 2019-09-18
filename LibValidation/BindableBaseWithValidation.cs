@@ -5,20 +5,26 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace LibValidation
 {
-    public class BindableBaseWithValidation : BindableBase, INotifyDataErrorInfo
+    /// <summary>
+    /// You have to use validation attributes (from System.ComponentModel.DataAnnotations namespace) before properties which should be checked 
+    /// and add "UpdateSourceTrigger=PropertyChanged" with binding into validated field from view
+    /// </summary>
+    public abstract class BindableBaseWithValidation : BindableBase, INotifyDataErrorInfo
     {
-        public void Validate(object value, string propertyName)
+        public void Validate<T>(T value, string propertyName)
         {
             if (errorDictionary.ContainsKey(propertyName))
                 errorDictionary.Remove(propertyName);
 
-            var validationContext = new ValidationContext(this, null)
+            var validationContext = new ValidationContext(this)
             {
                 MemberName = propertyName
             };
+
             var validationResult = new List<ValidationResult>();
             Validator.TryValidateProperty(value, validationContext, validationResult);
 
@@ -27,12 +33,16 @@ namespace LibValidation
                 var errorList = validationResult.Select(v => v.ErrorMessage);
                 errorDictionary.Add(propertyName, errorList);
             }
-
-            ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
         }
-        public bool HasErrors => errorDictionary.Count > 0;
+        public bool HasErrors => errorDictionary.Any();
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        protected override bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        {
+            Validate(value, propertyName);
+            return base.SetProperty(ref storage, value, propertyName);
+        }
 
         public IEnumerable GetErrors(string propertyName)
         {

@@ -42,14 +42,11 @@ namespace AudioTAGEditor.ViewModels
 
         private string filename;
         [Required]
+        [RegularExpression(@"^[\w,\s-]+\.[\w]+$")]
         public string Filename
         {
             get { return filename; }
-            set
-            {
-                Validate(value, nameof(Filename));
-                SetProperty(ref filename, value);
-            }
+            set { SetProperty(ref filename, value); }
         }
 
         private string title;
@@ -117,8 +114,6 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref tagVersion, value); }
         }
 
-        public bool HasErrors => throw new NotImplementedException();
-
         #endregion//Properties
 
         #region Methods
@@ -130,13 +125,6 @@ namespace AudioTAGEditor.ViewModels
         #region Fields
 
         private readonly IEventAggregator eventAggregator;
-
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
-        public IEnumerable GetErrors(string propertyName)
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion//Fields
     }
