@@ -13,9 +13,10 @@ namespace LibValidation
     /// You have to use validation attributes (from System.ComponentModel.DataAnnotations namespace) before properties which should be checked 
     /// and add "UpdateSourceTrigger=PropertyChanged" with binding into validated field from view
     /// </summary>
-    public abstract class BindableBaseWithValidation : BindableBase, INotifyDataErrorInfo
+    public abstract class BindableBaseWithValidation : 
+        BindableBase, INotifyDataErrorInfo
     {
-        public void Validate<T>(T value, string propertyName)
+        public virtual void Validate<T>(T value, string propertyName)
         {
             if (errorDictionary.ContainsKey(propertyName))
                 errorDictionary.Remove(propertyName);
@@ -34,9 +35,16 @@ namespace LibValidation
                 errorDictionary.Add(propertyName, errorList);
             }
         }
+
         public bool HasErrors => errorDictionary.Any();
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        public void OnErrorChanged([CallerMemberName] string propertyName = null)
+        {
+            var handler = ErrorsChanged;
+            handler?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
 
         protected override bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {

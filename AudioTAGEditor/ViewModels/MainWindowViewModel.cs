@@ -272,10 +272,10 @@ namespace AudioTAGEditor.ViewModels
                     FilePathCollection.ToList().ForEach(file =>
                     {
                         var audioFile = id3V1Service.GetTag(file);
-                        //var audioFileViewModel =
-                        //mapper.Map(audioFile, new AudioFileViewModel(eventAggregator));
-                        var audioFileViewModel = 
-                        audioFileViewModelFactory.CreateFromAudioFile(audioFile, eventAggregator);
+                        var audioFileViewModel =
+                        mapper.Map(audioFile, new AudioFileViewModel(eventAggregator));
+                        //var audioFileViewModel = 
+                        //audioFileViewModelFactory.CreateFromAudioFile(audioFile, eventAggregator);
                         audioFiles.Add(audioFileViewModel);
                     }); 
                     break;
@@ -283,10 +283,10 @@ namespace AudioTAGEditor.ViewModels
                     FilePathCollection.ToList().ForEach(file =>
                     {
                         var audioFile = id3V2Service.GetTag(file);
-                        //var audioFileViewModel = 
-                        //mapper.Map(audioFile, new AudioFileViewModel(eventAggregator));
                         var audioFileViewModel =
-                       audioFileViewModelFactory.CreateFromAudioFile(audioFile, eventAggregator);
+                        mapper.Map(audioFile, new AudioFileViewModel(eventAggregator));
+                        // var audioFileViewModel =
+                        //audioFileViewModelFactory.CreateFromAudioFile(audioFile, eventAggregator);
                         audioFiles.Add(audioFileViewModel);
                     });
                     break;
