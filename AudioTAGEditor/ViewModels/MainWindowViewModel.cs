@@ -24,8 +24,8 @@ namespace AudioTAGEditor.ViewModels
         private readonly IID3Service id3V1Service;
         private readonly IID3Service id3V2Service;
         private readonly IEventAggregator eventAggregator;
-        private readonly IMapper mapper;
         private readonly IAudioFileViewModelFactory audioFileViewModelFactory;
+        private readonly IAudioFileFactory audioFileFactory;
 
         #endregion//Fields
 
@@ -35,15 +35,16 @@ namespace AudioTAGEditor.ViewModels
             [Dependency(nameof(ID3V1Service))]IID3Service id3v1Servece,
             [Dependency(nameof(ID3V2Service))]IID3Service id3v2Service,
             IEventAggregator eventAggregator,
-            IMapper mapper,
-            IAudioFileViewModelFactory audioFileViewModelFactory)
+            IAudioFileViewModelFactory audioFileViewModelFactory,
+            IAudioFileFactory audioFileFactory)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
             id3V1Service = id3v1Servece;
             id3V2Service = id3v2Service;
             this.eventAggregator = eventAggregator;
-            this.mapper = mapper;
             this.audioFileViewModelFactory = audioFileViewModelFactory;
+            this.audioFileFactory = audioFileFactory;
+
             eventAggregator.GetEvent<AudioFileMessageSentEvent>()
                 .Subscribe(ExecuteMessage);
         }
@@ -273,9 +274,7 @@ namespace AudioTAGEditor.ViewModels
                     {
                         var audioFile = id3V1Service.GetTag(file);
                         var audioFileViewModel =
-                        mapper.Map(audioFile, new AudioFileViewModel(eventAggregator));
-                        //var audioFileViewModel = 
-                        //audioFileViewModelFactory.CreateFromAudioFile(audioFile, eventAggregator);
+                        audioFileViewModelFactory.CreateFromAudioFile(audioFile, eventAggregator);
                         audioFiles.Add(audioFileViewModel);
                     }); 
                     break;
@@ -284,9 +283,7 @@ namespace AudioTAGEditor.ViewModels
                     {
                         var audioFile = id3V2Service.GetTag(file);
                         var audioFileViewModel =
-                        mapper.Map(audioFile, new AudioFileViewModel(eventAggregator));
-                        // var audioFileViewModel =
-                        //audioFileViewModelFactory.CreateFromAudioFile(audioFile, eventAggregator);
+                       audioFileViewModelFactory.CreateFromAudioFile(audioFile, eventAggregator);
                         audioFiles.Add(audioFileViewModel);
                     });
                     break;
@@ -333,7 +330,19 @@ namespace AudioTAGEditor.ViewModels
         {
             if (e.EditAction == DataGridEditAction.Commit)
             {
-
+                var audioFileViewModel = e.EditingElement.DataContext as AudioFileViewModel;
+                if (!audioFileViewModel.HasErrors)
+                {
+                    var audioFile = audioFileFactory.CreateAudioFile(audioFileViewModel);
+                    switch (audioFileViewModel.TagType)
+                    {
+                        case TagType.ID3V1:
+                            
+                            break;
+                        case TagType.ID3V2:
+                            break;
+                    }
+                }
             }
         }
 

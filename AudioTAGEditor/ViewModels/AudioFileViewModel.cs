@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 
 namespace AudioTAGEditor.ViewModels
 {
@@ -15,8 +16,12 @@ namespace AudioTAGEditor.ViewModels
         #region Constructor
 
         public AudioFileViewModel(IEventAggregator eventAggregator)
-            => this.eventAggregator = eventAggregator;
-
+        {
+            this.eventAggregator = eventAggregator;
+            invalidChars = new string(Path.GetInvalidFileNameChars());
+        }
+            
+        private readonly string invalidChars;
         #endregion//Constructor
 
         #region Properties
@@ -43,6 +48,7 @@ namespace AudioTAGEditor.ViewModels
         private string filename;
         [Required]
         [RegularExpression(@"^[\w,\s-]+\.[\w]+$")]
+        //[RegularExpression($"^[{invalidChars}]")]
         public string Filename
         {
             get { return filename; }

@@ -120,8 +120,10 @@
     <Compile Include="Models\AudioFileChange.cs" />
     <Compile Include="Models\ChangeActionType.cs" />
     <Compile Include="Models\HistoryObject.cs" />
+    <Compile Include="Services\AudioFileFactory.cs" />
     <Compile Include="Services\AudioFileServece.cs" />
     <Compile Include="Services\AudioFileViewModelFactory.cs" />
+    <Compile Include="Services\IAudioFileFactory.cs" />
     <Compile Include="Services\IAudioFileViewModelFactory.cs" />
     <Compile Include="ViewModels\AudioFileViewModel.cs" />
     <Compile Include="Services\GenreService.cs" />
