@@ -1,6 +1,5 @@
 ﻿using AudioTAGEditor.Models;
 using AudioTAGEditor.Services;
-using AutoMapper;
 using Commons;
 using EventAggregator;
 using Prism.Commands;
@@ -8,8 +7,6 @@ using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -24,8 +21,7 @@ namespace AudioTAGEditor.ViewModels
         private readonly IID3Service id3V1Service;
         private readonly IID3Service id3V2Service;
         private readonly IEventAggregator eventAggregator;
-        private readonly IAudioFileViewModelFactory audioFileViewModelFactory;
-        private readonly IAudioFileFactory audioFileFactory;
+        private readonly IAudioFileConverter audioFileConverter;
 
         #endregion//Fields
 
@@ -35,15 +31,13 @@ namespace AudioTAGEditor.ViewModels
             [Dependency(nameof(ID3V1Service))]IID3Service id3v1Servece,
             [Dependency(nameof(ID3V2Service))]IID3Service id3v2Service,
             IEventAggregator eventAggregator,
-            IAudioFileViewModelFactory audioFileViewModelFactory,
-            IAudioFileFactory audioFileFactory)
+            IAudioFileConverter audioFileConverter)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
             id3V1Service = id3v1Servece;
             id3V2Service = id3v2Service;
             this.eventAggregator = eventAggregator;
-            this.audioFileViewModelFactory = audioFileViewModelFactory;
-            this.audioFileFactory = audioFileFactory;
+            this.audioFileConverter = audioFileConverter;
 
             eventAggregator.GetEvent<AudioFileMessageSentEvent>()
                 .Subscribe(ExecuteMessage);
@@ -274,7 +268,7 @@ namespace AudioTAGEditor.ViewModels
                     {
                         var audioFile = id3V1Service.GetTag(file);
                         var audioFileViewModel =
-                        audioFileViewModelFactory.CreateFromAudioFile(audioFile, eventAggregator);
+                        audioFileConverter.AudioFileToAudioFileViewModel(audioFile, eventAggregator);
                         audioFiles.Add(audioFileViewModel);
                     }); 
                     break;
@@ -283,7 +277,7 @@ namespace AudioTAGEditor.ViewModels
                     {
                         var audioFile = id3V2Service.GetTag(file);
                         var audioFileViewModel =
-                       audioFileViewModelFactory.CreateFromAudioFile(audioFile, eventAggregator);
+                       audioFileConverter.AudioFileToAudioFileViewModel(audioFile, eventAggregator);
                         audioFiles.Add(audioFileViewModel);
                     });
                     break;
@@ -333,7 +327,8 @@ namespace AudioTAGEditor.ViewModels
                 var audioFileViewModel = e.EditingElement.DataContext as AudioFileViewModel;
                 if (!audioFileViewModel.HasErrors)
                 {
-                    var audioFile = audioFileFactory.CreateAudioFile(audioFileViewModel);
+                    var audioFile = audioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
+
                     switch (audioFileViewModel.TagType)
                     {
                         case TagType.ID3V1:

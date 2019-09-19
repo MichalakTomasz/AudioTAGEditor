@@ -72,5 +72,13 @@ namespace AudioTAGEditor.Services
 
         public IDictionary<int, string> GetGenres()
             => genreService.GetID3v1Genres();
+
+        public void SaveTag(
+            AudioFile audioFile, 
+            string filePath, 
+            TagVersion tagVersion)
+        {
+            throw new System.NotImplementedException();
+        }
     }  
 }

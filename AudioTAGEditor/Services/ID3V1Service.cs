@@ -3,6 +3,7 @@ using AutoMapper;
 using IdSharp.Tagging.ID3v1;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace AudioTAGEditor.Services
 {
@@ -43,10 +44,13 @@ namespace AudioTAGEditor.Services
         {
             var hasTag = ID3v1Tag.DoesTagExist(filePath);
             var filename = Path.GetFileName(filePath);
+            var genres = genreService.GetID3v1Genres();
+
             if (hasTag)
-            {
+            { 
                 var tag = new ID3v1Tag(filePath);
-                return new AudioFile
+
+                var audioFile = new AudioFile
                 {
                     HasTag = true,
                     Filename = filename,
@@ -54,12 +58,14 @@ namespace AudioTAGEditor.Services
                     Artist = tag.Artist,
                     Album = tag.Album,
                     TrackNumber = tag.TrackNumber.ToString(),
-                    Genre = GenreHelper.GenreByIndex[tag.GenreIndex],
+                    Genre = genres[tag.GenreIndex],
                     Comment = tag.Comment,
                     Year = tag.Year,
                     TagType = TagType.ID3V1,
                     TagVersion = GetTagVersion(filePath)
                 };
+
+                return audioFile;
             }
             else
             {
@@ -74,9 +80,31 @@ namespace AudioTAGEditor.Services
         public IDictionary<int, string> GetGenres()
             => genreService.GetID3v1Genres();
 
-        public void SaveTag(AudioFile audioFile, string filePath)
+        public void SaveTag(
+            AudioFile audioFile, 
+            string filePath, 
+            TagVersion tagVersion = TagVersion.ID3V11)
         {
-            var id3v1Tag = mapper.Map<ID3v1Tag>(audioFile);
+            ID3v1TagVersion tagVersionToSave = 
+                TagVersion.ID3V10 == tagVersion ? 
+                ID3v1TagVersion.ID3v10 : ID3v1TagVersion.ID3v11;
+
+            var genres = genreService.GetID3v1Genres();
+            var genreToSave = genres.FirstOrDefault(g => g.Value == audioFile.Genre).Key;
+
+            var changedID3v1Tag = mapper.Map<ID3v1Tag>(audioFile);
+            var id3v1Tag = new ID3v1Tag(filePath)
+            {
+                Title = changedID3v1Tag.Title,
+                Album = changedID3v1Tag.Album,
+                Artist = changedID3v1Tag.Artist,
+                TrackNumber = changedID3v1Tag.TrackNumber,
+                GenreIndex = genreToSave,
+                Comment = changedID3v1Tag.Comment,
+                Year = changedID3v1Tag.Year,
+                TagVersion = tagVersionToSave
+            };
+            id3v1Tag.Save(filePath);
         }
             
     }

@@ -10,5 +10,9 @@ namespace AudioTAGEditor.Services
         TagVersion GetTagVersion(string filePath);
         bool HasTag(string filePath);
         IDictionary<int, string> GetGenres();
+        void SaveTag(
+            AudioFile audioFile,
+            string filePath,
+            TagVersion tagVersion);
     }
 }

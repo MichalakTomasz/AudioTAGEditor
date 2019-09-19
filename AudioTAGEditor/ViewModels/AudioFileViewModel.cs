@@ -122,12 +122,6 @@ namespace AudioTAGEditor.ViewModels
 
         #endregion//Properties
 
-        #region Methods
-
-
-
-        #endregion//Methods
-
         #region Fields
 
         private readonly IEventAggregator eventAggregator;
