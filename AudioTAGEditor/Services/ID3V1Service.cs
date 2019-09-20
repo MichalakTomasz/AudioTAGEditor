@@ -1,6 +1,7 @@
 ﻿using AudioTAGEditor.Models;
 using AutoMapper;
 using IdSharp.Tagging.ID3v1;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -80,7 +81,7 @@ namespace AudioTAGEditor.Services
         public IDictionary<int, string> GetGenres()
             => genreService.GetID3v1Genres();
 
-        public void SaveTag(
+        public void UpdateTag(
             AudioFile audioFile, 
             string filePath, 
             TagVersion tagVersion = TagVersion.ID3V11)
@@ -106,6 +107,17 @@ namespace AudioTAGEditor.Services
             };
             id3v1Tag.Save(filePath);
         }
-            
+
+        public void RemoveTag(string filePath)
+        {
+            try
+            {
+                ID3v1Tag.RemoveTag(filePath);
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
     }
 }

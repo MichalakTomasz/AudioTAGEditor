@@ -2,10 +2,6 @@
 using EventAggregator;
 using LibValidation;
 using Prism.Events;
-using Prism.Mvvm;
-using System;
-using System.Collections;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 
@@ -47,8 +43,7 @@ namespace AudioTAGEditor.ViewModels
 
         private string filename;
         [Required]
-        [RegularExpression(@"^[\w,\s-]+\.[\w]+$")]
-        //[RegularExpression($"^[{invalidChars}]")]
+        [RegularExpression("[^<>:\"\\|/?*]+[.]{1}[^<>:\"\\|/?*]+")]
         public string Filename
         {
             get { return filename; }

@@ -5,7 +5,6 @@ using EventAggregator;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
@@ -22,6 +21,7 @@ namespace AudioTAGEditor.ViewModels
         private readonly IID3Service id3V2Service;
         private readonly IEventAggregator eventAggregator;
         private readonly IAudioFileConverter audioFileConverter;
+        private readonly IFileService fileService;
 
         #endregion//Fields
 
@@ -31,14 +31,15 @@ namespace AudioTAGEditor.ViewModels
             [Dependency(nameof(ID3V1Service))]IID3Service id3v1Servece,
             [Dependency(nameof(ID3V2Service))]IID3Service id3v2Service,
             IEventAggregator eventAggregator,
-            IAudioFileConverter audioFileConverter)
+            IAudioFileConverter audioFileConverter,
+            IFileService fileService)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
             id3V1Service = id3v1Servece;
             id3V2Service = id3v2Service;
             this.eventAggregator = eventAggregator;
             this.audioFileConverter = audioFileConverter;
-
+            this.fileService = fileService;
             eventAggregator.GetEvent<AudioFileMessageSentEvent>()
                 .Subscribe(ExecuteMessage);
         }
@@ -79,6 +80,13 @@ namespace AudioTAGEditor.ViewModels
         {
             get { return filePathCollection; }
             set { SetProperty(ref filePathCollection, value); }
+        }
+
+        private string selectedPath;
+        public string SelectedPath
+        {
+            get { return selectedPath; }
+            set { SetProperty(ref selectedPath, value); }
         }
 
         #endregion//TreeViewExplorer
@@ -327,16 +335,24 @@ namespace AudioTAGEditor.ViewModels
                 var audioFileViewModel = e.EditingElement.DataContext as AudioFileViewModel;
                 if (!audioFileViewModel.HasErrors)
                 {
-                    var audioFile = audioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
-
-                    switch (audioFileViewModel.TagType)
+                    var fullAudioFilePath = $"{SelectedPath}{audioFileViewModel.Filename}";
+                    switch (e.Column.Header)
                     {
-                        case TagType.ID3V1:
-                            
+                        case "File Name":
+                            fileService.ChangeFilename(fullAudioFilePath, audioFileViewModel.Filename);
                             break;
-                        case TagType.ID3V2:
+                        default:
+                            var audioFile = audioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
+                            switch (audioFileViewModel.TagType)
+                            {
+                                case TagType.ID3V1:
+                                    id3V1Service.UpdateTag(audioFile, fullAudioFilePath, TagVersion.ID3V11);
+                                    break;
+                                case TagType.ID3V2:
+                                    break;
+                            }
                             break;
-                    }
+                    } 
                 }
             }
         }

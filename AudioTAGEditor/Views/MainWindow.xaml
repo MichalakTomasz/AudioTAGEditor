@@ -62,7 +62,8 @@
                 Grid.Column="0"
                 Command="{Binding ExpandNodeCommand, Mode=OneWay}"
                 FilesFullPath="{Binding FilePathCollection, Mode=OneWayToSource}"
-                FilesFilter="{Binding FilesFilter, Mode=OneTime}">
+                FilesFilter="{Binding FilesFilter, Mode=OneTime}"
+                SelectedPath="{Binding SelectedPath, Mode=OneWayToSource}">
             </tx:ExplorerTreeView>
             <DataGrid
                 Grid.Column="1"
@@ -165,7 +166,7 @@
         </Grid>
         <StatusBar Grid.Row="3"
                    Height="20">
-            <TextBlock Text="{Binding SelectedNode.Path, ElementName=tree}" />
+            <TextBlock Text="{Binding SelectedPath, ElementName=tree, Mode=OneWay}" />
         </StatusBar>
     </Grid>
 </RibbonWindow>
