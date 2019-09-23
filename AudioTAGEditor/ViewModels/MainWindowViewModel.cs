@@ -5,6 +5,7 @@ using EventAggregator;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
@@ -22,6 +23,8 @@ namespace AudioTAGEditor.ViewModels
         private readonly IEventAggregator eventAggregator;
         private readonly IAudioFileConverter audioFileConverter;
         private readonly IFileService fileService;
+        private readonly IHistoryService historyService;
+        private Guid tempID;
 
         #endregion//Fields
 
@@ -32,7 +35,8 @@ namespace AudioTAGEditor.ViewModels
             [Dependency(nameof(ID3V2Service))]IID3Service id3v2Service,
             IEventAggregator eventAggregator,
             IAudioFileConverter audioFileConverter,
-            IFileService fileService)
+            IFileService fileService,
+            IHistoryService historyService)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
             id3V1Service = id3v1Servece;
@@ -40,6 +44,7 @@ namespace AudioTAGEditor.ViewModels
             this.eventAggregator = eventAggregator;
             this.audioFileConverter = audioFileConverter;
             this.fileService = fileService;
+            this.historyService = historyService;
             eventAggregator.GetEvent<AudioFileMessageSentEvent>()
                 .Subscribe(ExecuteMessage);
         }
@@ -91,7 +96,7 @@ namespace AudioTAGEditor.ViewModels
 
         #endregion//TreeViewExplorer
 
-        #region DataGreidFiles
+        #region DataGridFiles
 
         private IEnumerable<AudioFileViewModel> audioFiles;
         public IEnumerable<AudioFileViewModel> AudioFiles
@@ -181,6 +186,18 @@ namespace AudioTAGEditor.ViewModels
                     exitCommand = new DelegateCommand(() => 
                     App.Current.MainWindow.Close());
                 return exitCommand;
+            }
+        }
+
+        private ICommand beginningEditCommand;
+        public ICommand BeginningEditCommand
+        {
+            get
+            {
+                if (beginningEditCommand == null)
+                    beginningEditCommand =
+                        new DelegateCommand<DataGridBeginningEditEventArgs>(BeginningEditCommandExecute);
+                return beginningEditCommand;
             }
         }
 
@@ -328,27 +345,67 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
+        private void BeginningEditCommandExecute(DataGridBeginningEditEventArgs e)
+        {
+            if (e.Column.Header is CheckBox)
+                return;
+
+            var audioFileViewModel = e.Row.DataContext as AudioFileViewModel;
+            var audioFile = audioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
+
+            
+            switch (e.Column.Header)
+            {
+                case "File Name":
+                    tempID = historyService.PushOldValue(audioFile, ChangeActionType.Filename, SelectedPath);
+                    break;
+                default:
+                    var editActionType = ChangeActionType.None;
+                    switch (audioFile.TagType)
+                    {
+                        case TagType.ID3V1:
+                            editActionType = ChangeActionType.ID3v1;
+                            break;
+                        case TagType.ID3V2:
+                            editActionType = ChangeActionType.ID3v2;
+                            break;
+                    }
+                    tempID = historyService.PushOldValue(audioFile, editActionType, SelectedPath);
+                    break;
+            }
+        }
+
         private void CellEditEndingCommandExecute(DataGridCellEditEndingEventArgs e)
         {
             if (e.EditAction == DataGridEditAction.Commit)
             {
                 var audioFileViewModel = e.EditingElement.DataContext as AudioFileViewModel;
+                var audioFile = audioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
                 if (!audioFileViewModel.HasErrors)
                 {
                     var fullAudioFilePath = $"{SelectedPath}{audioFileViewModel.Filename}";
                     switch (e.Column.Header)
                     {
                         case "File Name":
-                            fileService.ChangeFilename(fullAudioFilePath, audioFileViewModel.Filename);
+                            var historyObject = historyService.Peek();
+                            if (tempID == historyObject.ID)
+                            {
+                                var oldAaudioFile = historyObject.AudioFileChanges.LastOrDefault().Old;
+                                var oldFilePath = $"{historyObject.Path}{oldAaudioFile.Filename}";
+                                fileService.ChangeFilename(oldFilePath, audioFileViewModel.Filename);
+                                historyService.PushChange(tempID, audioFile);
+                            }
+                            
                             break;
                         default:
-                            var audioFile = audioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
                             switch (audioFileViewModel.TagType)
                             {
                                 case TagType.ID3V1:
+
                                     id3V1Service.UpdateTag(audioFile, fullAudioFilePath, TagVersion.ID3V11);
                                     break;
                                 case TagType.ID3V2:
+                                    id3V2Service.UpdateTag(audioFile, fullAudioFilePath, TagVersion.ID3V20);
                                     break;
                             }
                             break;

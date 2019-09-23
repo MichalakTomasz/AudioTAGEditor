@@ -79,6 +79,11 @@
                             Command="{Binding CellEditEndingCommand, Mode=OneWay}"
                             TriggerParameterPath=""/>
                     </i:EventTrigger>
+                    <i:EventTrigger EventName="BeginningEdit">
+                        <prism:InvokeCommandAction
+                            Command="{Binding BeginningEditCommand, Mode=OneWay}"
+                            TriggerParameterPath=""/>
+                    </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
@@ -97,9 +102,6 @@
                                 Command="{Binding CheckAllFilesCommand, Mode=OneWay}" />
                         </DataGridCheckBoxColumn.Header>
                     </DataGridCheckBoxColumn>
-                    <DataGridCheckBoxColumn 
-                        Header="Tag"
-                        Binding="{Binding HasTag, Mode=TwoWay}" />
                     <DataGridTextColumn 
                         Header="File Name"
                         Binding="{

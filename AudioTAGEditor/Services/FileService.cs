@@ -11,8 +11,7 @@ namespace AudioTAGEditor.Services
             {
                 var filePath = Path.GetDirectoryName(path);
                 var filename = Path.GetFileNameWithoutExtension(path);
-                var extension = Path.GetExtension(path);
-                var newFilePath = $"{filePath}{newFilename}{extension}";
+                var newFilePath = $"{filePath}{Path.DirectorySeparatorChar}{newFilename}";
                 File.Move(path, newFilePath);
             }
             catch (Exception e)

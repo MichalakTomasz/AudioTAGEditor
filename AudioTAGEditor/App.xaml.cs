@@ -23,7 +23,8 @@ namespace AudioTAGEditor
             containerRegistry.Register<IGenreService, GenreService>();
             containerRegistry.Register<IAudioFileConverter, AudioFileConverter>();
             containerRegistry.Register<IFileService, FileService>();
-
+            containerRegistry.Register<IHistoryService, HistoryService>();
+            
             var config = new MapperConfiguration(c =>
             {
                 c.CreateMap<AudioFile, AudioFileViewModel>();
