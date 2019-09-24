@@ -7,6 +7,7 @@
               xmlns:prism="http://prismlibrary.com/"
               prism:ViewModelLocator.AutoWireViewModel="True"
               xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+              xmlns:b="clr-namespace:AudioTAGEditor.Behaviors"
               xmlns:tx="clr-namespace:ExplorerTreeView;assembly=ExplorerTreeView"
               mc:Ignorable="d"
               Title="Audio TAG Editor"
@@ -73,18 +74,15 @@
                 CanUserAddRows="False"
                 CanUserSortColumns="False"
                 SelectionMode="Single">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="CellEditEnding">
-                        <prism:InvokeCommandAction
-                            Command="{Binding CellEditEndingCommand, Mode=OneWay}"
-                            TriggerParameterPath=""/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="BeginningEdit">
-                        <prism:InvokeCommandAction
-                            Command="{Binding BeginningEditCommand, Mode=OneWay}"
-                            TriggerParameterPath=""/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                <i:Interaction.Behaviors>
+                    <b:DataGridEditBehavior
+                        HistoryService="{Binding HistoryService, Mode=OneWay}"
+                        AudioFileConverter="{Binding AudioFileConverter, Mode=OneWay}"
+                        FileService="{Binding FileService, Mode=OneWay}"
+                        ID3v1Service="{Binding ID3v1Service, Mode=OneWay}"
+                        ID3v2Service="{Binding ID3v2Service, Mode=OneWay}"
+                        SelectedPath="{Binding SelectedPath, Mode=OneWay}"/>
+                </i:Interaction.Behaviors>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
                         Binding="{

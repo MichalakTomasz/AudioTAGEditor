@@ -18,20 +18,14 @@ namespace AudioTAGEditor.ViewModels
     {
         #region Fields
 
-        private readonly IID3Service id3V1Service;
-        private readonly IID3Service id3V2Service;
         private readonly IEventAggregator eventAggregator;
-        private readonly IAudioFileConverter audioFileConverter;
-        private readonly IFileService fileService;
-        private readonly IHistoryService historyService;
-        private Guid tempID;
 
         #endregion//Fields
 
         #region Constructor
 
         public MainWindowViewModel(
-            [Dependency(nameof(ID3V1Service))]IID3Service id3v1Servece,
+            [Dependency(nameof(ID3V1Service))]IID3Service id3v1Service,
             [Dependency(nameof(ID3V2Service))]IID3Service id3v2Service,
             IEventAggregator eventAggregator,
             IAudioFileConverter audioFileConverter,
@@ -39,12 +33,12 @@ namespace AudioTAGEditor.ViewModels
             IHistoryService historyService)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
-            id3V1Service = id3v1Servece;
-            id3V2Service = id3v2Service;
+            ID3v1Service = id3v1Service;
+            ID3v2Service = id3v2Service;
             this.eventAggregator = eventAggregator;
-            this.audioFileConverter = audioFileConverter;
-            this.fileService = fileService;
-            this.historyService = historyService;
+            AudioFileConverter = audioFileConverter;
+            FileService = fileService;
+            HistoryService = historyService;
             eventAggregator.GetEvent<AudioFileMessageSentEvent>()
                 .Subscribe(ExecuteMessage);
         }
@@ -93,6 +87,20 @@ namespace AudioTAGEditor.ViewModels
             get { return selectedPath; }
             set { SetProperty(ref selectedPath, value); }
         }
+
+        #region DataGridEditBehavior
+
+        public IHistoryService HistoryService { get; }
+
+        public IAudioFileConverter AudioFileConverter { get; }
+
+        public IFileService FileService { get; }
+
+        public IID3Service ID3v1Service { get; }
+
+        public IID3Service ID3v2Service { get; }
+
+        #endregion//DatagridEditBehavior
 
         #endregion//TreeViewExplorer
 
@@ -189,30 +197,6 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
-        private ICommand beginningEditCommand;
-        public ICommand BeginningEditCommand
-        {
-            get
-            {
-                if (beginningEditCommand == null)
-                    beginningEditCommand =
-                        new DelegateCommand<DataGridBeginningEditEventArgs>(BeginningEditCommandExecute);
-                return beginningEditCommand;
-            }
-        }
-
-        private ICommand cellEditEndingCommand;
-        public ICommand CellEditEndingCommand
-        {
-            get
-            {
-                if (cellEditEndingCommand == null)
-                    cellEditEndingCommand = 
-                        new DelegateCommand<DataGridCellEditEndingEventArgs>(CellEditEndingCommandExecute);
-                return cellEditEndingCommand;
-            }
-        }
-
         #endregion//Commands
 
         #region Methods
@@ -238,7 +222,7 @@ namespace AudioTAGEditor.ViewModels
 
         private TagType ResolveTagToActivata()
         {
-            var hasID3v2 = FilePathCollection.Any(f => id3V2Service.HasTag(f));
+            var hasID3v2 = FilePathCollection.Any(f => ID3v2Service.HasTag(f));
             if (hasID3v2)
             {
                 IsCheckedID3v2 = true;
@@ -263,10 +247,10 @@ namespace AudioTAGEditor.ViewModels
             switch (tagType)
             {
                 case TagType.ID3V1:
-                    Genres = id3V1Service.GetGenres();
+                    Genres = ID3v1Service.GetGenres();
                     break;
                 case TagType.ID3V2:
-                    Genres = id3V2Service.GetGenres();
+                    Genres = ID3v2Service.GetGenres();
                     break;
             }
         }
@@ -291,18 +275,18 @@ namespace AudioTAGEditor.ViewModels
                 case TagType.ID3V1:
                     FilePathCollection.ToList().ForEach(file =>
                     {
-                        var audioFile = id3V1Service.GetTag(file);
+                        var audioFile = ID3v1Service.GetTag(file);
                         var audioFileViewModel =
-                        audioFileConverter.AudioFileToAudioFileViewModel(audioFile, eventAggregator);
+                        AudioFileConverter.AudioFileToAudioFileViewModel(audioFile, eventAggregator);
                         audioFiles.Add(audioFileViewModel);
                     }); 
                     break;
                 case TagType.ID3V2:
                     FilePathCollection.ToList().ForEach(file =>
                     {
-                        var audioFile = id3V2Service.GetTag(file);
+                        var audioFile = ID3v2Service.GetTag(file);
                         var audioFileViewModel =
-                       audioFileConverter.AudioFileToAudioFileViewModel(audioFile, eventAggregator);
+                       AudioFileConverter.AudioFileToAudioFileViewModel(audioFile, eventAggregator);
                         audioFiles.Add(audioFileViewModel);
                     });
                     break;
@@ -342,75 +326,6 @@ namespace AudioTAGEditor.ViewModels
             {
                 if (!AudioFiles.Any(a => !a.IsChecked))
                     AllFilesChecked = true;
-            }
-        }
-
-        private void BeginningEditCommandExecute(DataGridBeginningEditEventArgs e)
-        {
-            if (e.Column.Header is CheckBox)
-                return;
-
-            var audioFileViewModel = e.Row.DataContext as AudioFileViewModel;
-            var audioFile = audioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
-
-            
-            switch (e.Column.Header)
-            {
-                case "File Name":
-                    tempID = historyService.PushOldValue(audioFile, ChangeActionType.Filename, SelectedPath);
-                    break;
-                default:
-                    var editActionType = ChangeActionType.None;
-                    switch (audioFile.TagType)
-                    {
-                        case TagType.ID3V1:
-                            editActionType = ChangeActionType.ID3v1;
-                            break;
-                        case TagType.ID3V2:
-                            editActionType = ChangeActionType.ID3v2;
-                            break;
-                    }
-                    tempID = historyService.PushOldValue(audioFile, editActionType, SelectedPath);
-                    break;
-            }
-        }
-
-        private void CellEditEndingCommandExecute(DataGridCellEditEndingEventArgs e)
-        {
-            if (e.EditAction == DataGridEditAction.Commit)
-            {
-                var audioFileViewModel = e.EditingElement.DataContext as AudioFileViewModel;
-                var audioFile = audioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
-                if (!audioFileViewModel.HasErrors)
-                {
-                    var fullAudioFilePath = $"{SelectedPath}{audioFileViewModel.Filename}";
-                    switch (e.Column.Header)
-                    {
-                        case "File Name":
-                            var historyObject = historyService.Peek();
-                            if (tempID == historyObject.ID)
-                            {
-                                var oldAaudioFile = historyObject.AudioFileChanges.LastOrDefault().Old;
-                                var oldFilePath = $"{historyObject.Path}{oldAaudioFile.Filename}";
-                                fileService.ChangeFilename(oldFilePath, audioFileViewModel.Filename);
-                                historyService.PushChange(tempID, audioFile);
-                            }
-                            
-                            break;
-                        default:
-                            switch (audioFileViewModel.TagType)
-                            {
-                                case TagType.ID3V1:
-
-                                    id3V1Service.UpdateTag(audioFile, fullAudioFilePath, TagVersion.ID3V11);
-                                    break;
-                                case TagType.ID3V2:
-                                    id3V2Service.UpdateTag(audioFile, fullAudioFilePath, TagVersion.ID3V20);
-                                    break;
-                            }
-                            break;
-                    } 
-                }
             }
         }
 
