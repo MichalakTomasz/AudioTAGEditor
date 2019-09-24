@@ -43,7 +43,7 @@
     </Reference>
     <Reference Include="ExplorerTreeView, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ExplorerTreeView\ExplorerTreeView\bin\Debug\ExplorerTreeView.dll</HintPath>
+      <HintPath>..\..\TreeViewExplorer\ExplorerTreeView\bin\Debug\ExplorerTreeView.dll</HintPath>
     </Reference>
     <Reference Include="IdSharp.Common-core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IdSharp.Common.1.0.1\lib\netstandard2.0\IdSharp.Common-core.dll</HintPath>
@@ -117,7 +117,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Behaviors\Behaviior.cs" />
     <Compile Include="Behaviors\DataGridEditBehavior.cs" />
     <Compile Include="Models\AudioFile.cs" />
     <Compile Include="Models\AudioFileChange.cs" />
