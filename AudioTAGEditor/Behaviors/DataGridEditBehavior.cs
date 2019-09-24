@@ -1,11 +1,9 @@
 ﻿using AudioTAGEditor.Models;
 using AudioTAGEditor.Services;
 using AudioTAGEditor.ViewModels;
+using ExplorerTreeView;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
@@ -92,6 +90,19 @@ namespace AudioTAGEditor.Behaviors
                 typeof(DataGridEditBehavior), 
                 new PropertyMetadata(null));
 
+        public ExplorerTreeView.ExplorerTreeView ExplorerTreeView
+        {
+            get { return (ExplorerTreeView.ExplorerTreeView)GetValue(ExplorerTreeViewProperty); }
+            set { SetValue(ExplorerTreeViewProperty, value); }
+        }
+
+        public static readonly DependencyProperty ExplorerTreeViewProperty =
+            DependencyProperty.Register(
+                "ExplorerTreeView", 
+                typeof(ExplorerTreeView.ExplorerTreeView), 
+                typeof(DataGridEditBehavior), 
+                new PropertyMetadata(null));
+
         private Guid tempID;
 
         protected override void OnAttached()
@@ -156,6 +167,7 @@ namespace AudioTAGEditor.Behaviors
                                 var oldFilePath = $"{historyObject.Path}{oldAaudioFile.Filename}";
                                 FileService.ChangeFilename(oldFilePath, audioFileViewModel.Filename);
                                 HistoryService.PushChange(tempID, audioFile);
+                                ExplorerTreeView.Refresh();
                             }
 
                             break;
