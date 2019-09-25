@@ -115,8 +115,8 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref audioFiles, value); }
         }
 
-        private IDictionary<int, string> genres;
-        public IDictionary<int, string> Genres
+        private IReadOnlyList<string> genres;
+        public IReadOnlyList<string> Genres
         {
             get { return genres; }
             set { SetProperty(ref genres, value); }

@@ -9,7 +9,7 @@ namespace AudioTAGEditor.Services
         AudioFile GetTag(string filePath);
         TagVersion GetTagVersion(string filePath);
         bool HasTag(string filePath);
-        IDictionary<int, string> GetGenres();
+        IReadOnlyList<string> GetGenres();
         void UpdateTag(
             AudioFile audioFile,
             string filePath,

@@ -135,8 +135,6 @@
                         Mode=TwoWay, 
                         NotifyOnSourceUpdated=True,
                         UpdateSourceTrigger=PropertyChanged}"
-                        DisplayMemberPath="Value"
-                        SelectedValuePath="Key"
                         Width="100">
                         <DataGridComboBoxColumn.EditingElementStyle>
                             <Style TargetType="{x:Type ComboBox}">

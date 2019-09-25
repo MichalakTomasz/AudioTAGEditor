@@ -69,7 +69,7 @@ namespace AudioTAGEditor.Services
         public TagVersion GetTagVersion(string filePath)
             => TagVersion.unknown;
 
-        public IDictionary<int, string> GetGenres()
+        public IReadOnlyList<string> GetGenres()
             => genreService.GetID3v1Genres();
 
         public void UpdateTag(

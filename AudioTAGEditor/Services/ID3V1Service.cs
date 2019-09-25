@@ -78,7 +78,7 @@ namespace AudioTAGEditor.Services
             }
         }
 
-        public IDictionary<int, string> GetGenres()
+        public IReadOnlyList<string> GetGenres()
             => genreService.GetID3v1Genres();
 
         public void UpdateTag(
@@ -91,20 +91,10 @@ namespace AudioTAGEditor.Services
                 ID3v1TagVersion.ID3v10 : ID3v1TagVersion.ID3v11;
 
             var genres = genreService.GetID3v1Genres();
-            var genreToSave = genres.FirstOrDefault(g => g.Value == audioFile.Genre).Key;
+            var genreToSave = genres.ToList().FindIndex(g => g == audioFile.Genre);
 
-            var changedID3v1Tag = mapper.Map<ID3v1Tag>(audioFile);
-            var id3v1Tag = new ID3v1Tag(filePath)
-            {
-                Title = changedID3v1Tag.Title,
-                Album = changedID3v1Tag.Album,
-                Artist = changedID3v1Tag.Artist,
-                TrackNumber = changedID3v1Tag.TrackNumber,
-                GenreIndex = genreToSave,
-                Comment = changedID3v1Tag.Comment,
-                Year = changedID3v1Tag.Year,
-                TagVersion = tagVersionToSave
-            };
+            var id3v1Tag = mapper.Map(audioFile, new ID3v1Tag(filePath));
+            id3v1Tag.GenreIndex = genreToSave;
             id3v1Tag.Save(filePath);
         }
 

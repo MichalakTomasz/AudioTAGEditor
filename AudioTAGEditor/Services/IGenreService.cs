@@ -4,6 +4,6 @@ namespace AudioTAGEditor.Services
 {
     public interface IGenreService
     {
-        IDictionary<int, string> GetID3v1Genres();
+        IReadOnlyList<string> GetID3v1Genres();
     }
 }
