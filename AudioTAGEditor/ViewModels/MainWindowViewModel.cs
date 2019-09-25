@@ -30,7 +30,8 @@ namespace AudioTAGEditor.ViewModels
             IEventAggregator eventAggregator,
             IAudioFileConverter audioFileConverter,
             IFileService fileService,
-            IHistoryService historyService)
+            IHistoryService historyService,
+            IAudioFileComparerService audioFileComparerService)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
             ID3v1Service = id3v1Service;
@@ -39,6 +40,7 @@ namespace AudioTAGEditor.ViewModels
             AudioFileConverter = audioFileConverter;
             FileService = fileService;
             HistoryService = historyService;
+            AudioFileComparerService = audioFileComparerService;
             eventAggregator.GetEvent<AudioFileMessageSentEvent>()
                 .Subscribe(ExecuteMessage);
         }
@@ -91,7 +93,7 @@ namespace AudioTAGEditor.ViewModels
         #region DataGridEditBehavior
 
         public IHistoryService HistoryService { get; }
-
+        public IAudioFileComparerService AudioFileComparerService { get; }
         public IAudioFileConverter AudioFileConverter { get; }
 
         public IFileService FileService { get; }

@@ -41,16 +41,18 @@
                 GroupName="ID3Group"
                 IsChecked="{Binding IsCheckedID3v1, Mode=TwoWay}"
                 Command="{Binding CheckID3v1Command, Mode=OneWay}">
-                <Image Source="{StaticResource id3v1-logo}"
-                       Width="32" />
+                <Image 
+                    Source="{StaticResource id3v1-logo}"
+                    Width="32" />
             </RadioButton>
             
             <RadioButton
                 GroupName="ID3Group"
                 IsChecked="{Binding IsCheckedID3v2, Mode=TwoWay}"
                 Command="{Binding CheckID3v2Command, Mode=OneWay}">
-                <Image Source="{StaticResource id3v2-logo}"
-                       Width="32" />
+                <Image 
+                    Source="{StaticResource id3v2-logo}"
+                    Width="32" />
             </RadioButton>
         </ToolBar>
         <Grid Grid.Row="2">
@@ -58,12 +60,13 @@
                 <ColumnDefinition Width=".3*" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <tx:ExplorerTreeView x:Name="tree"
-                                 Grid.Column="0"
-                                 Command="{Binding ExpandNodeCommand, Mode=OneWay}"
-                                 FilesFullPath="{Binding FilePathCollection, Mode=OneWayToSource}"
-                                 FilesFilter="{Binding FilesFilter, Mode=OneTime}"
-                                 SelectedPath="{Binding SelectedPath, Mode=OneWayToSource}" />
+            <tx:ExplorerTreeView 
+                x:Name="tree"
+                Grid.Column="0"
+                Command="{Binding ExpandNodeCommand, Mode=OneWay}"
+                FilesFullPath="{Binding FilePathCollection, Mode=OneWayToSource}"
+                FilesFilter="{Binding FilesFilter, Mode=OneTime}"
+                SelectedPath="{Binding SelectedPath, Mode=OneWayToSource}" />
             <DataGrid
                 Grid.Column="1"
                 AutoGenerateColumns="False"
@@ -80,7 +83,8 @@
                         ID3v1Service="{Binding ID3v1Service, Mode=OneTime}"
                         ID3v2Service="{Binding ID3v2Service, Mode=OneTime}"
                         SelectedPath="{Binding SelectedPath, Mode=OneWay}"
-                        ExplorerTreeView="{Binding ElementName=tree}"/>
+                        AudioFileComparerService="{Binding AudioFileComparerService, Mode=OneTime}"
+                        ExplorerTreeView="{Binding ElementName=tree, Mode=OneTime}"/>
                 </i:Interaction.Behaviors>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
@@ -107,7 +111,8 @@
                         Width="260" />
                     <DataGridTextColumn 
                         Header="Title"
-                        Binding="{Binding Title}"
+                        Binding="{Binding Title,
+                        UpdateSourceTrigger=LostFocus}"
                         Width="220" />
                     <DataGridTextColumn 
                         Header="Album"
@@ -163,9 +168,11 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        <StatusBar Grid.Row="3"
-                   Height="20">
-            <TextBlock Text="{Binding SelectedPath, ElementName=tree, Mode=OneWay}" />
+        <StatusBar 
+            Grid.Row="3"
+            Height="20">
+            <TextBlock 
+                Text="{Binding SelectedPath, ElementName=tree, Mode=OneWay}" />
         </StatusBar>
     </Grid>
 </RibbonWindow>

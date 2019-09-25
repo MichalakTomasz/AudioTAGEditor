@@ -1,7 +1,6 @@
 ﻿using AudioTAGEditor.Models;
 using AudioTAGEditor.Services;
 using AudioTAGEditor.ViewModels;
-using ExplorerTreeView;
 using System;
 using System.Linq;
 using System.Windows;
@@ -12,6 +11,8 @@ namespace AudioTAGEditor.Behaviors
 {
     public class DataGridEditBehavior : Behavior<DataGrid>
     {
+        #region Dependency Properties
+
         public IHistoryService HistoryService
         {
             get { return (IHistoryService)GetValue(HistoryServiceProperty); }
@@ -20,9 +21,9 @@ namespace AudioTAGEditor.Behaviors
 
         public static readonly DependencyProperty HistoryServiceProperty =
             DependencyProperty.Register(
-                "HistoryService", 
-                typeof(IHistoryService), 
-                typeof(DataGridEditBehavior), 
+                "HistoryService",
+                typeof(IHistoryService),
+                typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
         public IAudioFileConverter AudioFileConverter
@@ -33,9 +34,9 @@ namespace AudioTAGEditor.Behaviors
 
         public static readonly DependencyProperty AudioFileConverterProperty =
             DependencyProperty.Register(
-                "AudioFileConverter", 
-                typeof(IAudioFileConverter), 
-                typeof(DataGridEditBehavior), 
+                "AudioFileConverter",
+                typeof(IAudioFileConverter),
+                typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
         public IFileService FileService
@@ -46,9 +47,9 @@ namespace AudioTAGEditor.Behaviors
 
         public static readonly DependencyProperty FileServiceProperty =
             DependencyProperty.Register(
-                "FileService", 
-                typeof(IFileService), 
-                typeof(DataGridEditBehavior), 
+                "FileService",
+                typeof(IFileService),
+                typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
         public IID3Service ID3v1Service
@@ -59,9 +60,9 @@ namespace AudioTAGEditor.Behaviors
 
         public static readonly DependencyProperty ID3v1ServiceProperty =
             DependencyProperty.Register(
-                "ID3v1Service", 
-                typeof(IID3Service), 
-                typeof(DataGridEditBehavior), 
+                "ID3v1Service",
+                typeof(IID3Service),
+                typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
         public IID3Service ID3v2Service
@@ -72,9 +73,9 @@ namespace AudioTAGEditor.Behaviors
 
         public static readonly DependencyProperty ID3v2ServiceProperty =
             DependencyProperty.Register(
-                "ID3v2Service", 
-                typeof(IID3Service), 
-                typeof(DataGridEditBehavior), 
+                "ID3v2Service",
+                typeof(IID3Service),
+                typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
         public string SelectedPath
@@ -85,9 +86,9 @@ namespace AudioTAGEditor.Behaviors
 
         public static readonly DependencyProperty SelectedPathProperty =
             DependencyProperty.Register(
-                "SelectedPath", 
-                typeof(string), 
-                typeof(DataGridEditBehavior), 
+                "SelectedPath",
+                typeof(string),
+                typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
         public ExplorerTreeView.ExplorerTreeView ExplorerTreeView
@@ -98,19 +99,33 @@ namespace AudioTAGEditor.Behaviors
 
         public static readonly DependencyProperty ExplorerTreeViewProperty =
             DependencyProperty.Register(
-                "ExplorerTreeView", 
-                typeof(ExplorerTreeView.ExplorerTreeView), 
-                typeof(DataGridEditBehavior), 
+                "ExplorerTreeView",
+                typeof(ExplorerTreeView.ExplorerTreeView),
+                typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
-        private Guid tempID;
+        public IAudioFileComparerService AudioFileComparerService
+        {
+            get { return (IAudioFileComparerService)GetValue(AudioFileComparerServiceProperty); }
+            set { SetValue(AudioFileComparerServiceProperty, value); }
+        }
+
+        public static readonly DependencyProperty AudioFileComparerServiceProperty =
+            DependencyProperty.Register(
+                "AudioFileComparerService",
+                typeof(IAudioFileComparerService),
+                typeof(DataGridEditBehavior),
+                new PropertyMetadata(null));
+
+        #endregion// Dependency Properties
+
+        #region Methods
 
         protected override void OnAttached()
         {
             base.OnAttached();
 
             var dataGrid = AssociatedObject;
-
             if (dataGrid != null)
             {
                 dataGrid.BeginningEdit += DataGrid_BeginningEdit;
@@ -125,7 +140,6 @@ namespace AudioTAGEditor.Behaviors
 
             var audioFileViewModel = e.Row.DataContext as AudioFileViewModel;
             var audioFile = AudioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
-
 
             switch (e.Column.Header)
             {
@@ -153,39 +167,58 @@ namespace AudioTAGEditor.Behaviors
             if (e.EditAction == DataGridEditAction.Commit)
             {
                 var audioFileViewModel = e.EditingElement.DataContext as AudioFileViewModel;
-                var audioFile = AudioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
                 if (!audioFileViewModel.HasErrors)
                 {
-                    var fullAudioFilePath = $"{SelectedPath}{audioFileViewModel.Filename}";
-                    switch (e.Column.Header)
+                    var audioFile = AudioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
+                    var audioFileFullPath = $"{SelectedPath}{audioFileViewModel.Filename}";
+                    var historyObject = HistoryService.Peek();
+                    if (tempID == historyObject.ID)
                     {
-                        case "File Name":
-                            var historyObject = HistoryService.Peek();
-                            if (tempID == historyObject.ID)
-                            {
+                        switch (e.Column.Header)
+                        {
+                            case "File Name":
+                                var oldFilename = historyObject.AudioFileChanges?.LastOrDefault()?.Old?.Filename;
+                                if (audioFile.Filename == oldFilename)
+                                {
+                                    HistoryService.Pop();
+                                    break;
+                                }
                                 var oldAaudioFile = historyObject.AudioFileChanges.LastOrDefault().Old;
                                 var oldFilePath = $"{historyObject.Path}{oldAaudioFile.Filename}";
                                 FileService.ChangeFilename(oldFilePath, audioFileViewModel.Filename);
                                 HistoryService.PushChange(tempID, audioFile);
                                 ExplorerTreeView.Refresh();
-                            }
-
-                            break;
-                        default:
-                            switch (audioFileViewModel.TagType)
-                            {
-                                case TagType.ID3V1:
-
-                                    ID3v1Service.UpdateTag(audioFile, fullAudioFilePath, TagVersion.ID3V11);
-                                    break;
-                                case TagType.ID3V2:
-                                    ID3v2Service.UpdateTag(audioFile, fullAudioFilePath, TagVersion.ID3V20);
-                                    break;
-                            }
-                            break;
+                                break;
+                            default:
+                                var oldAudioFile = historyObject.AudioFileChanges?.LastOrDefault()?.Old;
+                                if (AudioFileComparerService.AreTheSame(oldAudioFile, audioFile))
+                                {
+                                    HistoryService.Pop();
+                                    return;
+                                }
+                                switch (audioFileViewModel.TagType)
+                                {
+                                    case TagType.ID3V1:
+                                        ID3v1Service.UpdateTag(audioFile, audioFileFullPath, TagVersion.ID3V11);
+                                        break;
+                                    case TagType.ID3V2:
+                                        ID3v2Service.UpdateTag(audioFile, audioFileFullPath, TagVersion.ID3V20);
+                                        break;
+                                }
+                                break;
+                        }
                     }
+                    else throw new Exception("Wrong history object");
                 }
             }
         }
+
+        #endregion// Methods
+
+        #region Private Fields
+
+        private Guid tempID;
+
+        #endregion// Private Fields
     }
 }

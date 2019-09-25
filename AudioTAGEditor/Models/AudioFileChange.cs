@@ -1,5 +1,4 @@
-﻿using System;
-namespace AudioTAGEditor.Models
+﻿namespace AudioTAGEditor.Models
 {
     public class AudioFileChange
     {

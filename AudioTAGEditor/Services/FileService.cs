@@ -9,14 +9,15 @@ namespace AudioTAGEditor.Services
         {
             try
             {
-                var filePath = Path.GetDirectoryName(path);
                 var filename = Path.GetFileNameWithoutExtension(path);
+                if (filename == newFilename) return;
+                var filePath = Path.GetDirectoryName(path);
                 var newFilePath = $"{filePath}{Path.DirectorySeparatorChar}{newFilename}";
                 File.Move(path, newFilePath);
             }
             catch (Exception e)
             {
-
+                throw;
             }
         }
     }
