@@ -20,8 +20,7 @@ namespace AudioTAGEditor.Services
             this.genreService = genreService;
             this.mapper = mapper;
         }
-            
-
+        
         public bool HasTag(string filePath)
             => ID3v2Tag.DoesTagExist(filePath);
 
@@ -29,6 +28,7 @@ namespace AudioTAGEditor.Services
         {
             var hasTag = ID3v2Tag.DoesTagExist(filePath);
             var filename = Path.GetFileName(filePath);
+
             if (hasTag)
             {
                 var tag = new ID3v2Tag(filePath);

@@ -50,21 +50,12 @@ namespace AudioTAGEditor.Services
             if (hasTag)
             { 
                 var tag = new ID3v1Tag(filePath);
-
-                var audioFile = new AudioFile
-                {
-                    HasTag = true,
-                    Filename = filename,
-                    Title = tag.Title,
-                    Artist = tag.Artist,
-                    Album = tag.Album,
-                    TrackNumber = tag.TrackNumber.ToString(),
-                    Genre = genres[tag.GenreIndex],
-                    Comment = tag.Comment,
-                    Year = tag.Year,
-                    TagType = TagType.ID3V1,
-                    TagVersion = GetTagVersion(filePath)
-                };
+                var audioFile = mapper.Map<AudioFile>(tag);
+                audioFile.HasTag = true;
+                audioFile.Filename = filename;
+                audioFile.TagType = TagType.ID3V1;
+                audioFile.TagVersion = GetTagVersion(filePath);
+                audioFile.Genre = genres[tag.GenreIndex];
 
                 return audioFile;
             }
@@ -91,10 +82,10 @@ namespace AudioTAGEditor.Services
                 ID3v1TagVersion.ID3v10 : ID3v1TagVersion.ID3v11;
 
             var genres = genreService.GetID3v1Genres();
-            var genreToSave = genres.ToList().FindIndex(g => g == audioFile.Genre);
+            var genreIndex = genres.ToList().FindIndex(g => g == audioFile.Genre);
 
             var id3v1Tag = mapper.Map(audioFile, new ID3v1Tag(filePath));
-            id3v1Tag.GenreIndex = genreToSave;
+            id3v1Tag.GenreIndex = genreIndex;
             id3v1Tag.Save(filePath);
         }
 
