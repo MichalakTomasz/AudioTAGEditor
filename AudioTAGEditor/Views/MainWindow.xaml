@@ -116,15 +116,18 @@
                         Width="220" />
                     <DataGridTextColumn 
                         Header="Album"
-                        Binding="{Binding Album}"
+                        Binding="{Binding Album,
+                        UpdateSourceTrigger=LostFocus}"
                         Width="180" />
                     <DataGridTextColumn 
                         Header="Artist"
-                        Binding="{Binding Artist}"
+                        Binding="{Binding Artist, 
+                        UpdateSourceTrigger=LostFocus}"
                         Width="100" />
                     <DataGridTextColumn 
                         Header="No."
-                        Binding="{Binding TrackNumber}" />
+                        Binding="{Binding TrackNumber,
+                        UpdateSourceTrigger=LostFocus}" />
                     <DataGridComboBoxColumn 
                         Header="Genre"
                         SelectedItemBinding="{
@@ -159,11 +162,13 @@
                     </DataGridComboBoxColumn>
                     <DataGridTextColumn 
                         Header="Year"
-                        Binding="{Binding Year}"
+                        Binding="{Binding Year,
+                        UpdateSourceTrigger=LostFocus}"
                         Width="40" />
                     <DataGridTextColumn 
                         Header="Tag version"
-                        Binding="{Binding TagVersion}"
+                        Binding="{Binding TagVersion,
+                        UpdateSourceTrigger=LostFocus}"
                         Width="80" />
                 </DataGrid.Columns>
             </DataGrid>
