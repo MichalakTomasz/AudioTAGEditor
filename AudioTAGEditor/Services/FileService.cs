@@ -5,7 +5,7 @@ namespace AudioTAGEditor.Services
 {
     public class FileService : IFileService
     {
-        public void ChangeFilename(string path, string newFilename)
+        public void Rename(string path, string newFilename)
         {
             try
             {

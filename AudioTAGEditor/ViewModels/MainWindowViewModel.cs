@@ -5,10 +5,8 @@ using EventAggregator;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Input;
 using Unity;
 
@@ -93,7 +91,9 @@ namespace AudioTAGEditor.ViewModels
         #region DataGridEditBehavior
 
         public IHistoryService HistoryService { get; }
+
         public IAudioFileComparerService AudioFileComparerService { get; }
+
         public IAudioFileConverter AudioFileConverter { get; }
 
         public IFileService FileService { get; }
@@ -239,8 +239,7 @@ namespace AudioTAGEditor.ViewModels
 
         private void CheckID3v1CommandExecute()
             => RefreshMainGrid(TagType.ID3V1);
-
-
+        
         private void CheckID3v2CommandExecute()
             => RefreshMainGrid(TagType.ID3V2);
 

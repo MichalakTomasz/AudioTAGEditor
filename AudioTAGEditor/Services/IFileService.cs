@@ -2,6 +2,6 @@
 {
     public interface IFileService
     {
-        void ChangeFilename(string path, string newFilename);
+        void Rename(string path, string newFilename);
     }
 }

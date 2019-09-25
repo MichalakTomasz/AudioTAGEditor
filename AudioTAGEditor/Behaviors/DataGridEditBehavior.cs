@@ -185,7 +185,7 @@ namespace AudioTAGEditor.Behaviors
                                 }
                                 var oldAaudioFile = historyObject.AudioFileChanges.LastOrDefault().Old;
                                 var oldFilePath = $"{historyObject.Path}{oldAaudioFile.Filename}";
-                                FileService.ChangeFilename(oldFilePath, audioFileViewModel.Filename);
+                                FileService.Rename(oldFilePath, audioFileViewModel.Filename);
                                 HistoryService.PushChange(tempID, audioFile);
                                 ExplorerTreeView.Refresh();
                                 break;

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace AudioTAGEditor.Services
 {
@@ -204,6 +203,4 @@ namespace AudioTAGEditor.Services
             "Psybient"
         };
     }
-
-
 }

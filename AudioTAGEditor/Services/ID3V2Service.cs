@@ -28,25 +28,17 @@ namespace AudioTAGEditor.Services
         {
             var hasTag = ID3v2Tag.DoesTagExist(filePath);
             var filename = Path.GetFileName(filePath);
+            var genres = genreService.GetID3v1Genres();
 
             if (hasTag)
             {
                 var tag = new ID3v2Tag(filePath);
-                return new AudioFile
-                {
-                    HasTag = true,
-                    Filename = filename,
-                    Title = tag.Title,
-                    Artist = tag.Artist,
-                    Album = tag.Album,
-                    TrackNumber = string.IsNullOrWhiteSpace(tag.TrackNumber) ? 
-                        null : GetDigitsFromTrackNumber(tag.TrackNumber),
-                    Genre = tag.Genre,
-                    Comment = tag.CommentsList?.Count > 0 ? 
-                        tag.CommentsList[0].Value : null,
-                    Year = tag.Year,
-                    TagType = TagType.ID3V2
-                };
+                var audioFile = mapper.Map<AudioFile>(tag);
+                audioFile.HasTag = true;
+                audioFile.Filename = filename;
+                audioFile.TagType = TagType.ID3V2;
+
+                return audioFile;
             }
             else
             {
@@ -77,7 +69,15 @@ namespace AudioTAGEditor.Services
             string filePath, 
             TagVersion tagVersion)
         {
-            throw new System.NotImplementedException();
+            var id3v2Tag = mapper.Map(audioFile, new ID3v2Tag(filePath));
+            try
+            {
+                id3v2Tag.Save(filePath);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Saving ID3v2 error");
+            }
         }
 
         public void RemoveTag(string filePath)
@@ -88,7 +88,7 @@ namespace AudioTAGEditor.Services
             }
             catch (Exception e)
             {
-
+                throw new Exception("Removing ID3v2 error");
             }
         }
     }  

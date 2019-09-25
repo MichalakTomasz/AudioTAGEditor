@@ -86,7 +86,15 @@ namespace AudioTAGEditor.Services
 
             var id3v1Tag = mapper.Map(audioFile, new ID3v1Tag(filePath));
             id3v1Tag.GenreIndex = genreIndex;
-            id3v1Tag.Save(filePath);
+            try
+            {
+                id3v1Tag.Save(filePath);
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception("Saving ID3v2 error");
+            }
         }
 
         public void RemoveTag(string filePath)
@@ -97,7 +105,7 @@ namespace AudioTAGEditor.Services
             }
             catch (Exception e)
             {
-
+                throw new Exception("Removing ID3v1 error");
             }
         }
     }
