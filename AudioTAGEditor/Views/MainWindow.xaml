@@ -61,13 +61,14 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <tx:ExplorerTreeView 
-                x:Name="tree"
+                x:Name="ExplorerTree"
                 Grid.Column="0"
                 Command="{Binding ExpandNodeCommand, Mode=OneWay}"
                 FilesFullPath="{Binding FilePathCollection, Mode=OneWayToSource}"
                 FilesFilter="{Binding FilesFilter, Mode=OneTime}"
                 SelectedPath="{Binding SelectedPath, Mode=OneWayToSource}" />
             <DataGrid
+                x:Name="MainGrid"
                 Grid.Column="1"
                 AutoGenerateColumns="False"
                 IsEnabled="{Binding IsEnabledDataGrid}"
@@ -84,7 +85,7 @@
                         ID3v2Service="{Binding ID3v2Service, Mode=OneTime}"
                         SelectedPath="{Binding SelectedPath, Mode=OneWay}"
                         AudioFileComparerService="{Binding AudioFileComparerService, Mode=OneTime}"
-                        ExplorerTreeView="{Binding ElementName=tree, Mode=OneTime}"/>
+                        ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneTime}"/>
                 </i:Interaction.Behaviors>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
@@ -169,13 +170,24 @@
                         UpdateSourceTrigger=LostFocus}"
                         Width="80" />
                 </DataGrid.Columns>
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <i:Interaction.Behaviors>
+                            <b:DataGridContextMenuBehavior 
+                                DataGrid="{Binding ElementName=MainGrid, Mode=OneWay}"
+                                DG="{Binding ElementName=MainGrid}"/>
+                        </i:Interaction.Behaviors>
+                        <MenuItem Header="Activate Tag" />
+                        <MenuItem Header="Deactivate Tag" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
             </DataGrid>
         </Grid>
         <StatusBar 
             Grid.Row="3"
             Height="20">
             <TextBlock 
-                Text="{Binding SelectedPath, ElementName=tree, Mode=OneWay}" />
+                Text="{Binding SelectedPath, ElementName=ExplorerTree, Mode=OneWay}" />
         </StatusBar>
     </Grid>
 </RibbonWindow>
