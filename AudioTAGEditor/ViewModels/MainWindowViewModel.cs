@@ -7,6 +7,7 @@ using Prism.Events;
 using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Unity;
 
@@ -46,6 +47,13 @@ namespace AudioTAGEditor.ViewModels
         #endregion//Constructor
 
         #region Properties
+
+        private DataGrid dataGrid;
+        public DataGrid DataGrid
+        {
+            get { return dataGrid; }
+            set { SetProperty(ref dataGrid, value); }
+        }
 
         #region ToolBar
 

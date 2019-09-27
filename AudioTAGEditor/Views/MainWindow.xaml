@@ -68,8 +68,8 @@
                 FilesFilter="{Binding FilesFilter, Mode=OneTime}"
                 SelectedPath="{Binding SelectedPath, Mode=OneWayToSource}" />
             <DataGrid
-                x:Name="MainGrid"
                 Grid.Column="1"
+                x:Name="MainDataGrid"
                 AutoGenerateColumns="False"
                 IsEnabled="{Binding IsEnabledDataGrid}"
                 ItemsSource="{Binding AudioFiles, Mode=TwoWay}"
@@ -86,6 +86,7 @@
                         SelectedPath="{Binding SelectedPath, Mode=OneWay}"
                         AudioFileComparerService="{Binding AudioFileComparerService, Mode=OneTime}"
                         ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneTime}"/>
+                    <b:DataGridContextMenuBehavior/>
                 </i:Interaction.Behaviors>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
@@ -172,11 +173,6 @@
                 </DataGrid.Columns>
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <i:Interaction.Behaviors>
-                            <b:DataGridContextMenuBehavior 
-                                DataGrid="{Binding ElementName=MainGrid, Mode=OneWay}"
-                                DG="{Binding ElementName=MainGrid}"/>
-                        </i:Interaction.Behaviors>
                         <MenuItem Header="Activate Tag" />
                         <MenuItem Header="Deactivate Tag" />
                     </ContextMenu>

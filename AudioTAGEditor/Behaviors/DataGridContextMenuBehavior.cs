@@ -1,52 +1,79 @@
-﻿using System.Windows;
+﻿using AudioTAGEditor.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
 using System.Windows.Interactivity;
+using System.Linq;
 
 namespace AudioTAGEditor.Behaviors
 {
     class DataGridContextMenuBehavior :
-        Behavior<ContextMenu>
+        Behavior<DataGrid>
     {
-        public DataGrid DataGrid
-        {
-            get { return (DataGrid)GetValue(DataGridProperty); }
-            set { SetValue(DataGridProperty, value); }
-        }
-
-        public static readonly DependencyProperty DataGridProperty =
-            DependencyProperty.Register(
-                "DataGrid",
-                typeof(DataGrid),
-                typeof(DataGridContextMenuBehavior), 
-                new PropertyMetadata(null));
-
-        public DataGrid DG { get; set; }
-
+        private MenuItem activateTagMenuItem;
+        private MenuItem deactivateTagMenuItem;
         protected override void OnAttached()
         {
             base.OnAttached();
 
-            var behavior = AssociatedObject;
-            behavior.Loaded += Behavior_Loaded;
-            if (DG != null)
-                DG.Loaded += DG_Loaded;
-        }
-
-        private void DG_Loaded(object sender, RoutedEventArgs e)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        private void Behavior_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (DataGrid != null)
-                DataGrid.ContextMenuOpening += DataGrid_ContextMenuOpening;
+            var dataGrid = AssociatedObject;
+            if (dataGrid != null)
+            {
+                dataGrid.ContextMenuOpening += DataGrid_ContextMenuOpening;
+                
+            }  
         }
 
         private void DataGrid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var s = e.Source;
+            var dataGrid = sender as DataGrid;
+            var clickedRow = e.OriginalSource as FrameworkElement;
+            if (clickedRow != null && dataGrid != null)
+            {
+                var contextMenuItems = dataGrid.ContextMenu?.Items;
+                var contextMenuItemsEnumerable = contextMenuItems?.Cast<MenuItem>();
+
+                if (activateTagMenuItem == null)
+                {
+                    activateTagMenuItem =
+                        contextMenuItemsEnumerable?
+                        .FirstOrDefault(c => c.Header.ToString() == "Activate Tag");
+
+                    activateTagMenuItem.Click += ActivateTagMenuItem_Click;
+                }
+                    
+                if (deactivateTagMenuItem == null)
+                {
+                    deactivateTagMenuItem =
+                        contextMenuItemsEnumerable?
+                        .FirstOrDefault(c => c.Header.ToString() == "Deactivate Tag");
+                    deactivateTagMenuItem.Click += DeactivateTagMenuItem_Click;
+                }
+                    
+                var audioFileViewModel = clickedRow.DataContext as AudioFileViewModel;
+                if (audioFileViewModel != null)
+                {
+                    if (audioFileViewModel.HasTag)
+                    {
+                        activateTagMenuItem.IsEnabled = false;
+                        deactivateTagMenuItem.IsEnabled = true;
+                    }
+                    else
+                    {
+                        activateTagMenuItem.IsEnabled = true;
+                        deactivateTagMenuItem.IsEnabled = false;
+                    }
+                }
+            }
         }
+
+        private void ActivateTagMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void DeactivateTagMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }  
     }
 }
