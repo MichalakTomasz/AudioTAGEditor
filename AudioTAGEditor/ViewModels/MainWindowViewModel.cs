@@ -47,14 +47,7 @@ namespace AudioTAGEditor.ViewModels
         #endregion//Constructor
 
         #region Properties
-
-        private DataGrid dataGrid;
-        public DataGrid DataGrid
-        {
-            get { return dataGrid; }
-            set { SetProperty(ref dataGrid, value); }
-        }
-
+        
         #region ToolBar
 
         private bool isCheckedID3v1;
@@ -96,7 +89,7 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref selectedPath, value); }
         }
 
-        #region DataGridEditBehavior
+        #region DataGridBehaviors
 
         public IHistoryService HistoryService { get; }
 
@@ -110,9 +103,9 @@ namespace AudioTAGEditor.ViewModels
 
         public IID3Service ID3v2Service { get; }
 
-        #endregion//DatagridEditBehavior
+        #endregion // DatagridEditBehaviors
 
-        #endregion//TreeViewExplorer
+        #endregion // TreeViewExplorer
 
         #region DataGridFiles
 

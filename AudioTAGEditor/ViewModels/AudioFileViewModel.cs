@@ -3,7 +3,6 @@ using EventAggregator;
 using LibValidation;
 using Prism.Events;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 
 namespace AudioTAGEditor.ViewModels
 {
@@ -12,13 +11,9 @@ namespace AudioTAGEditor.ViewModels
         #region Constructor
 
         public AudioFileViewModel(IEventAggregator eventAggregator)
-        {
-            this.eventAggregator = eventAggregator;
-            invalidChars = new string(Path.GetInvalidFileNameChars());
-        }
+            => this.eventAggregator = eventAggregator;
             
-        private readonly string invalidChars;
-        #endregion//Constructor
+        #endregion // Constructor
 
         #region Properties
 
@@ -107,20 +102,18 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private TagVersion tagVersion;
-        
-
         public TagVersion TagVersion
         {
             get { return tagVersion; }
             set { SetProperty(ref tagVersion, value); }
         }
 
-        #endregion//Properties
+        #endregion // Properties
 
         #region Fields
 
         private readonly IEventAggregator eventAggregator;
 
-        #endregion//Fields
+        #endregion // Fields
     }
 }

@@ -50,7 +50,7 @@ namespace AudioTAGEditor.Services
             }
         }
 
-        string GetDigitsFromTrackNumber(string trackNumber)
+        private string GetDigitsFromTrackNumber(string trackNumber)
         {
             var result = trackNumber
                 .Trim()
