@@ -117,6 +117,32 @@ namespace AudioTAGEditor.Behaviors
                 typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
+        public bool IsCheckedID3v1
+        {
+            get { return (bool)GetValue(IsCheckedID3v1Property); }
+            set { SetValue(IsCheckedID3v1Property, value); }
+        }
+
+        public static readonly DependencyProperty IsCheckedID3v1Property =
+            DependencyProperty.Register(
+                "IsCheckedID3v1",
+                typeof(bool),
+                typeof(DataGridEditBehavior),
+                new PropertyMetadata(null));
+
+        public bool IsCheckedID3v2
+        {
+            get { return (bool)GetValue(IsCheckedID3v2Property); }
+            set { SetValue(IsCheckedID3v2Property, value); }
+        }
+
+        public static readonly DependencyProperty IsCheckedID3v2Property =
+            DependencyProperty.Register(
+                "IsCheckedID3v2",
+                typeof(bool),
+                typeof(DataGridEditBehavior),
+                new PropertyMetadata(null));
+
         #endregion// Dependency Properties
 
         #region Methods
@@ -148,16 +174,19 @@ namespace AudioTAGEditor.Behaviors
                     break;
                 default:
                     var editActionType = ChangeActionType.None;
-                    switch (audioFile.TagType)
-                    {
-                        case TagType.ID3V1:
-                            editActionType = ChangeActionType.ID3v1;
-                            break;
-                        case TagType.ID3V2:
-                            editActionType = ChangeActionType.ID3v2;
-                            break;
-                    }
-                    tempID = HistoryService.PushOldValue(audioFile, editActionType, SelectedPath);
+
+                    if (IsCheckedID3v1)
+                        editActionType = ChangeActionType.ID3v1;
+                    if (IsCheckedID3v2)
+                        editActionType = ChangeActionType.ID3v2;
+
+                    if (editActionType == ChangeActionType.None)
+                        e.Cancel = true;
+                    else
+                        tempID = HistoryService.PushOldValue(
+                            audioFile, 
+                            editActionType, 
+                            SelectedPath);
                     break;
             }
         }
@@ -183,6 +212,7 @@ namespace AudioTAGEditor.Behaviors
                                     HistoryService.Pop();
                                     break;
                                 }
+
                                 var oldAaudioFile = historyObject.AudioFileChanges.LastOrDefault().Old;
                                 var oldFilePath = $"{historyObject.Path}{oldAaudioFile.Filename}";
                                 FileService.Rename(oldFilePath, audioFileViewModel.Filename);
@@ -196,15 +226,12 @@ namespace AudioTAGEditor.Behaviors
                                     HistoryService.Pop();
                                     return;
                                 }
-                                switch (audioFileViewModel.TagType)
-                                {
-                                    case TagType.ID3V1:
-                                        ID3v1Service.UpdateTag(audioFile, audioFileFullPath, TagVersion.ID3V11);
-                                        break;
-                                    case TagType.ID3V2:
-                                        ID3v2Service.UpdateTag(audioFile, audioFileFullPath, TagVersion.ID3V20);
-                                        break;
-                                }
+
+                                if (IsCheckedID3v1)
+                                    ID3v1Service.UpdateTag(audioFile, audioFileFullPath, TagVersion.ID3V11);
+                                if (IsCheckedID3v2)
+                                    ID3v2Service.UpdateTag(audioFile, audioFileFullPath, TagVersion.ID3V20);
+                                HistoryService.PushChange(tempID, audioFile);
                                 break;
                         }
                     }

@@ -6,15 +6,14 @@ using System.Linq;
 using AudioTAGEditor.Services;
 using System;
 using AudioTAGEditor.Models;
-using ExplorerTreeView;
 
 namespace AudioTAGEditor.Behaviors
 {
-    class DataGridContextMenuBehavior :
+    class DataGridContextMenuDeactivateTagBehavior :
         Behavior<DataGrid>
     {
         #region Dependency Properties
-
+        
         public string SelectedPath
         {
             get { return (string)GetValue(SelectedPathProperty); }
@@ -25,7 +24,7 @@ namespace AudioTAGEditor.Behaviors
             DependencyProperty.Register(
                 "SelectedPath", 
                 typeof(string), 
-                typeof(DataGridContextMenuBehavior), 
+                typeof(DataGridContextMenuDeactivateTagBehavior), 
                 new PropertyMetadata(null));
 
         public ExplorerTreeView.ExplorerTreeView ExplorerTreeView
@@ -38,7 +37,7 @@ namespace AudioTAGEditor.Behaviors
             DependencyProperty.Register(
                 "ExplorerTreeView", 
                 typeof(ExplorerTreeView.ExplorerTreeView), 
-                typeof(DataGridContextMenuBehavior), 
+                typeof(DataGridContextMenuDeactivateTagBehavior), 
                 new PropertyMetadata(null));
 
         public IID3Service ID3v1Service
@@ -51,7 +50,7 @@ namespace AudioTAGEditor.Behaviors
             DependencyProperty.Register(
                 "ID3v1Service", 
                 typeof(IID3Service), 
-                typeof(DataGridContextMenuBehavior), 
+                typeof(DataGridContextMenuDeactivateTagBehavior), 
                 new PropertyMetadata(null));
 
         public IID3Service ID3v2Service
@@ -64,7 +63,7 @@ namespace AudioTAGEditor.Behaviors
             DependencyProperty.Register(
                 "ID3v2Service", 
                 typeof(IID3Service), 
-                typeof(DataGridContextMenuBehavior), 
+                typeof(DataGridContextMenuDeactivateTagBehavior), 
                 new PropertyMetadata(null));
 
         #endregion // Dependency Properties
@@ -89,23 +88,23 @@ namespace AudioTAGEditor.Behaviors
                 var contextMenuItems = dataGrid.ContextMenu?.Items;
                 var contextMenuItemsEnumerable = contextMenuItems?.Cast<MenuItem>();
                 
-                if (deactivateTagMenuItem == null)
+                if (menuItemDeactivateTag == null)
                 {
-                    deactivateTagMenuItem =
+                    menuItemDeactivateTag =
                         contextMenuItemsEnumerable?
                         .FirstOrDefault(c => c.Header.ToString() == "Deactivate Tag");
 
-                    if (deactivateTagMenuItem != null)
-                        deactivateTagMenuItem.Click += DeactivateTagMenuItem_Click;
+                    if (menuItemDeactivateTag != null)
+                        menuItemDeactivateTag.Click += MenuItemDeactivateTag_Click;
                 }
 
                 audioFileViewModel = clickedRow.DataContext as AudioFileViewModel;
                 if (audioFileViewModel != null)
-                    deactivateTagMenuItem.IsEnabled = audioFileViewModel.HasTag;
+                    menuItemDeactivateTag.IsEnabled = audioFileViewModel.HasTag;
             }
         }
 
-        private void DeactivateTagMenuItem_Click(object sender, RoutedEventArgs e)
+        private void MenuItemDeactivateTag_Click(object sender, RoutedEventArgs e)
         {
             if (audioFileViewModel != null)
             {
@@ -128,7 +127,7 @@ namespace AudioTAGEditor.Behaviors
 
         #region Field
 
-        private MenuItem deactivateTagMenuItem;
+        private MenuItem menuItemDeactivateTag;
         private AudioFileViewModel audioFileViewModel;
 
         #endregion // Fielda

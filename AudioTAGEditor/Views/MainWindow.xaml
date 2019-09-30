@@ -82,13 +82,15 @@
                         FileService="{Binding FileService, Mode=OneTime}"
                         ID3v1Service="{Binding ID3v1Service, Mode=OneTime}"
                         ID3v2Service="{Binding ID3v2Service, Mode=OneTime}"
-                        SelectedPath="{Binding SelectedPath, Mode=OneWay}"
+                        SelectedPath="{Binding SelectedPath, Mode=OneWay}" 
                         AudioFileComparerService="{Binding AudioFileComparerService, Mode=OneTime}"
-                        ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneTime}"/>
-                    <b:DataGridContextMenuBehavior
+                        ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneTime}"
+                        IsCheckedID3v1="{Binding IsCheckedID3v1, Mode=OneWay}"
+                        IsCheckedID3v2="{Binding IsCheckedID3v2, Mode=OneWay}"/>
+                    <b:DataGridContextMenuDeactivateTagBehavior
                         SelectedPath="{Binding SelectedPath, Mode=OneWay}"
                         ID3v1Service="{Binding ID3v1Service, Mode=OneTime}"
-                        ID3v2Service="{Binding ID3v2Service, Mode=OneTime}"
+                        ID3v2Service="{Binding ID3v2Service, Mode=OneTime}" 
                         ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneTime}"/>
                 </i:Interaction.Behaviors>
                 <DataGrid.Columns>

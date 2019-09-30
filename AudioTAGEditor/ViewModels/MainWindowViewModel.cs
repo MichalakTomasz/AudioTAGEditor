@@ -7,7 +7,6 @@ using Prism.Events;
 using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Input;
 using Unity;
 
@@ -289,7 +288,7 @@ namespace AudioTAGEditor.ViewModels
                         var audioFile = ID3v2Service.GetTag(file);
                         var audioFileViewModel =
                        AudioFileConverter.AudioFileToAudioFileViewModel(audioFile, eventAggregator);
-                        audioFiles.Add(audioFileViewModel);
+                       audioFiles.Add(audioFileViewModel);
                     });
                     break;
             }
