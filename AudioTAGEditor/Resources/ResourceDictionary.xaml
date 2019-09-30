@@ -9,4 +9,10 @@
         x:Key="id3v2-logo"
         UriSource="/Images/id3v2-logo.png" />
 
+    <BitmapImage x:Key="undo"
+                 UriSource="/Images/undo.png" />
+
+    <BitmapImage x:Key="redo"
+                 UriSource="/Images/redo.png" />
+
 </ResourceDictionary>

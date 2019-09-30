@@ -26,7 +26,7 @@
                 <RibbonApplicationMenu>
                     <RibbonApplicationMenuItem 
                         Header="Exit"
-                        Command="{Binding ExitCommand, Mode=OneWay}" />
+                        Command="{Binding ExitCommand, Mode=OneTime}" />
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
             <RibbonTab Header="Edit filenames">
@@ -35,12 +35,26 @@
             <RibbonTab Header="Edit tags">
                 
             </RibbonTab>
+            <RibbonTab Header="History">
+                <RibbonGroup Header="History">
+                    <RibbonButton 
+                        Label="Undo" 
+                        LargeImageSource="{StaticResource undo}"
+                        SmallImageSource="{StaticResource undo}"
+                        Command="{Binding UndoCommand, Mode=OneTime}"/>
+                    <RibbonButton 
+                        Label="Forward" 
+                        LargeImageSource="{StaticResource redo}"
+                        SmallImageSource="{StaticResource redo}"
+                        Command="{Binding RedoCommand, Mode=OneTime}"/>
+                </RibbonGroup>
+            </RibbonTab>
         </Ribbon>
         <ToolBar Grid.Row="1">
             <RadioButton
                 GroupName="ID3Group"
                 IsChecked="{Binding IsCheckedID3v1, Mode=TwoWay}"
-                Command="{Binding CheckID3v1Command, Mode=OneWay}">
+                Command="{Binding CheckID3v1Command, Mode=OneTime}">
                 <Image 
                     Source="{StaticResource id3v1-logo}"
                     Width="32" />
@@ -49,7 +63,7 @@
             <RadioButton
                 GroupName="ID3Group"
                 IsChecked="{Binding IsCheckedID3v2, Mode=TwoWay}"
-                Command="{Binding CheckID3v2Command, Mode=OneWay}">
+                Command="{Binding CheckID3v2Command, Mode=OneTime}">
                 <Image 
                     Source="{StaticResource id3v2-logo}"
                     Width="32" />
@@ -63,7 +77,7 @@
             <tx:ExplorerTreeView 
                 x:Name="ExplorerTree"
                 Grid.Column="0"
-                Command="{Binding ExpandNodeCommand, Mode=OneWay}"
+                Command="{Binding ExpandNodeCommand, Mode=OneTime}"
                 FilesFullPath="{Binding FilePathCollection, Mode=OneWayToSource}"
                 FilesFilter="{Binding FilesFilter, Mode=OneTime}"
                 SelectedPath="{Binding SelectedPath, Mode=OneWayToSource}" />
@@ -107,7 +121,7 @@
                                 ElementName=MainRibbonWindow}"
                                 IsThreeState="False"
                                 IsChecked="{Binding AllFilesChecked, Mode=TwoWay}"
-                                Command="{Binding CheckAllFilesCommand, Mode=OneWay}" />
+                                Command="{Binding CheckAllFilesCommand, Mode=OneTime}" />
                         </DataGridCheckBoxColumn.Header>
                     </DataGridCheckBoxColumn>
                     <DataGridTextColumn 

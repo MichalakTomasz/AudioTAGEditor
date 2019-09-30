@@ -199,6 +199,15 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
+        private ICommand undoCommand;
+        public ICommand UndoCommand =>
+            undoCommand ?? (undoCommand = new DelegateCommand(UndoCommandExecute));
+
+        void UndoCommandExecute()
+        {
+
+        }
+
         #endregion//Commands
 
         #region Methods
