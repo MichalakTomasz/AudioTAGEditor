@@ -1,8 +1,6 @@
 ﻿using AudioTAGEditor.Models;
 using AudioTAGEditor.Services;
 using AudioTAGEditor.ViewModels;
-using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
@@ -78,6 +76,19 @@ namespace AudioTAGEditor.Behaviors
                 typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
+        public IAudioFileComparerService AudioFileComparerService
+        {
+            get { return (IAudioFileComparerService)GetValue(AudioFileComparerServiceProperty); }
+            set { SetValue(AudioFileComparerServiceProperty, value); }
+        }
+
+        public static readonly DependencyProperty AudioFileComparerServiceProperty =
+            DependencyProperty.Register(
+                "AudioFileComparerService",
+                typeof(IAudioFileComparerService),
+                typeof(DataGridEditBehavior),
+                new PropertyMetadata(null));
+
         public string SelectedPath
         {
             get { return (string)GetValue(SelectedPathProperty); }
@@ -103,20 +114,7 @@ namespace AudioTAGEditor.Behaviors
                 typeof(ExplorerTreeView.ExplorerTreeView),
                 typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
-
-        public IAudioFileComparerService AudioFileComparerService
-        {
-            get { return (IAudioFileComparerService)GetValue(AudioFileComparerServiceProperty); }
-            set { SetValue(AudioFileComparerServiceProperty, value); }
-        }
-
-        public static readonly DependencyProperty AudioFileComparerServiceProperty =
-            DependencyProperty.Register(
-                "AudioFileComparerService",
-                typeof(IAudioFileComparerService),
-                typeof(DataGridEditBehavior),
-                new PropertyMetadata(null));
-
+        
         public bool IsCheckedID3v1
         {
             get { return (bool)GetValue(IsCheckedID3v1Property); }
@@ -167,28 +165,7 @@ namespace AudioTAGEditor.Behaviors
             var audioFileViewModel = e.Row.DataContext as AudioFileViewModel;
             var audioFile = AudioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
 
-            switch (e.Column.Header)
-            {
-                case "File Name":
-                    tempID = HistoryService.PushOldValue(audioFile, ChangeActionType.Filename, SelectedPath);
-                    break;
-                default:
-                    var editActionType = ChangeActionType.None;
-
-                    if (IsCheckedID3v1)
-                        editActionType = ChangeActionType.ID3v1;
-                    if (IsCheckedID3v2)
-                        editActionType = ChangeActionType.ID3v2;
-
-                    if (editActionType == ChangeActionType.None)
-                        e.Cancel = true;
-                    else
-                        tempID = HistoryService.PushOldValue(
-                            audioFile, 
-                            editActionType, 
-                            SelectedPath);
-                    break;
-            }
+            audioFileBeforeEdit =  audioFile;
         }
 
         private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
@@ -198,44 +175,38 @@ namespace AudioTAGEditor.Behaviors
                 var audioFileViewModel = e.EditingElement.DataContext as AudioFileViewModel;
                 if (!audioFileViewModel.HasErrors)
                 {
-                    var audioFile = AudioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
-                    var audioFileFullPath = $"{SelectedPath}{audioFileViewModel.Filename}";
-                    var historyObject = HistoryService.Peek();
-                    if (tempID == historyObject.ID)
+                    var newAudioFile = AudioFileConverter.AdioFileViewModelToAudioFile(audioFileViewModel);
+                    var audioFileFullPath = $"{SelectedPath}{newAudioFile.Filename}";
+
+                    switch (e.Column.Header)
                     {
-                        switch (e.Column.Header)
-                        {
-                            case "File Name":
-                                var oldFilename = historyObject.AudioFileChanges?.LastOrDefault()?.Old?.Filename;
-                                if (audioFile.Filename == oldFilename)
-                                {
-                                    HistoryService.Pop();
-                                    break;
-                                }
+                        case "File Name":
+                            var oldFilename = audioFileBeforeEdit.Filename;
+                            if (oldFilename == newAudioFile.Filename)
+                                return;
 
-                                var oldAaudioFile = historyObject.AudioFileChanges.LastOrDefault().Old;
-                                var oldFilePath = $"{historyObject.Path}{oldAaudioFile.Filename}";
-                                FileService.Rename(oldFilePath, audioFileViewModel.Filename);
-                                HistoryService.PushChange(tempID, audioFile);
-                                ExplorerTreeView.Refresh();
-                                break;
-                            default:
-                                var oldAudioFile = historyObject.AudioFileChanges?.LastOrDefault()?.Old;
-                                if (AudioFileComparerService.AreTheSame(oldAudioFile, audioFile))
-                                {
-                                    HistoryService.Pop();
-                                    return;
-                                }
+                            var oldFilePath = $"{SelectedPath}{oldFilename}";
+                            FileService.Rename(oldFilePath, newAudioFile.Filename);
+                            HistoryService.Push(newAudioFile, ChangeActionType.Filename, SelectedPath);
+                            ExplorerTreeView.Refresh();
+                            break;
+                        default:
+                            if (AudioFileComparerService.AreTheSame(audioFileBeforeEdit, newAudioFile))
+                                return;
 
-                                if (IsCheckedID3v1)
-                                    ID3v1Service.UpdateTag(audioFile, audioFileFullPath, TagVersion.ID3V11);
-                                if (IsCheckedID3v2)
-                                    ID3v2Service.UpdateTag(audioFile, audioFileFullPath, TagVersion.ID3V20);
-                                HistoryService.PushChange(tempID, audioFile);
-                                break;
-                        }
+                            if (IsCheckedID3v1)
+                            {
+                                ID3v1Service.UpdateTag(newAudioFile, audioFileFullPath, TagVersion.ID3V11);
+                                HistoryService.Push(newAudioFile, ChangeActionType.ID3v1, SelectedPath);
+                            }
+                                
+                            if (IsCheckedID3v2)
+                            {
+                                ID3v2Service.UpdateTag(newAudioFile, audioFileFullPath, TagVersion.ID3V20);
+                                HistoryService.Push(newAudioFile, ChangeActionType.ID3v2, SelectedPath);
+                            }
+                            break;
                     }
-                    else throw new Exception("Wrong history object");
                 }
             }
         }
@@ -244,7 +215,7 @@ namespace AudioTAGEditor.Behaviors
 
         #region Private Fields
 
-        private Guid tempID;
+        private AudioFile audioFileBeforeEdit;
 
         #endregion// Private Fields
     }

@@ -8,61 +8,31 @@ namespace AudioTAGEditor.Services
     public class HistoryService : IHistoryService
     {
         private Stack<HistoryObject> history = new Stack<HistoryObject>();
+        private Stack<HistoryObject> reserveHistory = new Stack<HistoryObject>();
 
-        public Guid PushOldValues(
+        public void Push(
             IEnumerable<AudioFile> audioFiles,
             ChangeActionType changeActionType,
             string path)
         {
-            var oldAudioFileChanges = new List<AudioFileChange>();
-            audioFiles.ToList().ForEach(a =>
-            {
-                var audioFileChange = new AudioFileChange { Old = a };
-                oldAudioFileChanges.Add(audioFileChange);
-            });
-
-            var id = Guid.NewGuid();
             var historyObject = new HistoryObject
             {
-                ID = id,
                 Path = path,
                 ChangeActionType = changeActionType,
-                AudioFileChanges = oldAudioFileChanges
+                AudioFiles = audioFiles
             };
 
             history.Push(historyObject);
-            return id;
+            reserveHistory.Clear();
         }
 
-        public Guid PushOldValue(
+        public void Push(
             AudioFile audioFile,
             ChangeActionType changeActionType,
             string path)
         {
             var audioFileCollection = new List<AudioFile> { audioFile };
-            return PushOldValues(audioFileCollection, changeActionType, path);
-        }
-
-        public void PushChanges(
-            Guid id,
-            IEnumerable<AudioFile> audioFiles)
-        {
-            var lastHistoty = history.Peek();
-            if (lastHistoty.ID == id)
-            {
-                var changes = lastHistoty.AudioFileChanges.ToList();
-                var listAudioFiles = audioFiles.ToList();
-                for (int i = 0; i < changes.Count; i++)
-                    changes[i].New = listAudioFiles[i];
-            }
-        }
-
-        public void PushChange(
-            Guid id,
-            AudioFile audioFile)
-        {
-            var audioFileCollection = new List<AudioFile> { audioFile };
-            PushChanges(id, audioFileCollection);
+            Push(audioFileCollection, changeActionType, path);
         }
 
         public HistoryObject Pop()
@@ -71,10 +41,33 @@ namespace AudioTAGEditor.Services
         public HistoryObject Peek()
             => history.Peek();
 
+        public HistoryObject Prev()
+        {
+            if (history.Count > 0)
+            {
+                var tempHistoryObject = history.Pop();
+                reserveHistory.Push(tempHistoryObject);
+                return tempHistoryObject;
+            }
+            return default(HistoryObject);
+        }
+
+        public HistoryObject Next()
+        {
+            if (reserveHistory.Count > 0)
+            {
+                var tempHistoryObject = reserveHistory.Pop();
+                history.Push(tempHistoryObject);
+                return tempHistoryObject;
+            }
+            return default(HistoryObject);
+        }
+
         public void Clear()
             => history.Clear();
 
         public int Count => history.Count;
+
         public IEnumerable<HistoryObject> History
             => history;
     }

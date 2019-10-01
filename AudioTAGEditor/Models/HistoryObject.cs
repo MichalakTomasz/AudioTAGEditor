@@ -8,6 +8,6 @@ namespace AudioTAGEditor.Models
         public Guid ID { get; set; }
         public string Path { get; set; }
         public ChangeActionType ChangeActionType { get; set; }
-        public IEnumerable<AudioFileChange> AudioFileChanges { get; set; }
+        public IEnumerable<AudioFile> AudioFiles { get; set; }
     }
 }
