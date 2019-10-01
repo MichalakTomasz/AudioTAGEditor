@@ -47,6 +47,11 @@
                         LargeImageSource="{StaticResource redo}"
                         SmallImageSource="{StaticResource redo}"
                         Command="{Binding RedoCommand, Mode=OneTime}"/>
+                    <RibbonButton
+                        Label="Confirm"
+                        LargeImageSource="{StaticResource confirm}"
+                        SmallImageSource="{StaticResource confirm}"
+                        Command="{Binding ConfirmCommand, Mode=OneTime}"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

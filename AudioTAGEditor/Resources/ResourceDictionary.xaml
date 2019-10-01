@@ -15,4 +15,7 @@
     <BitmapImage x:Key="redo"
                  UriSource="/Images/redo.png" />
 
+    <BitmapImage x:Key="confirm"
+                 UriSource="/Images/confirm.png" />
+
 </ResourceDictionary>

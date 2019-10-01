@@ -203,10 +203,13 @@ namespace AudioTAGEditor.ViewModels
         public ICommand UndoCommand =>
             undoCommand ?? (undoCommand = new DelegateCommand(UndoCommandExecute));
 
-        void UndoCommandExecute()
-        {
+        private ICommand redoCommand;
+        public ICommand RedoCommand =>
+            redoCommand ?? (redoCommand = new DelegateCommand(RedoCommandExecute));
 
-        }
+        private ICommand confirmCommand;
+        public ICommand ConfirmCommand =>
+            confirmCommand ?? (confirmCommand = new DelegateCommand(ConfirmCommandExecute));
 
         #endregion//Commands
 
@@ -337,6 +340,21 @@ namespace AudioTAGEditor.ViewModels
                 if (!AudioFiles.Any(a => !a.IsChecked))
                     AllFilesChecked = true;
             }
+        }
+
+        void UndoCommandExecute()
+        {
+
+        }
+
+        void RedoCommandExecute()
+        {
+
+        }
+
+        void ConfirmCommandExecute()
+        {
+
         }
 
         #endregion//Methods

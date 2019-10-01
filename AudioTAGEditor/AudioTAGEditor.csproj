@@ -43,7 +43,7 @@
     </Reference>
     <Reference Include="ExplorerTreeView, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\TreeViewExplorer\ExplorerTreeView\bin\Debug\ExplorerTreeView.dll</HintPath>
+      <HintPath>..\..\ExplorerTreeView\ExplorerTreeView\bin\Debug\ExplorerTreeView.dll</HintPath>
     </Reference>
     <Reference Include="IdSharp.Common-core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IdSharp.Common.1.0.1\lib\netstandard2.0\IdSharp.Common-core.dll</HintPath>
@@ -197,6 +197,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\confirm.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
