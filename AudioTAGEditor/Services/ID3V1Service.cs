@@ -51,6 +51,7 @@ namespace AudioTAGEditor.Services
             { 
                 var tag = new ID3v1Tag(filePath);
                 var audioFile = mapper.Map<AudioFile>(tag);
+                audioFile.ID = Guid.NewGuid();
                 audioFile.HasTag = true;
                 audioFile.Filename = filename;
                 audioFile.TagType = TagType.ID3V1;

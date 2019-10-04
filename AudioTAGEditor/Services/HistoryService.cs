@@ -1,14 +1,12 @@
 ﻿using AudioTAGEditor.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace AudioTAGEditor.Services
 {
     public class HistoryService : IHistoryService
     {
-        private Stack<HistoryObject> history = new Stack<HistoryObject>();
-        private Stack<HistoryObject> reserveHistory = new Stack<HistoryObject>();
+        private readonly Stack<HistoryObject> history = new Stack<HistoryObject>();
+        private readonly Stack<HistoryObject> reserveHistory = new Stack<HistoryObject>();
 
         public void Push(
             IEnumerable<AudioFile> audioFiles,
@@ -24,6 +22,8 @@ namespace AudioTAGEditor.Services
 
             history.Push(historyObject);
             reserveHistory.Clear();
+            Position = history.Count;
+            Count = GetHistoryCount();
         }
 
         public void Push(
@@ -36,39 +36,90 @@ namespace AudioTAGEditor.Services
         }
 
         public HistoryObject Pop()
-            => history.Pop();
+        {
+            var result = history.Pop();
+            Position = history.Count;
+            Count = GetHistoryCount();
 
-        public HistoryObject Peek()
+            return result;
+        }
+
+        public HistoryObject Peek
             => history.Peek();
 
-        public HistoryObject Prev()
+        public HistoryObject Prev(
+            IEnumerable<AudioFile> audioFiles,
+            ChangeActionType changeActionType,
+            string path)
         {
             if (history.Count > 0)
             {
-                var tempHistoryObject = history.Pop();
-                reserveHistory.Push(tempHistoryObject);
-                return tempHistoryObject;
+                var result = history.Pop();
+                var historyObject = new HistoryObject
+                {
+                    Path = path,
+                    ChangeActionType = changeActionType,
+                    AudioFiles = audioFiles
+                };
+                reserveHistory.Push(historyObject);
+                Position = history.Count;
+                Count = GetHistoryCount();
+                return result;
             }
-            return default(HistoryObject);
+            return default;
         }
 
-        public HistoryObject Next()
+        public HistoryObject Prev(
+            AudioFile audioFile,
+            ChangeActionType changeActionType,
+            string path)
+        {
+            var audioFiles = new List<AudioFile>() { audioFile };
+            return Prev(audioFiles, changeActionType, path);
+        }
+
+        public HistoryObject Next(
+            IEnumerable<AudioFile> audioFiles,
+            ChangeActionType changeActionType,
+            string path)
         {
             if (reserveHistory.Count > 0)
             {
-                var tempHistoryObject = reserveHistory.Pop();
-                history.Push(tempHistoryObject);
-                return tempHistoryObject;
+                var reusult = reserveHistory.Pop();
+                var historyObject = new HistoryObject
+                {
+                    Path = path,
+                    ChangeActionType = changeActionType,
+                    AudioFiles = audioFiles
+                };
+                history.Push(historyObject);
+                Position = history.Count;
+                Count = GetHistoryCount();
+                return reusult;
             }
-            return default(HistoryObject);
+            return default;
+        }
+
+        public HistoryObject Next(
+            AudioFile audioFile,
+            ChangeActionType changeActionType,
+            string path)
+        {
+            var audioFiles = new List<AudioFile> { audioFile };
+            return Next(audioFiles, changeActionType, path);
         }
 
         public void Clear()
-            => history.Clear();
+        {
+            history.Clear();
+            Position = history.Count;
+            Count = GetHistoryCount();
+        }
 
-        public int Count => history.Count;
+        private int GetHistoryCount()
+            => history.Count + reserveHistory.Count;
 
-        public IEnumerable<HistoryObject> History
-            => history;
+        public int Count { get; private set; }
+        public int Position { get; private set; }
     }
 }

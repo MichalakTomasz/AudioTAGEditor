@@ -2,6 +2,7 @@
 using EventAggregator;
 using LibValidation;
 using Prism.Events;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace AudioTAGEditor.ViewModels
@@ -12,10 +13,12 @@ namespace AudioTAGEditor.ViewModels
 
         public AudioFileViewModel(IEventAggregator eventAggregator)
             => this.eventAggregator = eventAggregator;
-            
+
         #endregion // Constructor
 
         #region Properties
+
+        public Guid ID { get; set; }
 
         private bool isChecked;
         public bool IsChecked

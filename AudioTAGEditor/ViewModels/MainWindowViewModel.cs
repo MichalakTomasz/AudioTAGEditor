@@ -5,6 +5,7 @@ using EventAggregator;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
@@ -136,6 +137,20 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref allFilesChecked, value); }
         }
 
+        private int historyCount;
+        public int HistoryCount
+        {
+            get { return historyCount; }
+            set { SetProperty(ref historyCount, value); }
+        }
+
+        private int historyPosition;
+        public int HistoryPosition
+        {
+            get { return historyPosition; }
+            set { SetProperty(ref historyPosition, value); }
+        }
+
         #endregion//DataGridFiles
 
         #endregion//Properties
@@ -155,61 +170,56 @@ namespace AudioTAGEditor.ViewModels
 
         private ICommand checkAllFilesCommand;
         public ICommand CheckAllFilesCommand
-        {
-            get
-            {
-                if (checkAllFilesCommand == null)
-                    checkAllFilesCommand = new DelegateCommand(CheckAllFilesCommandExecute)
-                        .ObservesProperty(() => AllFilesChecked);
-                return checkAllFilesCommand;
-            }
-        }
+            =>  checkAllFilesCommand ??  
+            (checkAllFilesCommand = new DelegateCommand(CheckAllFilesCommandExecute));
 
         private ICommand checkID3v1Command;
         public ICommand CheckID3v1Command
-        {
-            get
-            {
-                if (checkID3v1Command == null)
-                    checkID3v1Command = new DelegateCommand(CheckID3v1CommandExecute);
-                return checkID3v1Command;
-            }
-        }
+            => checkID3v1Command ??
+            (checkID3v1Command = new DelegateCommand(
+                CheckID3v1CommandExecute,
+                CheckID3v1CommandCanExecute)
+            .ObservesProperty(() => IsEnabledDataGrid));
 
         private ICommand checkID3v2Command;
         public ICommand CheckID3v2Command
-        {
-            get
-            {
-                if (checkID3v2Command == null)
-                    checkID3v2Command = new DelegateCommand(CheckID3v2CommandExecute);
-                return checkID3v2Command;
-            }
-        }
+            => checkID3v2Command ?? 
+            (checkID3v2Command = new DelegateCommand(CheckID3v2CommandExecute,
+                CheckID3v2CommandCanExecute)
+            .ObservesProperty(() => IsEnabledDataGrid));
 
         private ICommand exitCommand;
         public ICommand ExitCommand
-        {
-            get
-            {
-                if (exitCommand == null)
-                    exitCommand = new DelegateCommand(() => 
-                    App.Current.MainWindow.Close());
-                return exitCommand;
-            }
-        }
+            => exitCommand ?? 
+            (exitCommand = new DelegateCommand(() => 
+            App.Current.MainWindow.Close()));
 
         private ICommand undoCommand;
         public ICommand UndoCommand =>
-            undoCommand ?? (undoCommand = new DelegateCommand(UndoCommandExecute));
+            undoCommand ?? (undoCommand = 
+            new DelegateCommand(
+                UndoCommandExecute,
+                UndoCommandCanExecute)
+            .ObservesProperty(() => HistoryCount)
+            .ObservesProperty(() => HistoryPosition));
 
         private ICommand redoCommand;
         public ICommand RedoCommand =>
-            redoCommand ?? (redoCommand = new DelegateCommand(RedoCommandExecute));
+            redoCommand ?? (redoCommand = 
+            new DelegateCommand(
+                RedoCommandExecute,
+                RedoCommandCanExecute)
+            .ObservesProperty(() => HistoryCount)
+            .ObservesProperty(() => HistoryPosition));
 
-        private ICommand confirmCommand;
-        public ICommand ConfirmCommand =>
-            confirmCommand ?? (confirmCommand = new DelegateCommand(ConfirmCommandExecute));
+        private ICommand historyConfirmCommand;
+        public ICommand HistoryConfirmCommand =>
+            historyConfirmCommand ?? (historyConfirmCommand = 
+            new DelegateCommand(
+                HistoryConfirmCommandExecute,
+                HistoryConfirmCommandCanExecute)
+            .ObservesProperty(() => HistoryCount)
+            .ObservesProperty(() => HistoryPosition));
 
         #endregion//Commands
 
@@ -279,7 +289,7 @@ namespace AudioTAGEditor.ViewModels
             if (localTagType == TagType.none)
                 localTagType = ResolveTagToActivata();
 
-            CheckTag(localTagType);
+            SetTag(localTagType);
 
             RefreshGenres(localTagType);
             var audioFiles = new List<AudioFileViewModel>();
@@ -299,8 +309,9 @@ namespace AudioTAGEditor.ViewModels
                     {
                         var audioFile = ID3v2Service.GetTag(file);
                         var audioFileViewModel =
-                       AudioFileConverter.AudioFileToAudioFileViewModel(audioFile, eventAggregator);
-                       audioFiles.Add(audioFileViewModel);
+                        AudioFileConverter
+                        .AudioFileToAudioFileViewModel(audioFile, eventAggregator);
+                        audioFiles.Add(audioFileViewModel);
                     });
                     break;
             }
@@ -310,7 +321,39 @@ namespace AudioTAGEditor.ViewModels
             CheckAllFilesCommandExecute();
         }
 
-        private void CheckTag(TagType tagType)
+        private void SetHistoryStepIntoMainGrid(HistoryObject historyObject)
+        {
+            var historyGridDataSource = new List<AudioFileViewModel>();
+
+            AudioFiles.ToList().ForEach(i =>
+            {
+                var AudioFileFromHistory = 
+                historyObject.AudioFiles
+                .FirstOrDefault(f => f.ID == i.ID);
+
+                if (AudioFileFromHistory != null)
+                {
+                    var audioFileViewModelFromHistory = AudioFileConverter
+                    .AudioFileToAudioFileViewModel(
+                        AudioFileFromHistory,
+                        eventAggregator);
+
+                    historyGridDataSource.Add(audioFileViewModelFromHistory);
+                }
+                else historyGridDataSource.Add(i);
+            });
+
+            AudioFiles = historyGridDataSource;
+            UpdateHistoryProperties();
+        }
+
+        private void UpdateHistoryProperties()
+        {
+            HistoryCount = HistoryService.Count;
+            HistoryPosition = HistoryService.Position;
+        }
+
+        private void SetTag(TagType tagType)
         {
             switch (tagType)
             {
@@ -342,20 +385,29 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
-        void UndoCommandExecute()
+        void UndoCommandExecute() { }
+
+        private bool UndoCommandCanExecute()
+            => HistoryPosition > 0;
+
+        void RedoCommandExecute() { }
+
+        private bool RedoCommandCanExecute()
+            => HistoryCount > 0 && HistoryPosition < HistoryCount;
+
+        void HistoryConfirmCommandExecute()
         {
 
         }
 
-        void RedoCommandExecute()
-        {
+        private bool CheckID3v1CommandCanExecute()
+            => IsEnabledDataGrid;
 
-        }
+        private bool CheckID3v2CommandCanExecute()
+            => IsEnabledDataGrid;
 
-        void ConfirmCommandExecute()
-        {
-
-        }
+        private bool HistoryConfirmCommandCanExecute()
+            => HistoryCount > 0 && HistoryPosition < HistoryCount;
 
         #endregion//Methods
     }

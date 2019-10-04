@@ -7,14 +7,16 @@ namespace AudioTAGEditor.Services
     public interface IHistoryService
     {
         int Count { get; }
-        IEnumerable<HistoryObject> History { get; }
+        int Position { get; }
 
         void Clear();
-        HistoryObject Peek();
+        HistoryObject Peek { get; }
         HistoryObject Pop();
         void Push(AudioFile audioFile, ChangeActionType changeActionType, string path);
         void Push(IEnumerable<AudioFile> audioFiles, ChangeActionType changeActionType, string path);
-        HistoryObject Prev();
-        HistoryObject Next();
+        HistoryObject Prev(IEnumerable<AudioFile> audioFiles, ChangeActionType changeActionType, string path);
+        HistoryObject Prev(AudioFile audioFile, ChangeActionType changeActionType, string path);
+        HistoryObject Next(IEnumerable<AudioFile> audioFiles, ChangeActionType changeActionType, string path);
+        HistoryObject Next(AudioFile audioFile, ChangeActionType changeActionType, string path);
     }
 }

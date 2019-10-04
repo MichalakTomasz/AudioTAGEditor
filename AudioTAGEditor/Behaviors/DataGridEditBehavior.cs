@@ -141,6 +141,33 @@ namespace AudioTAGEditor.Behaviors
                 typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
+
+        public int HistoryCount
+        {
+            get { return (int)GetValue(HistoryCountProperty); }
+            set { SetValue(HistoryCountProperty, value); }
+        }
+
+        public static readonly DependencyProperty HistoryCountProperty =
+            DependencyProperty.Register(
+                "HistoryCount", 
+                typeof(int), 
+                typeof(DataGridEditBehavior), 
+                new PropertyMetadata(0));
+
+        public int HistoryPosition
+        {
+            get { return (int)GetValue(HistoryPositionProperty); }
+            set { SetValue(HistoryPositionProperty, value); }
+        }
+
+        public static readonly DependencyProperty HistoryPositionProperty =
+            DependencyProperty.Register(
+                "HistoryPosition", 
+                typeof(int), 
+                typeof(DataGridEditBehavior), 
+                new PropertyMetadata(0));
+
         #endregion// Dependency Properties
 
         #region Methods
@@ -187,7 +214,8 @@ namespace AudioTAGEditor.Behaviors
 
                             var oldFilePath = $"{SelectedPath}{oldFilename}";
                             FileService.Rename(oldFilePath, newAudioFile.Filename);
-                            HistoryService.Push(newAudioFile, ChangeActionType.Filename, SelectedPath);
+                            HistoryService.Push(audioFileBeforeEdit, ChangeActionType.Filename, SelectedPath);
+                            UpdateHistoryProperties();
                             ExplorerTreeView.Refresh();
                             break;
                         default:
@@ -197,13 +225,15 @@ namespace AudioTAGEditor.Behaviors
                             if (IsCheckedID3v1)
                             {
                                 ID3v1Service.UpdateTag(newAudioFile, audioFileFullPath, TagVersion.ID3V11);
-                                HistoryService.Push(newAudioFile, ChangeActionType.ID3v1, SelectedPath);
+                                HistoryService.Push(audioFileBeforeEdit, ChangeActionType.ID3v1, SelectedPath);
+                                UpdateHistoryProperties();
                             }
                                 
                             if (IsCheckedID3v2)
                             {
                                 ID3v2Service.UpdateTag(newAudioFile, audioFileFullPath, TagVersion.ID3V20);
-                                HistoryService.Push(newAudioFile, ChangeActionType.ID3v2, SelectedPath);
+                                HistoryService.Push(audioFileBeforeEdit, ChangeActionType.ID3v2, SelectedPath);
+                                UpdateHistoryProperties();
                             }
                             break;
                     }
@@ -211,6 +241,11 @@ namespace AudioTAGEditor.Behaviors
             }
         }
 
+        private void UpdateHistoryProperties()
+        {
+            HistoryCount = HistoryService.Count;
+            HistoryPosition = HistoryService.Position;
+        }
         #endregion// Methods
 
         #region Private Fields

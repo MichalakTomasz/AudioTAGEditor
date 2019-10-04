@@ -28,12 +28,12 @@ namespace AudioTAGEditor.Services
         {
             var hasTag = ID3v2Tag.DoesTagExist(filePath);
             var filename = Path.GetFileName(filePath);
-            var genres = genreService.GetID3v1Genres();
 
             if (hasTag)
             {
                 var tag = new ID3v2Tag(filePath);
                 var audioFile = mapper.Map<AudioFile>(tag);
+                audioFile.ID = Guid.NewGuid();
                 audioFile.HasTag = true;
                 audioFile.Filename = filename;
                 audioFile.TagType = TagType.ID3V2;
@@ -48,14 +48,6 @@ namespace AudioTAGEditor.Services
                     Filename = filename
                 };
             }
-        }
-
-        private string GetDigitsFromTrackNumber(string trackNumber)
-        {
-            var result = trackNumber
-                .Trim()
-                .Where(t => char.IsDigit(t)).ToArray();
-            return new string(result);
         }
 
         public TagVersion GetTagVersion(string filePath)

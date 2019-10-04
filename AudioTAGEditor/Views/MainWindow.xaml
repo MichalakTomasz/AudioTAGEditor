@@ -51,7 +51,7 @@
                         Label="Confirm"
                         LargeImageSource="{StaticResource confirm}"
                         SmallImageSource="{StaticResource confirm}"
-                        Command="{Binding ConfirmCommand, Mode=OneTime}"/>
+                        Command="{Binding HistoryConfirmCommand, Mode=OneTime}"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
@@ -105,7 +105,9 @@
                         AudioFileComparerService="{Binding AudioFileComparerService, Mode=OneTime}"
                         ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneTime}"
                         IsCheckedID3v1="{Binding IsCheckedID3v1, Mode=OneWay}"
-                        IsCheckedID3v2="{Binding IsCheckedID3v2, Mode=OneWay}"/>
+                        IsCheckedID3v2="{Binding IsCheckedID3v2, Mode=OneWay}"
+                        HistoryCount="{Binding HistoryCount, Mode=OneWayToSource}"
+                        HistoryPosition="{Binding HistoryPosition, Mode=OneWayToSource}"/>
                     <b:DataGridContextMenuDeactivateTagBehavior
                         SelectedPath="{Binding SelectedPath, Mode=OneWay}"
                         ID3v1Service="{Binding ID3v1Service, Mode=OneTime}"
