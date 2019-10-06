@@ -14,9 +14,7 @@ namespace AudioTAGEditor.Services
         HistoryObject Pop();
         void Push(AudioFile audioFile, ChangeActionType changeActionType, string path);
         void Push(IEnumerable<AudioFile> audioFiles, ChangeActionType changeActionType, string path);
-        HistoryObject Prev(IEnumerable<AudioFile> audioFiles, ChangeActionType changeActionType, string path);
-        HistoryObject Prev(AudioFile audioFile, ChangeActionType changeActionType, string path);
-        HistoryObject Next(IEnumerable<AudioFile> audioFiles, ChangeActionType changeActionType, string path);
-        HistoryObject Next(AudioFile audioFile, ChangeActionType changeActionType, string path);
+        HistoryObject Prev(IEnumerable<AudioFile> audioFiles);
+        HistoryObject Next(IEnumerable<AudioFile> audioFiles);
     }
 }

@@ -140,22 +140,22 @@
                     <DataGridTextColumn 
                         Header="Title"
                         Binding="{Binding Title,
-                        UpdateSourceTrigger=LostFocus}"
+                        UpdateSourceTrigger=PropertyChanged}"
                         Width="220" />
                     <DataGridTextColumn 
                         Header="Album"
                         Binding="{Binding Album,
-                        UpdateSourceTrigger=LostFocus}"
+                        UpdateSourceTrigger=PropertyChanged}"
                         Width="180" />
                     <DataGridTextColumn 
                         Header="Artist"
                         Binding="{Binding Artist, 
-                        UpdateSourceTrigger=LostFocus}"
+                        UpdateSourceTrigger=PropertyChanged}"
                         Width="100" />
                     <DataGridTextColumn 
                         Header="No."
                         Binding="{Binding TrackNumber,
-                        UpdateSourceTrigger=LostFocus}" />
+                        UpdateSourceTrigger=PropertyChanged}" />
                     <DataGridComboBoxColumn 
                         Header="Genre"
                         SelectedItemBinding="{
@@ -189,7 +189,7 @@
                     <DataGridTextColumn 
                         Header="Year"
                         Binding="{Binding Year,
-                        UpdateSourceTrigger=LostFocus}"
+                        UpdateSourceTrigger=PropertyChanged}"
                         Width="40" />
                     <DataGridTextColumn 
                         Header="Tag version"

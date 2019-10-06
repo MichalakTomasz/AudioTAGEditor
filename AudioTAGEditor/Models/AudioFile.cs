@@ -4,7 +4,9 @@ namespace AudioTAGEditor.Models
 {
     public class AudioFile
     {
-        public Guid ID { get; set; }
+        public AudioFile(Guid id)
+            => ID = id;
+        public Guid ID { get; }
         public bool HasTag { get; set; }
         public string Filename { get; set; }
         public string Title { get; set; }

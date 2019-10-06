@@ -4,7 +4,6 @@ using IdSharp.Tagging.ID3v2;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace AudioTAGEditor.Services
 {
@@ -32,8 +31,7 @@ namespace AudioTAGEditor.Services
             if (hasTag)
             {
                 var tag = new ID3v2Tag(filePath);
-                var audioFile = mapper.Map<AudioFile>(tag);
-                audioFile.ID = Guid.NewGuid();
+                var audioFile = mapper.Map(tag, new AudioFile(Guid.NewGuid()));
                 audioFile.HasTag = true;
                 audioFile.Filename = filename;
                 audioFile.TagType = TagType.ID3V2;
@@ -42,7 +40,7 @@ namespace AudioTAGEditor.Services
             }
             else
             {
-                return new AudioFile
+                return new AudioFile(Guid.NewGuid())
                 {
                     HasTag = false,
                     Filename = filename

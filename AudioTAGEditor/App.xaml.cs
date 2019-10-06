@@ -29,7 +29,9 @@ namespace AudioTAGEditor
             var config = new MapperConfiguration(c =>
             {
                 c.CreateMap<AudioFile, AudioFileViewModel>();
+                c.CreateMap<AudioFile, AudioFileID3v1ViewModel>();
                 c.CreateMap<AudioFileViewModel, AudioFile>();
+                c.CreateMap<AudioFileID3v1ViewModel, AudioFile>();
                 c.CreateMap<ID3v1Tag, AudioFile>();
                 c.CreateMap<ID3v2Tag, AudioFile>();
                 c.CreateMap<AudioFile, ID3v1Tag>();

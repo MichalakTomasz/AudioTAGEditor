@@ -1,5 +1,6 @@
 ﻿using AudioTAGEditor.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AudioTAGEditor.Services
 {
@@ -43,70 +44,85 @@ namespace AudioTAGEditor.Services
 
             return result;
         }
-
+        
         public HistoryObject Peek
             => history.Peek();
 
-        public HistoryObject Prev(
-            IEnumerable<AudioFile> audioFiles,
-            ChangeActionType changeActionType,
-            string path)
+        public HistoryObject Prev(IEnumerable<AudioFile> audioFiles)
         {
             if (history.Count > 0)
             {
-                var result = history.Pop();
+                var lastHistoryObject = history.Pop();
+                var historyAudioFiles = lastHistoryObject.AudioFiles;
+                var audioFilesToHistory = new List<AudioFile>();
+
+                historyAudioFiles
+                    .ToList()
+                    .ForEach(h => 
+                    {
+                        var temp = audioFiles.FirstOrDefault(a => a.ID == h.ID);
+                        if (temp != null) audioFilesToHistory.Add(temp);
+                    });
+
                 var historyObject = new HistoryObject
                 {
-                    Path = path,
-                    ChangeActionType = changeActionType,
-                    AudioFiles = audioFiles
+                    AudioFiles = audioFilesToHistory,
+                    Path = lastHistoryObject.Path,
+                    ChangeActionType = lastHistoryObject.ChangeActionType
                 };
+
+                var resultHistoryObject = new HistoryObject
+                {
+                    AudioFiles = historyAudioFiles,
+                    Path = lastHistoryObject.Path,
+                    ChangeActionType = lastHistoryObject.ChangeActionType
+                };
+
                 reserveHistory.Push(historyObject);
                 Position = history.Count;
                 Count = GetHistoryCount();
-                return result;
+
+                return resultHistoryObject;
             }
             return default;
         }
 
-        public HistoryObject Prev(
-            AudioFile audioFile,
-            ChangeActionType changeActionType,
-            string path)
-        {
-            var audioFiles = new List<AudioFile>() { audioFile };
-            return Prev(audioFiles, changeActionType, path);
-        }
-
-        public HistoryObject Next(
-            IEnumerable<AudioFile> audioFiles,
-            ChangeActionType changeActionType,
-            string path)
+        public HistoryObject Next(IEnumerable<AudioFile> audioFiles)
         {
             if (reserveHistory.Count > 0)
             {
-                var reusult = reserveHistory.Pop();
+                var lastHistoryObject = reserveHistory.Pop();
+                var historyAudioFiles = lastHistoryObject.AudioFiles;
+                var audioFilesToHistory = new List<AudioFile>();
+
+                historyAudioFiles
+                    .ToList()
+                    .ForEach(h =>
+                    {
+                        var temp = audioFiles.FirstOrDefault(a => a.ID == h.ID);
+                        if (temp != null) audioFilesToHistory.Add(temp);
+                    });
+
                 var historyObject = new HistoryObject
                 {
-                    Path = path,
-                    ChangeActionType = changeActionType,
-                    AudioFiles = audioFiles
+                    Path = lastHistoryObject.Path,
+                    ChangeActionType = lastHistoryObject.ChangeActionType,
+                    AudioFiles = audioFilesToHistory
                 };
+
+                var resultHistoryObject = new HistoryObject
+                {
+                    Path = lastHistoryObject.Path,
+                    ChangeActionType = lastHistoryObject.ChangeActionType,
+                    AudioFiles = historyAudioFiles
+                };
+
                 history.Push(historyObject);
                 Position = history.Count;
                 Count = GetHistoryCount();
-                return reusult;
+                return resultHistoryObject;
             }
             return default;
-        }
-
-        public HistoryObject Next(
-            AudioFile audioFile,
-            ChangeActionType changeActionType,
-            string path)
-        {
-            var audioFiles = new List<AudioFile> { audioFile };
-            return Next(audioFiles, changeActionType, path);
         }
 
         public void Clear()

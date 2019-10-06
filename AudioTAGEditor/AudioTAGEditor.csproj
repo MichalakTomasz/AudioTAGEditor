@@ -122,6 +122,7 @@
     <Compile Include="Models\AudioFile.cs" />
     <Compile Include="Models\ChangeActionType.cs" />
     <Compile Include="Models\HistoryObject.cs" />
+    <Compile Include="Models\HistoryStepType.cs" />
     <Compile Include="Services\AudioFileComparerService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\AudioFileConverter.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Services\IAudioFileConverter.cs" />
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IHistoryService.cs" />
+    <Compile Include="ViewModels\AudioFileID3v1ViewModel.cs" />
     <Compile Include="ViewModels\AudioFileViewModel.cs" />
     <Compile Include="Services\GenreService.cs" />
     <Compile Include="Services\IGenreService.cs" />
