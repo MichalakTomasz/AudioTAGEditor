@@ -152,7 +152,7 @@ namespace AudioTAGEditor.ViewModels
 
         #endregion//DataGridFiles
 
-        #endregion//Properties
+        #endregion // Properties
 
         #region Commands
 
@@ -216,6 +216,13 @@ namespace AudioTAGEditor.ViewModels
             .ObservesProperty(() => HistoryCount)
             .ObservesProperty(() => HistoryPosition));
 
+        private ICommand historyCancelCommand;
+        public ICommand HistoryCancelCommand =>
+            historyCancelCommand ?? (historyCancelCommand = 
+            new DelegateCommand(
+                HistoryCancelCommandExecute,
+                HistoryCancelCommandCanExectute));
+        
         #endregion//Commands
 
         #region Methods
@@ -241,7 +248,9 @@ namespace AudioTAGEditor.ViewModels
 
         private TagType ResolveTagToActivate()
         {
-            var hasID3v2 = FilePathCollection.Any(f => ID3v2Service.HasTag(f));
+            var hasID3v2 = FilePathCollection
+                .Any(f => ID3v2Service.HasTag(f));
+
             if (hasID3v2)
             {
                 IsCheckedID3v2 = true;
@@ -317,7 +326,7 @@ namespace AudioTAGEditor.ViewModels
             CheckAllFilesCommandExecute();
         }
 
-        private void SetHistoryStepIntoMainGrid(HistoryStepType historyStepType)
+        private void SetHistoryStepToMainGrid(HistoryStepType historyStepType)
         {
             var audioFiles = AudioFileConverter
                 .AudioFilesViewModelToAudioFiles(AudioFiles);
@@ -359,7 +368,6 @@ namespace AudioTAGEditor.ViewModels
                             tempAudioFileList.Add(tempAudioFileViewModel);
                             break;
                     }
-                    
                 }
                 else
                     tempAudioFileList.Add(a);
@@ -419,20 +427,23 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private void UndoCommandExecute()
-            => SetHistoryStepIntoMainGrid(HistoryStepType.Undo);
+            => SetHistoryStepToMainGrid(HistoryStepType.Undo);
 
         private bool UndoCommandCanExecute()
             => HistoryPosition > 0;
 
         private void RedoCommandExecute()
-            => SetHistoryStepIntoMainGrid(HistoryStepType.Redo);
+            => SetHistoryStepToMainGrid(HistoryStepType.Redo);
 
         private bool RedoCommandCanExecute()
             => HistoryCount > 0 && HistoryPosition < HistoryCount;
 
         private void HistoryConfirmCommandExecute()
         {
-           
+            if (!AudioFiles.Any(a => a.HasErrors))
+            {
+                
+            }
         }
 
         private bool CheckID3v1CommandCanExecute()
@@ -443,6 +454,16 @@ namespace AudioTAGEditor.ViewModels
 
         private bool HistoryConfirmCommandCanExecute()
             => HistoryCount > 0 && HistoryPosition < HistoryCount;
+
+        void HistoryCancelCommandExecute()
+        {
+
+        }
+
+        private bool HistoryCancelCommandCanExectute()
+        {
+            return true;
+        }
 
         #endregion//Methods
     }
