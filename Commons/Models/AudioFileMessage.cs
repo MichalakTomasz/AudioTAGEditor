@@ -1,6 +1,6 @@
 ﻿namespace Commons
 {
-    public class AudioFileMessage
+    public class AudiofileMessage
     {
         public bool IsSelectedFile { get; set; }
     }

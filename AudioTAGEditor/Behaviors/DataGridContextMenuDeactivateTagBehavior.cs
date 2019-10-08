@@ -98,7 +98,7 @@ namespace AudioTAGEditor.Behaviors
                         menuItemDeactivateTag.Click += MenuItemDeactivateTag_Click;
                 }
 
-                audioFileViewModel = clickedRow.DataContext as AudioFileViewModel;
+                audioFileViewModel = clickedRow.DataContext as AudiofileViewModel;
                 if (audioFileViewModel != null)
                     menuItemDeactivateTag.IsEnabled = audioFileViewModel.HasTag;
             }
@@ -128,7 +128,7 @@ namespace AudioTAGEditor.Behaviors
         #region Field
 
         private MenuItem menuItemDeactivateTag;
-        private AudioFileViewModel audioFileViewModel;
+        private AudiofileViewModel audioFileViewModel;
 
         #endregion // Fielda
     }

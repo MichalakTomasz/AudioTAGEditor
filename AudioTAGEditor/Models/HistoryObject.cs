@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace AudioTAGEditor.Models
 {
@@ -7,6 +6,6 @@ namespace AudioTAGEditor.Models
     {
         public string Path { get; set; }
         public ChangeActionType ChangeActionType { get; set; }
-        public IEnumerable<AudioFile> AudioFiles { get; set; }
+        public IEnumerable<HistoryAudiofile> HistoryAudiofiles { get; set; }
     }
 }

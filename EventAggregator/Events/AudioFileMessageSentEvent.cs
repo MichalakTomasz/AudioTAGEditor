@@ -3,5 +3,5 @@ using Prism.Events;
 
 namespace EventAggregator
 {
-    public class AudioFileMessageSentEvent : PubSubEvent<AudioFileMessage> { }
+    public class AudiofileMessageSentEvent : PubSubEvent<AudiofileMessage> { }
 }

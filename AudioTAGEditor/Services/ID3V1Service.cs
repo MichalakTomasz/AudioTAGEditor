@@ -41,7 +41,7 @@ namespace AudioTAGEditor.Services
             return TagVersion.none;
         }
 
-        public AudioFile GetTag(string filePath)
+        public Audiofile GetTag(string filePath)
         {
             var hasTag = ID3v1Tag.DoesTagExist(filePath);
             var filename = Path.GetFileName(filePath);
@@ -50,7 +50,7 @@ namespace AudioTAGEditor.Services
             if (hasTag)
             { 
                 var tag = new ID3v1Tag(filePath);
-                var audioFile = mapper.Map(tag, new AudioFile(Guid.NewGuid()));
+                var audioFile = mapper.Map(tag, new Audiofile(Guid.NewGuid()));
                 audioFile.HasTag = true;
                 audioFile.Filename = filename;
                 audioFile.TagType = TagType.ID3V1;
@@ -61,7 +61,7 @@ namespace AudioTAGEditor.Services
             }
             else
             {
-                return new AudioFile(Guid.NewGuid())
+                return new Audiofile(Guid.NewGuid())
                 {
                     HasTag = false,
                     Filename = filename
@@ -73,7 +73,7 @@ namespace AudioTAGEditor.Services
             => genreService.GetID3v1Genres();
 
         public void UpdateTag(
-            AudioFile audioFile, 
+            Audiofile audioFile, 
             string filePath, 
             TagVersion tagVersion = TagVersion.ID3V11)
         {

@@ -21,21 +21,22 @@ namespace AudioTAGEditor
             containerRegistry.Register<IID3Service, ID3V1Service>(nameof(ID3V1Service));
             containerRegistry.Register<IID3Service, ID3V2Service>(nameof(ID3V2Service));
             containerRegistry.Register<IGenreService, GenreService>();
-            containerRegistry.Register<IAudioFileConverter, AudioFileConverter>();
+            containerRegistry.Register<IAudiofileConverter, AudiofileConverter>();
             containerRegistry.Register<IFileService, FileService>();
             containerRegistry.RegisterSingleton<IHistoryService, HistoryService>();
-            containerRegistry.Register<IAudioFileComparerService, AudioFileComparerService>();
+            containerRegistry.Register<IAudiofileComparerService, AudiofileComparerService>();
             
             var config = new MapperConfiguration(c =>
             {
-                c.CreateMap<AudioFile, AudioFileViewModel>();
-                c.CreateMap<AudioFile, AudioFileID3v1ViewModel>();
-                c.CreateMap<AudioFileViewModel, AudioFile>();
-                c.CreateMap<AudioFileID3v1ViewModel, AudioFile>();
-                c.CreateMap<ID3v1Tag, AudioFile>();
-                c.CreateMap<ID3v2Tag, AudioFile>();
-                c.CreateMap<AudioFile, ID3v1Tag>();
-                c.CreateMap<AudioFile, ID3v2Tag>();
+                c.CreateMap<Audiofile, AudiofileViewModel>();
+                c.CreateMap<Audiofile, AudiofileID3v1ViewModel>();
+                c.CreateMap<AudiofileViewModel, Audiofile>();
+                c.CreateMap<AudiofileID3v1ViewModel, Audiofile>();
+                c.CreateMap<ID3v1Tag, Audiofile>();
+                c.CreateMap<ID3v2Tag, Audiofile>();
+                c.CreateMap<Audiofile, ID3v1Tag>();
+                c.CreateMap<Audiofile, ID3v2Tag>();
+                c.CreateMap<Audiofile, HistoryAudiofile>();
             });
 
             var mapper = config.CreateMapper();

@@ -2,9 +2,9 @@
 
 namespace AudioTAGEditor.Services
 {
-    public class AudioFileComparerService : IAudioFileComparerService
+    public class AudiofileComparerService : IAudiofileComparerService
     {
-        public bool AreTheSame(AudioFile sourceFile, AudioFile fileToCompare)
+        public bool AreTheSame(Audiofile sourceFile, Audiofile fileToCompare)
         {
             return !(sourceFile.Album != fileToCompare.Album ||
                 sourceFile.Artist != fileToCompare.Artist ||

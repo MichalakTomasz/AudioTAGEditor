@@ -7,11 +7,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AudioTAGEditor.ViewModels
 {
-    public class AudioFileViewModel : BindableBaseWithValidation
+    public class AudiofileViewModel : BindableBaseWithValidation
     {
         #region Constructor
 
-        public AudioFileViewModel(Guid id, IEventAggregator eventAggregator)
+        public AudiofileViewModel(Guid id, IEventAggregator eventAggregator)
         {
             ID = id;
             this.eventAggregator = eventAggregator;
@@ -30,8 +30,8 @@ namespace AudioTAGEditor.ViewModels
             set
             {
                 SetProperty(ref isChecked, value);
-                eventAggregator.GetEvent<AudioFileMessageSentEvent>()
-                    .Publish(new Commons.AudioFileMessage { IsSelectedFile = IsChecked });
+                eventAggregator.GetEvent<AudiofileMessageSentEvent>()
+                    .Publish(new Commons.AudiofileMessage { IsSelectedFile = IsChecked });
             }
         }
 

@@ -2,8 +2,8 @@
 
 namespace AudioTAGEditor.Services
 {
-    public interface IAudioFileComparerService
+    public interface IAudiofileComparerService
     {
-        bool AreTheSame(AudioFile sourceFile, AudioFile fileToCompare);
+        bool AreTheSame(Audiofile sourcefile, Audiofile fileToCompare);
     }
 }

@@ -7,20 +7,20 @@ using System.Linq;
 
 namespace AudioTAGEditor.Services
 {
-    public class AudioFileConverter : IAudioFileConverter
+    public class AudiofileConverter : IAudiofileConverter
     {
         private readonly IMapper mapper;
-        public AudioFileConverter(IMapper mapper)
+        public AudiofileConverter(IMapper mapper)
             => this.mapper = mapper;
 
-        public AudioFileViewModel AudioFileToAudioFileViewModel(
-            AudioFile audioFile, IEventAggregator eventAggregator)
-            => mapper.Map(audioFile, new AudioFileViewModel(audioFile.ID, eventAggregator));
+        public AudiofileViewModel AudioFileToAudioFileViewModel(
+            Audiofile audioFile, IEventAggregator eventAggregator)
+            => mapper.Map(audioFile, new AudiofileViewModel(audioFile.ID, eventAggregator));
 
-        public IEnumerable<AudioFileViewModel> AudioFilesToAudioFilesViewModel(
-            IEnumerable<AudioFile> audioFiles, IEventAggregator eventAggregator)
+        public IEnumerable<AudiofileViewModel> AudioFilesToAudioFilesViewModel(
+            IEnumerable<Audiofile> audioFiles, IEventAggregator eventAggregator)
         {
-            var result = new List<AudioFileViewModel>();
+            var result = new List<AudiofileViewModel>();
             audioFiles.ToList().ForEach(a =>
             {
                 var tempAudioFileViewModel = AudioFileToAudioFileViewModel(a, eventAggregator);
@@ -30,14 +30,14 @@ namespace AudioTAGEditor.Services
             return result;
         }
 
-        public AudioFileID3v1ViewModel AudioFileToAudioFileID3v1ViewModel(
-            AudioFile audioFile, IEventAggregator eventAggregator)
-            => mapper.Map(audioFile, new AudioFileID3v1ViewModel(audioFile.ID, eventAggregator));
+        public AudiofileID3v1ViewModel AudioFileToAudioFileID3v1ViewModel(
+            Audiofile audioFile, IEventAggregator eventAggregator)
+            => mapper.Map(audioFile, new AudiofileID3v1ViewModel(audioFile.ID, eventAggregator));
 
-        public IEnumerable<AudioFileID3v1ViewModel> AudioFilesToAudioFilesID3v1ViewModel(
-            IEnumerable<AudioFile> audioFiles, IEventAggregator eventAggregator)
+        public IEnumerable<AudiofileID3v1ViewModel> AudioFilesToAudioFilesID3v1ViewModel(
+            IEnumerable<Audiofile> audioFiles, IEventAggregator eventAggregator)
         {
-            var result = new List<AudioFileID3v1ViewModel>();
+            var result = new List<AudiofileID3v1ViewModel>();
             audioFiles.ToList().ForEach(a =>
             {
                 var tempAudioFileID3v1ViewModel = AudioFileToAudioFileID3v1ViewModel(a, eventAggregator);
@@ -47,13 +47,13 @@ namespace AudioTAGEditor.Services
             return result;
         }
 
-        public AudioFile AudioFileViewModelToAudioFile(
-            AudioFileViewModel audioFileViewModel)
-            => mapper.Map<AudioFile>(audioFileViewModel);
+        public Audiofile AudioFileViewModelToAudioFile(
+            AudiofileViewModel audioFileViewModel)
+            => mapper.Map<Audiofile>(audioFileViewModel);
 
-        public IEnumerable<AudioFile> AudioFilesViewModelToAudioFiles(IEnumerable<AudioFileViewModel> audioFilesViewModel)
+        public IEnumerable<Audiofile> AudioFilesViewModelToAudioFiles(IEnumerable<AudiofileViewModel> audioFilesViewModel)
         {
-            var result = new List<AudioFile>();
+            var result = new List<Audiofile>();
             audioFilesViewModel.ToList().ForEach(a =>
             {
                 var tempAudioFile = AudioFileViewModelToAudioFile(a);
@@ -63,17 +63,39 @@ namespace AudioTAGEditor.Services
             return result;
         }
 
-        public AudioFile AudioFileID3v1ViewModelToAudioFile(
-           AudioFileID3v1ViewModel audioFileID3v1ViewModel)
-           => mapper.Map<AudioFile>(audioFileID3v1ViewModel);
+        public Audiofile AudioFileID3v1ViewModelToAudioFile(
+           AudiofileID3v1ViewModel audioFileID3v1ViewModel)
+           => mapper.Map<Audiofile>(audioFileID3v1ViewModel);
 
-        public IEnumerable<AudioFile> AudioFilesID3v1ViewModelToAudioFiles(IEnumerable<AudioFileID3v1ViewModel> audioFilesID3v1ViewModel)
+        public IEnumerable<Audiofile> AudioFilesID3v1ViewModelToAudioFiles(IEnumerable<AudiofileID3v1ViewModel> audioFilesID3v1ViewModel)
         {
-            var result = new List<AudioFile>();
+            var result = new List<Audiofile>();
             audioFilesID3v1ViewModel.ToList().ForEach(a =>
             {
                 var tempAudioFile = AudioFileID3v1ViewModelToAudioFile(a);
                 result.Add(tempAudioFile);
+            });
+
+            return result;
+        }
+
+        public HistoryAudiofile AudioFileToHistoryAudioFile(Audiofile audioFile)
+        {
+            var historyAudioFile = mapper.Map<HistoryAudiofile>(audioFile);
+            historyAudioFile.CurrentFilename = historyAudioFile.Filename;
+
+            return historyAudioFile;
+        }
+
+        public IEnumerable<HistoryAudiofile> AudioFilesToHistoryAudioFiles(
+            IEnumerable<Audiofile> audioiles)
+        {
+            var result = new List<HistoryAudiofile>();
+            audioiles.ToList().ForEach(a =>
+            {
+                var historyAudioFile = mapper.Map<HistoryAudiofile>(a);
+                historyAudioFile.CurrentFilename = historyAudioFile.Filename;
+                result.Add(historyAudioFile);
             });
 
             return result;

@@ -5,16 +5,19 @@ using System.Collections.Generic;
 
 namespace AudioTAGEditor.Services
 {
-    public interface IAudioFileConverter
+    public interface IAudiofileConverter
     {
-        AudioFileViewModel AudioFileToAudioFileViewModel(AudioFile audioFile, IEventAggregator eventAggregator);
-        AudioFile AudioFileViewModelToAudioFile(AudioFileViewModel audioFileViewModel);
-        IEnumerable<AudioFileViewModel> AudioFilesToAudioFilesViewModel(IEnumerable<AudioFile> audioFiles, IEventAggregator eventAggregator);
-        IEnumerable<AudioFile> AudioFilesViewModelToAudioFiles(IEnumerable<AudioFileViewModel> audioFilesViewModel);
+        AudiofileViewModel AudioFileToAudioFileViewModel(Audiofile audioFile, IEventAggregator eventAggregator);
+        Audiofile AudioFileViewModelToAudioFile(AudiofileViewModel audioFileViewModel);
+        IEnumerable<AudiofileViewModel> AudioFilesToAudioFilesViewModel(IEnumerable<Audiofile> audioFiles, IEventAggregator eventAggregator);
+        IEnumerable<Audiofile> AudioFilesViewModelToAudioFiles(IEnumerable<AudiofileViewModel> audioFilesViewModel);
 
-        AudioFileID3v1ViewModel AudioFileToAudioFileID3v1ViewModel(AudioFile audioFile, IEventAggregator eventAggregator);
-        AudioFile AudioFileID3v1ViewModelToAudioFile(AudioFileID3v1ViewModel audioFileID3v1ViewModel);
-        IEnumerable<AudioFileID3v1ViewModel> AudioFilesToAudioFilesID3v1ViewModel(IEnumerable<AudioFile> audioFiles, IEventAggregator eventAggregator);
-        IEnumerable<AudioFile> AudioFilesID3v1ViewModelToAudioFiles(IEnumerable<AudioFileID3v1ViewModel> audioFilesID3v1ViewModel);
+        AudiofileID3v1ViewModel AudioFileToAudioFileID3v1ViewModel(Audiofile audioFile, IEventAggregator eventAggregator);
+        Audiofile AudioFileID3v1ViewModelToAudioFile(AudiofileID3v1ViewModel audioFileID3v1ViewModel);
+        IEnumerable<AudiofileID3v1ViewModel> AudioFilesToAudioFilesID3v1ViewModel(IEnumerable<Audiofile> audioFiles, IEventAggregator eventAggregator);
+        IEnumerable<Audiofile> AudioFilesID3v1ViewModelToAudioFiles(IEnumerable<AudiofileID3v1ViewModel> audioFilesID3v1ViewModel);
+
+        HistoryAudiofile AudioFileToHistoryAudioFile(Audiofile audioFile);
+        IEnumerable<HistoryAudiofile> AudioFilesToHistoryAudioFiles(IEnumerable<Audiofile> audioiles);
     }
 }

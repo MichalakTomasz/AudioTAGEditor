@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AudioTAGEditor.ViewModels
 {
-    public class AudioFileID3v1ViewModel :
-        AudioFileViewModel
+    public class AudiofileID3v1ViewModel :
+        AudiofileViewModel
     {
-        public AudioFileID3v1ViewModel(Guid id, IEventAggregator eventAggregator) : 
+        public AudiofileID3v1ViewModel(Guid id, IEventAggregator eventAggregator) : 
             base(id, eventAggregator) { }
         
         [MaxLength(30, ErrorMessage = max30characters)]

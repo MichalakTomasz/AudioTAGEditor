@@ -24,16 +24,16 @@ namespace AudioTAGEditor.Behaviors
                 typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
-        public IAudioFileConverter AudioFileConverter
+        public IAudiofileConverter AudioFileConverter
         {
-            get { return (IAudioFileConverter)GetValue(AudioFileConverterProperty); }
+            get { return (IAudiofileConverter)GetValue(AudioFileConverterProperty); }
             set { SetValue(AudioFileConverterProperty, value); }
         }
 
         public static readonly DependencyProperty AudioFileConverterProperty =
             DependencyProperty.Register(
                 "AudioFileConverter",
-                typeof(IAudioFileConverter),
+                typeof(IAudiofileConverter),
                 typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
@@ -76,16 +76,16 @@ namespace AudioTAGEditor.Behaviors
                 typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
-        public IAudioFileComparerService AudioFileComparerService
+        public IAudiofileComparerService AudioFileComparerService
         {
-            get { return (IAudioFileComparerService)GetValue(AudioFileComparerServiceProperty); }
+            get { return (IAudiofileComparerService)GetValue(AudioFileComparerServiceProperty); }
             set { SetValue(AudioFileComparerServiceProperty, value); }
         }
 
         public static readonly DependencyProperty AudioFileComparerServiceProperty =
             DependencyProperty.Register(
                 "AudioFileComparerService",
-                typeof(IAudioFileComparerService),
+                typeof(IAudiofileComparerService),
                 typeof(DataGridEditBehavior),
                 new PropertyMetadata(null));
 
@@ -189,7 +189,7 @@ namespace AudioTAGEditor.Behaviors
             if (e.Column.Header is CheckBox)
                 return;
 
-            var audioFileViewModel = e.Row.DataContext as AudioFileViewModel;
+            var audioFileViewModel = e.Row.DataContext as AudiofileViewModel;
             var audioFile = AudioFileConverter.AudioFileViewModelToAudioFile(audioFileViewModel);
 
             audioFileBeforeEdit =  audioFile;
@@ -199,7 +199,7 @@ namespace AudioTAGEditor.Behaviors
         {
             if (e.EditAction == DataGridEditAction.Commit)
             {
-                var audioFileViewModel = e.EditingElement.DataContext as AudioFileViewModel;
+                var audioFileViewModel = e.EditingElement.DataContext as AudiofileViewModel;
                 if (!audioFileViewModel.HasErrors)
                 {
                     var newAudioFile = AudioFileConverter.AudioFileViewModelToAudioFile(audioFileViewModel);
@@ -250,7 +250,7 @@ namespace AudioTAGEditor.Behaviors
 
         #region Private Fields
 
-        private AudioFile audioFileBeforeEdit;
+        private Audiofile audioFileBeforeEdit;
 
         #endregion// Private Fields
     }

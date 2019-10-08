@@ -26,10 +26,10 @@ namespace AudioTAGEditor.ViewModels
             [Dependency(nameof(ID3V1Service))]IID3Service id3v1Service,
             [Dependency(nameof(ID3V2Service))]IID3Service id3v2Service,
             IEventAggregator eventAggregator,
-            IAudioFileConverter audioFileConverter,
+            IAudiofileConverter audioFileConverter,
             IFileService fileService,
             IHistoryService historyService,
-            IAudioFileComparerService audioFileComparerService)
+            IAudiofileComparerService audioFileComparerService)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
             ID3v1Service = id3v1Service;
@@ -39,7 +39,7 @@ namespace AudioTAGEditor.ViewModels
             FileService = fileService;
             HistoryService = historyService;
             AudioFileComparerService = audioFileComparerService;
-            eventAggregator.GetEvent<AudioFileMessageSentEvent>()
+            eventAggregator.GetEvent<AudiofileMessageSentEvent>()
                 .Subscribe(ExecuteMessage);
         }
 
@@ -92,9 +92,9 @@ namespace AudioTAGEditor.ViewModels
 
         public IHistoryService HistoryService { get; }
 
-        public IAudioFileComparerService AudioFileComparerService { get; }
+        public IAudiofileComparerService AudioFileComparerService { get; }
 
-        public IAudioFileConverter AudioFileConverter { get; }
+        public IAudiofileConverter AudioFileConverter { get; }
 
         public IFileService FileService { get; }
 
@@ -108,8 +108,8 @@ namespace AudioTAGEditor.ViewModels
 
         #region DataGridFiles
 
-        private IEnumerable<AudioFileViewModel> audioFiles;
-        public IEnumerable<AudioFileViewModel> AudioFiles
+        private IEnumerable<AudiofileViewModel> audioFiles;
+        public IEnumerable<AudiofileViewModel> AudioFiles
         {
             get { return audioFiles; }
             set { SetProperty(ref audioFiles, value); }
@@ -296,7 +296,7 @@ namespace AudioTAGEditor.ViewModels
             SetTag(localTagType);
 
             RefreshGenres(localTagType);
-            var audioFiles = new List<AudioFileViewModel>();
+            var audioFiles = new List<AudiofileViewModel>();
             switch (localTagType)
             {
                 case TagType.ID3V1:
@@ -344,8 +344,8 @@ namespace AudioTAGEditor.ViewModels
                     break;
             }
             
-            var audioFilesFromHistory = resultHistoryObject.AudioFiles;
-            var tempAudioFileList = new List<AudioFileViewModel>();
+            var audioFilesFromHistory = resultHistoryObject.HistoryAudiofiles;
+            var tempAudioFileList = new List<AudiofileViewModel>();
             var selectedTag = GetTagTypeSelection();
 
             AudioFiles.ToList().ForEach(a =>
@@ -415,7 +415,7 @@ namespace AudioTAGEditor.ViewModels
             IsCheckedID3v2 = false;
         }
 
-        private void ExecuteMessage(AudioFileMessage message)
+        private void ExecuteMessage(AudiofileMessage message)
         {
             if (!message.IsSelectedFile)
                 AllFilesChecked = false;
