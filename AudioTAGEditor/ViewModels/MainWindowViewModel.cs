@@ -335,16 +335,16 @@ namespace AudioTAGEditor.ViewModels
             switch (historyStepType)
             {
                 case HistoryStepType.Undo:
-                    resultHistoryObject = HistoryService.Prev(audioFiles);
+                    resultHistoryObject = HistoryService.Undo(audioFiles);
                     break;
                 case HistoryStepType.Redo:
-                    resultHistoryObject = HistoryService.Next(audioFiles);
+                    resultHistoryObject = HistoryService.Redo(audioFiles);
                     break;
                 default:
                     break;
             }
             
-            var audioFilesFromHistory = resultHistoryObject.HistoryAudiofiles;
+            var audioFilesFromHistory = resultHistoryObject.Audiofiles;
             var tempAudioFileList = new List<AudiofileViewModel>();
             var selectedTag = GetTagTypeSelection();
 

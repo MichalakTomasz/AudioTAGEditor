@@ -11,10 +11,12 @@ namespace AudioTAGEditor.Services
 
         void Clear();
         HistoryObject Peek { get; }
-        HistoryObject Pop();
         void Push(Audiofile audioFile, ChangeActionType changeActionType, string path);
         void Push(IEnumerable<Audiofile> audioFiles, ChangeActionType changeActionType, string path);
-        HistoryObject Prev(IEnumerable<Audiofile> audioFiles);
-        HistoryObject Next(IEnumerable<Audiofile> audioFiles);
+        void Push(IEnumerable<Audiofile> audioFiles, ChangeActionType changeActionType, string path, string newFilename);
+        void Push(Audiofile audioFile, ChangeActionType changeActionType, string path, string newFilename);
+        HistoryObject Undo(IEnumerable<Audiofile> audioFiles);
+        HistoryObject Redo(IEnumerable<Audiofile> audioFiles);
+        string TryGetCurrentFilename(Guid id);
     }
 }

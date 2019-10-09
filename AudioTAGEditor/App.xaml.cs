@@ -36,7 +36,6 @@ namespace AudioTAGEditor
                 c.CreateMap<ID3v2Tag, Audiofile>();
                 c.CreateMap<Audiofile, ID3v1Tag>();
                 c.CreateMap<Audiofile, ID3v2Tag>();
-                c.CreateMap<Audiofile, HistoryAudiofile>();
             });
 
             var mapper = config.CreateMapper();

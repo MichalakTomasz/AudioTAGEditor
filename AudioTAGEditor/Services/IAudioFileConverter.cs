@@ -16,8 +16,5 @@ namespace AudioTAGEditor.Services
         Audiofile AudioFileID3v1ViewModelToAudioFile(AudiofileID3v1ViewModel audioFileID3v1ViewModel);
         IEnumerable<AudiofileID3v1ViewModel> AudioFilesToAudioFilesID3v1ViewModel(IEnumerable<Audiofile> audioFiles, IEventAggregator eventAggregator);
         IEnumerable<Audiofile> AudioFilesID3v1ViewModelToAudioFiles(IEnumerable<AudiofileID3v1ViewModel> audioFilesID3v1ViewModel);
-
-        HistoryAudiofile AudioFileToHistoryAudioFile(Audiofile audioFile);
-        IEnumerable<HistoryAudiofile> AudioFilesToHistoryAudioFiles(IEnumerable<Audiofile> audioiles);
     }
 }

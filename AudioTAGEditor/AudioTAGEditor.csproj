@@ -122,7 +122,6 @@
     <Compile Include="Behaviors\DataGridEditBehavior.cs" />
     <Compile Include="Models\Audiofile.cs" />
     <Compile Include="Models\ChangeActionType.cs" />
-    <Compile Include="Models\HistoryAudiofile.cs" />
     <Compile Include="Models\HistoryObject.cs" />
     <Compile Include="Models\HistoryStepType.cs" />
     <Compile Include="Services\AudiofileComparerService.cs" />

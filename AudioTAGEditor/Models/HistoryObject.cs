@@ -6,6 +6,6 @@ namespace AudioTAGEditor.Models
     {
         public string Path { get; set; }
         public ChangeActionType ChangeActionType { get; set; }
-        public IEnumerable<HistoryAudiofile> HistoryAudiofiles { get; set; }
+        public IEnumerable<Audiofile> Audiofiles { get; set; }
     }
 }

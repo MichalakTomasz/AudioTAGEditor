@@ -40,7 +40,8 @@ namespace AudioTAGEditor.Services
             var result = new List<AudiofileID3v1ViewModel>();
             audioFiles.ToList().ForEach(a =>
             {
-                var tempAudioFileID3v1ViewModel = AudioFileToAudioFileID3v1ViewModel(a, eventAggregator);
+                var tempAudioFileID3v1ViewModel = 
+                AudioFileToAudioFileID3v1ViewModel(a, eventAggregator);
                 result.Add(tempAudioFileID3v1ViewModel);
             });
 
@@ -51,7 +52,8 @@ namespace AudioTAGEditor.Services
             AudiofileViewModel audioFileViewModel)
             => mapper.Map<Audiofile>(audioFileViewModel);
 
-        public IEnumerable<Audiofile> AudioFilesViewModelToAudioFiles(IEnumerable<AudiofileViewModel> audioFilesViewModel)
+        public IEnumerable<Audiofile> AudioFilesViewModelToAudioFiles(
+            IEnumerable<AudiofileViewModel> audioFilesViewModel)
         {
             var result = new List<Audiofile>();
             audioFilesViewModel.ToList().ForEach(a =>
@@ -67,35 +69,14 @@ namespace AudioTAGEditor.Services
            AudiofileID3v1ViewModel audioFileID3v1ViewModel)
            => mapper.Map<Audiofile>(audioFileID3v1ViewModel);
 
-        public IEnumerable<Audiofile> AudioFilesID3v1ViewModelToAudioFiles(IEnumerable<AudiofileID3v1ViewModel> audioFilesID3v1ViewModel)
+        public IEnumerable<Audiofile> AudioFilesID3v1ViewModelToAudioFiles(
+            IEnumerable<AudiofileID3v1ViewModel> audioFilesID3v1ViewModel)
         {
             var result = new List<Audiofile>();
             audioFilesID3v1ViewModel.ToList().ForEach(a =>
             {
                 var tempAudioFile = AudioFileID3v1ViewModelToAudioFile(a);
                 result.Add(tempAudioFile);
-            });
-
-            return result;
-        }
-
-        public HistoryAudiofile AudioFileToHistoryAudioFile(Audiofile audioFile)
-        {
-            var historyAudioFile = mapper.Map<HistoryAudiofile>(audioFile);
-            historyAudioFile.CurrentFilename = historyAudioFile.Filename;
-
-            return historyAudioFile;
-        }
-
-        public IEnumerable<HistoryAudiofile> AudioFilesToHistoryAudioFiles(
-            IEnumerable<Audiofile> audioiles)
-        {
-            var result = new List<HistoryAudiofile>();
-            audioiles.ToList().ForEach(a =>
-            {
-                var historyAudioFile = mapper.Map<HistoryAudiofile>(a);
-                historyAudioFile.CurrentFilename = historyAudioFile.Filename;
-                result.Add(historyAudioFile);
             });
 
             return result;
