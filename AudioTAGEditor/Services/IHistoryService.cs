@@ -14,7 +14,7 @@ namespace AudioTAGEditor.Services
         void Clear();
         void Add(Audiofile audioFile, ChangeActionType changeActionType, string path);
         void Add(IEnumerable<Audiofile> audioFiles, ChangeActionType changeActionType, string path);
-        void Add(IEnumerable<Audiofile> audioFiles, ChangeActionType changeActionType, string path, string newFilename);
+        void Add(IEnumerable<Audiofile> audioFiles, ChangeActionType changeActionType, string path, IEnumerable<string> newFilenames);
         void Add(Audiofile audioFile, ChangeActionType changeActionType, string path, string newFilename);
         HistoryObject Undo(IEnumerable<Audiofile> audioFiles);
         HistoryObject Redo(IEnumerable<Audiofile> audioFiles);

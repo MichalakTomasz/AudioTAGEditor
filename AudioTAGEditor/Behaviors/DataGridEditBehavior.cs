@@ -214,7 +214,7 @@ namespace AudioTAGEditor.Behaviors
 
                             var oldFilePath = $"{SelectedPath}{oldFilename}";
                             FileService.Rename(oldFilePath, newAudioFile.Filename);
-                            HistoryService.Add(audioFileBeforeEdit, ChangeActionType.Filename, SelectedPath);
+                            HistoryService.Add(audioFileBeforeEdit, ChangeActionType.Filename, SelectedPath, newAudioFile.Filename);
                             UpdateHistoryProperties();
                             ExplorerTreeView.Refresh();
                             break;

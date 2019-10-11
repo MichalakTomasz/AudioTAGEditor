@@ -466,7 +466,7 @@ namespace AudioTAGEditor.ViewModels
                         break;
                 }
 
-                for (var i = 0; i < audiofiles.Count; i++)
+                for (var i = 0; i < actualCollection.Count; i++)
                 {
                     if (!AudioFileComparerService
                         .AreTheSame(audiofiles[i], actualCollection[i]))
@@ -477,13 +477,14 @@ namespace AudioTAGEditor.ViewModels
                         var path = HistoryService.LastChanges.Path;
                         if (currentFilename != audiofiles[i].Filename)
                         {
-                            var cFilename = $"{path}{currentFilename}";
-                            FileService.Rename(cFilename, audiofiles[i].Filename);
+                            var currentFilepath = $"{path}{currentFilename}";
+                            FileService.Rename(currentFilepath, audiofiles[i].Filename);
                         }
 
                         UpdateTag(audiofiles[i], path);
                     }
                 }
+
                 HistoryService.Clear();
                 UpdateHistoryProperties();
             }

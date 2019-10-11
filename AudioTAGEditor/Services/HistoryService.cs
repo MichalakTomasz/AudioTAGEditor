@@ -38,10 +38,15 @@ namespace AudioTAGEditor.Services
             IEnumerable<Audiofile> audioFiles,
             ChangeActionType changeActionType,
             string path,
-            string newFilename)
+            IEnumerable<string> newFilenames)
         {
             if (changeActionType == ChangeActionType.Filename)
-                audioFiles.ToList().ForEach(a => SetCurrentFilename(a.ID, a.Filename));
+            {
+                var tempAudioFiles = audioFiles.ToList();
+                var tempNewAudioFiles = newFilenames.ToList();
+                for (int i = 0; i < audioFiles.Count(); i++)
+                    SetCurrentFilename(tempAudioFiles[i].ID, tempNewAudioFiles[i]);
+            } 
             else
                 throw new Exception("Wrong call Push method parameters.");
 
@@ -64,7 +69,7 @@ namespace AudioTAGEditor.Services
            string newFilename)
         {
             if (changeActionType == ChangeActionType.Filename)
-                SetCurrentFilename(audioFile.ID, audioFile.Filename);
+                SetCurrentFilename(audioFile.ID, newFilename);
             else
                 throw new Exception("Wrong call Push method parameters.");
 
