@@ -190,7 +190,7 @@ namespace AudioTAGEditor.Behaviors
                 return;
 
             var audioFileViewModel = e.Row.DataContext as AudiofileViewModel;
-            var audioFile = AudioFileConverter.AudioFileViewModelToAudioFile(audioFileViewModel);
+            var audioFile = AudioFileConverter.AudiofileViewModelToAudiofile(audioFileViewModel);
 
             audioFileBeforeEdit =  audioFile;
         }
@@ -202,7 +202,7 @@ namespace AudioTAGEditor.Behaviors
                 var audioFileViewModel = e.EditingElement.DataContext as AudiofileViewModel;
                 if (!audioFileViewModel.HasErrors)
                 {
-                    var newAudioFile = AudioFileConverter.AudioFileViewModelToAudioFile(audioFileViewModel);
+                    var newAudioFile = AudioFileConverter.AudiofileViewModelToAudiofile(audioFileViewModel);
                     var audioFileFullPath = $"{SelectedPath}{newAudioFile.Filename}";
 
                     switch (e.Column.Header)

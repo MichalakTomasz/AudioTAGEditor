@@ -181,7 +181,7 @@ namespace AudioTAGEditor.Services
 
         public void ResetPosition()
             => Position = history.Count;
-
+                
         #endregion // Methods
 
         #region Properties
@@ -189,6 +189,8 @@ namespace AudioTAGEditor.Services
         public int Count { get; private set; }
         public int Position { get; private set; }
 
+        public HistoryObject LastChanges => history.LastOrDefault();
+                
         #endregion // Properties
 
         #region Fields

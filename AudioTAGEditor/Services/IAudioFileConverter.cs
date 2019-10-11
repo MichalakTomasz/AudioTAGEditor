@@ -7,14 +7,14 @@ namespace AudioTAGEditor.Services
 {
     public interface IAudiofileConverter
     {
-        AudiofileViewModel AudioFileToAudioFileViewModel(Audiofile audioFile, IEventAggregator eventAggregator);
-        Audiofile AudioFileViewModelToAudioFile(AudiofileViewModel audioFileViewModel);
-        IEnumerable<AudiofileViewModel> AudioFilesToAudioFilesViewModel(IEnumerable<Audiofile> audioFiles, IEventAggregator eventAggregator);
-        IEnumerable<Audiofile> AudioFilesViewModelToAudioFiles(IEnumerable<AudiofileViewModel> audioFilesViewModel);
+        AudiofileViewModel AudiofileToAudiofileViewModel(Audiofile audioFile, IEventAggregator eventAggregator);
+        Audiofile AudiofileViewModelToAudiofile(AudiofileViewModel audiofileViewModel);
+        IEnumerable<AudiofileViewModel> AudiofilesToAudiofilesViewModel(IEnumerable<Audiofile> audiofiles, IEventAggregator eventAggregator);
+        IEnumerable<Audiofile> AudiofilesViewModelToAudiofiles(IEnumerable<AudiofileViewModel> audiofilesViewModel);
 
-        AudiofileID3v1ViewModel AudioFileToAudioFileID3v1ViewModel(Audiofile audioFile, IEventAggregator eventAggregator);
-        Audiofile AudioFileID3v1ViewModelToAudioFile(AudiofileID3v1ViewModel audioFileID3v1ViewModel);
-        IEnumerable<AudiofileID3v1ViewModel> AudioFilesToAudioFilesID3v1ViewModel(IEnumerable<Audiofile> audioFiles, IEventAggregator eventAggregator);
-        IEnumerable<Audiofile> AudioFilesID3v1ViewModelToAudioFiles(IEnumerable<AudiofileID3v1ViewModel> audioFilesID3v1ViewModel);
+        AudiofileID3v1ViewModel AudiofileToAudiofileID3v1ViewModel(Audiofile audiofile, IEventAggregator eventAggregator);
+        Audiofile AudiofileID3v1ViewModelToAudiofile(AudiofileID3v1ViewModel audiofileID3v1ViewModel);
+        IEnumerable<AudiofileID3v1ViewModel> AudiofilesToAudiofilesID3v1ViewModel(IEnumerable<Audiofile> audiofiles, IEventAggregator eventAggregator);
+        IEnumerable<Audiofile> AudiofilesID3v1ViewModelToAudiofiles(IEnumerable<AudiofileID3v1ViewModel> audiofilesID3v1ViewModel);
     }
 }

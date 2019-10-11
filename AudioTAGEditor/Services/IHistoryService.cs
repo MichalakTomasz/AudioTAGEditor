@@ -8,6 +8,7 @@ namespace AudioTAGEditor.Services
     {
         int Count { get; }
         int Position { get; }
+        HistoryObject LastChanges { get; }
 
         void ResetPosition();
         void Clear();

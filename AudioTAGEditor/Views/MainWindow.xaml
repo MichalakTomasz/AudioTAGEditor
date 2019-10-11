@@ -92,7 +92,7 @@
                 Grid.Column="1"
                 AutoGenerateColumns="False"
                 IsEnabled="{Binding IsEnabledDataGrid}"
-                ItemsSource="{Binding AudioFiles, Mode=TwoWay}"
+                ItemsSource="{Binding Audiofiles, Mode=TwoWay}"
                 CanUserAddRows="False"
                 CanUserSortColumns="False"
                 SelectionMode="Single">
