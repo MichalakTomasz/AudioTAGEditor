@@ -16,13 +16,11 @@ namespace AudioTAGEditor.Services
 
         #region Methods
 
-        public void Push(
+        public void Add(
             IEnumerable<Audiofile> audioFiles,
             ChangeActionType changeActionType,
             string path)
         {
-            reserveHistory.Clear();
-
             var historyObject = new HistoryObject
             {
                 Path = path,
@@ -30,12 +28,13 @@ namespace AudioTAGEditor.Services
                 Audiofiles = audioFiles
             };
 
-            history.Push(historyObject);
-            reserveHistory.Clear();
-            RefreshStateProperties();
+            if (Position < history.Count) history.RemoveAt(Position);
+            history.Add(historyObject);
+            Position = history.Count;
+            Count = history.Count;
         }
 
-        public void Push(
+        public void Add(
             IEnumerable<Audiofile> audioFiles,
             ChangeActionType changeActionType,
             string path,
@@ -46,20 +45,19 @@ namespace AudioTAGEditor.Services
             else
                 throw new Exception("Wrong call Push method parameters.");
 
-            Push(audioFiles, changeActionType,
-                path);
+            Add(audioFiles, changeActionType, path);
         }
 
-        public void Push(
+        public void Add(
             Audiofile audioFile,
             ChangeActionType changeActionType,
             string path)
         {
             var audioFileCollection = new List<Audiofile> { audioFile };
-            Push(audioFileCollection, changeActionType, path);
+            Add(audioFileCollection, changeActionType, path);
         }
 
-        public void Push(
+        public void Add(
            Audiofile audioFile,
            ChangeActionType changeActionType,
            string path,
@@ -70,14 +68,16 @@ namespace AudioTAGEditor.Services
             else
                 throw new Exception("Wrong call Push method parameters.");
 
-            Push(audioFile, changeActionType, path);
+            Add(audioFile, changeActionType, path);
         }
 
         public HistoryObject Undo(IEnumerable<Audiofile> audioFiles)
         {
-            if (history.Count > 0)
+            if (Position > 0)
             {
-                currentHistoryObject = history.Pop();
+
+                currentHistoryObject = history[--Position];
+                
                 var historyAudioFiles = currentHistoryObject.Audiofiles;
                 var audioFilesToHistory = new List<Audiofile>();
 
@@ -105,19 +105,18 @@ namespace AudioTAGEditor.Services
                     ChangeActionType = currentHistoryObject.ChangeActionType
                 };
 
-                reserveHistory.Push(historyObject);
-                RefreshStateProperties();
+                history[Position] = historyObject;
 
                 return resultHistoryObject;
             }
-            return default;
+            throw new Exception("Wrong data");
         }
 
         public HistoryObject Redo(IEnumerable<Audiofile> audioFiles)
         {
-            if (reserveHistory.Count > 0)
+            if (Position < Count)
             {
-                currentHistoryObject = reserveHistory.Pop();
+                currentHistoryObject = history[Position++];
                 var historyAudioFiles = currentHistoryObject.Audiofiles;
                 var audioFilesToHistory = new List<Audiofile>();
 
@@ -145,36 +144,31 @@ namespace AudioTAGEditor.Services
                     Audiofiles = historyAudioFiles
                 };
 
-                history.Push(historyObject);
-                RefreshStateProperties();
+                history[Position -1] = historyObject;
 
                 return resultHistoryObject;
             }
-            return default;
+            throw new Exception("Wrong data");
         }
 
         public void Clear()
         {
             history.Clear();
-            RefreshStateProperties();
+            Count = 0;
+            Position = 0;
         }
-
-        private int GetHistoryCount()
-            => history.Count + reserveHistory.Count;
-
-        private void RefreshStateProperties()
-        {
-            Position = history.Count;
-            Count = GetHistoryCount();
-        }
-
-        public string TryGetCurrentFilename(Guid id)
+                
+        public string GetCurrentFilename(Guid id)
         {
             var hasKey = currentFilenames.ContainsKey(id);
             if (hasKey)
                 return currentFilenames[id];
             else
-                return default; 
+                return history
+                    .FirstOrDefault()?
+                    .Audiofiles?
+                    .FirstOrDefault(a => a.ID == id)?
+                    .Filename; 
         }
 
         private void SetCurrentFilename(Guid id, string filename)
@@ -184,14 +178,13 @@ namespace AudioTAGEditor.Services
             else
                 currentFilenames.Add(id, filename);
         }
-            
+
+        public void ResetPosition()
+            => Position = history.Count;
 
         #endregion // Methods
 
         #region Properties
-
-        public HistoryObject Peek
-            => history.Peek();
 
         public int Count { get; private set; }
         public int Position { get; private set; }
@@ -200,11 +193,10 @@ namespace AudioTAGEditor.Services
 
         #region Fields
 
-        private readonly Stack<HistoryObject> history = new Stack<HistoryObject>();
-        private readonly Stack<HistoryObject> reserveHistory = new Stack<HistoryObject>();
+        private readonly List<HistoryObject> history = new List<HistoryObject>();
         private readonly IAudiofileConverter audioFileConverter;
         private HistoryObject currentHistoryObject;
-        private IDictionary<Guid, string> currentFilenames = new Dictionary<Guid, string>();
+        private Dictionary<Guid, string> currentFilenames = new Dictionary<Guid, string>();
 
         #endregion // Fields
     }

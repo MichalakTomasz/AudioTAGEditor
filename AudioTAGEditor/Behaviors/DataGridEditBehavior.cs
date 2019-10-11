@@ -214,7 +214,7 @@ namespace AudioTAGEditor.Behaviors
 
                             var oldFilePath = $"{SelectedPath}{oldFilename}";
                             FileService.Rename(oldFilePath, newAudioFile.Filename);
-                            HistoryService.Push(audioFileBeforeEdit, ChangeActionType.Filename, SelectedPath);
+                            HistoryService.Add(audioFileBeforeEdit, ChangeActionType.Filename, SelectedPath);
                             UpdateHistoryProperties();
                             ExplorerTreeView.Refresh();
                             break;
@@ -225,14 +225,14 @@ namespace AudioTAGEditor.Behaviors
                             if (IsCheckedID3v1)
                             {
                                 ID3v1Service.UpdateTag(newAudioFile, audioFileFullPath, TagVersion.ID3V11);
-                                HistoryService.Push(audioFileBeforeEdit, ChangeActionType.ID3v1, SelectedPath);
+                                HistoryService.Add(audioFileBeforeEdit, ChangeActionType.ID3v1, SelectedPath);
                                 UpdateHistoryProperties();
                             }
                                 
                             if (IsCheckedID3v2)
                             {
                                 ID3v2Service.UpdateTag(newAudioFile, audioFileFullPath, TagVersion.ID3V20);
-                                HistoryService.Push(audioFileBeforeEdit, ChangeActionType.ID3v2, SelectedPath);
+                                HistoryService.Add(audioFileBeforeEdit, ChangeActionType.ID3v2, SelectedPath);
                                 UpdateHistoryProperties();
                             }
                             break;
