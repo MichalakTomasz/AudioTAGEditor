@@ -197,7 +197,7 @@ namespace AudioTAGEditor.Behaviors
 
         private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            if (e.EditAction == DataGridEditAction.Commit)
+            if (e.EditAction == DataGridEditAction.Commit && !(e.Column.Header is CheckBox))
             {
                 var audioFileViewModel = e.EditingElement.DataContext as AudiofileViewModel;
                 if (!audioFileViewModel.HasErrors)
@@ -214,7 +214,12 @@ namespace AudioTAGEditor.Behaviors
 
                             var oldFilePath = $"{SelectedPath}{oldFilename}";
                             FileService.Rename(oldFilePath, newAudioFile.Filename);
-                            HistoryService.Add(audioFileBeforeEdit, ChangeActionType.Filename, SelectedPath, newAudioFile.Filename);
+                            HistoryService.Add(
+                                audioFileBeforeEdit, 
+                                ChangeActionType.Filename, 
+                                SelectedPath, 
+                                newAudioFile.Filename);
+
                             UpdateHistoryProperties();
                             ExplorerTreeView.Refresh();
                             break;

@@ -120,6 +120,7 @@
     </Compile>
     <Compile Include="Behaviors\DataGridContextMenuDeactivateTagBehavior.cs" />
     <Compile Include="Behaviors\DataGridEditBehavior.cs" />
+    <Compile Include="Behaviors\HistoryBehavior.cs" />
     <Compile Include="Models\Audiofile.cs" />
     <Compile Include="Models\ChangeActionType.cs" />
     <Compile Include="Models\HistoryObject.cs" />

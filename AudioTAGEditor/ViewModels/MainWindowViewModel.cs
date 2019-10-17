@@ -14,12 +14,6 @@ namespace AudioTAGEditor.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        #region Fields
-
-        private readonly IEventAggregator eventAggregator;
-
-        #endregion//Fields
-
         #region Constructor
 
         public MainWindowViewModel(
@@ -29,16 +23,16 @@ namespace AudioTAGEditor.ViewModels
             IAudiofileConverter audioFileConverter,
             IFileService fileService,
             IHistoryService historyService,
-            IAudiofileComparerService audioFileComparerService)
+            IAudiofileComparerService audiofileComparerService)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
             ID3v1Service = id3v1Service;
             ID3v2Service = id3v2Service;
-            this.eventAggregator = eventAggregator;
-            AudioFileConverter = audioFileConverter;
+            EventAggregator = eventAggregator;
+            AudiofileConverter = audioFileConverter;
             FileService = fileService;
             HistoryService = historyService;
-            AudioFileComparerService = audioFileComparerService;
+            AudiofileComparerService = audiofileComparerService;
             eventAggregator.GetEvent<AudiofileMessageSentEvent>()
                 .Subscribe(ExecuteMessage);
         }
@@ -74,11 +68,11 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref filesFilter, value); }
         }
 
-        private IEnumerable<string> filePathCollection;
-        public IEnumerable<string> FilePathCollection
+        private IEnumerable<string> filepathCollection;
+        public IEnumerable<string> FilepathCollection
         {
-            get { return filePathCollection; }
-            set { SetProperty(ref filePathCollection, value); }
+            get { return filepathCollection; }
+            set { SetProperty(ref filepathCollection, value); }
         }
 
         private string selectedPath;
@@ -91,16 +85,12 @@ namespace AudioTAGEditor.ViewModels
         #region DataGridBehaviors
 
         public IHistoryService HistoryService { get; }
-
-        public IAudiofileComparerService AudioFileComparerService { get; }
-
-        public IAudiofileConverter AudioFileConverter { get; }
-
+        public IAudiofileComparerService AudiofileComparerService { get; }
+        public IAudiofileConverter AudiofileConverter { get; }
         public IFileService FileService { get; }
-
         public IID3Service ID3v1Service { get; }
-
         public IID3Service ID3v2Service { get; }
+        public IEventAggregator EventAggregator { get;}
 
         #endregion // DatagridEditBehaviors
 
@@ -248,7 +238,7 @@ namespace AudioTAGEditor.ViewModels
 
         private TagType ResolveTagToActivate()
         {
-            var hasID3v2 = FilePathCollection
+            var hasID3v2 = FilepathCollection
                 .Any(f => ID3v2Service.HasTag(f));
 
             if (hasID3v2)
@@ -288,7 +278,7 @@ namespace AudioTAGEditor.ViewModels
             HistoryService.Clear();
             UpdateHistoryProperties();
 
-            IsEnabledDataGrid = (FilePathCollection?.Count() > 0);
+            IsEnabledDataGrid = (FilepathCollection?.Count() > 0);
             if (!IsEnabledDataGrid) return;
 
             var localTagType = tagType;
@@ -302,22 +292,22 @@ namespace AudioTAGEditor.ViewModels
             switch (localTagType)
             {
                 case TagType.ID3V1:
-                    FilePathCollection.ToList().ForEach(file =>
+                    FilepathCollection.ToList().ForEach(file =>
                     {
                         var audioFile = ID3v1Service.GetTag(file);
                         var audioFileViewModel =
-                        AudioFileConverter
-                        .AudiofileToAudiofileID3v1ViewModel(audioFile, eventAggregator);
+                        AudiofileConverter
+                        .AudiofileToAudiofileID3v1ViewModel(audioFile, EventAggregator);
                         audioFiles.Add(audioFileViewModel);
                     }); 
                     break;
                 case TagType.ID3V2:
-                    FilePathCollection.ToList().ForEach(file =>
+                    FilepathCollection.ToList().ForEach(file =>
                     {
                         var audioFile = ID3v2Service.GetTag(file);
                         var audioFileViewModel =
-                        AudioFileConverter
-                        .AudiofileToAudiofileViewModel(audioFile, eventAggregator);
+                        AudiofileConverter
+                        .AudiofileToAudiofileViewModel(audioFile, EventAggregator);
                         audioFiles.Add(audioFileViewModel);
                     });
                     break;
@@ -327,58 +317,7 @@ namespace AudioTAGEditor.ViewModels
             AllFilesChecked = true;
             CheckAllFilesCommandExecute();
         }
-
-        private void SetHistoryStepToMainGrid(HistoryStepType historyStepType)
-        {
-            var audioFiles = AudioFileConverter
-                .AudiofilesViewModelToAudiofiles(Audiofiles);
-
-            var resultHistoryObject = new HistoryObject();
-            switch (historyStepType)
-            {
-                case HistoryStepType.Undo:
-                    resultHistoryObject = HistoryService.Undo(audioFiles);
-                    break;
-                case HistoryStepType.Redo:
-                    resultHistoryObject = HistoryService.Redo(audioFiles);
-                    break;
-                default:
-                    break;
-            }
-            
-            var audioFilesFromHistory = resultHistoryObject.Audiofiles;
-            var tempAudioFileList = new List<AudiofileViewModel>();
-            var selectedTag = GetTagTypeSelection();
-
-            Audiofiles.ToList().ForEach(a =>
-            {
-                var fileToReplace = audioFilesFromHistory
-                .FirstOrDefault(f => f.ID == a.ID);
-
-                if (fileToReplace != null)
-                {
-                    switch (selectedTag)
-                    {
-                        case TagType.ID3V1:
-                            var tempAudioFileID3v1ViewModel = AudioFileConverter
-                            .AudiofileToAudiofileID3v1ViewModel(fileToReplace, eventAggregator);
-                            tempAudioFileList.Add(tempAudioFileID3v1ViewModel);
-                            break;
-                        case TagType.ID3V2:
-                            var tempAudioFileViewModel = AudioFileConverter
-                            .AudiofileToAudiofileViewModel(fileToReplace, eventAggregator);
-                            tempAudioFileList.Add(tempAudioFileViewModel);
-                            break;
-                    }
-                }
-                else
-                    tempAudioFileList.Add(a);
-            });
-
-            Audiofiles = tempAudioFileList;
-            UpdateHistoryProperties();
-        }
-
+        
         private void UpdateHistoryProperties()
         {
             HistoryCount = HistoryService.Count;
@@ -396,17 +335,6 @@ namespace AudioTAGEditor.ViewModels
                     IsCheckedID3v2 = true;
                     break;
             }
-        }
-
-        private TagType GetTagTypeSelection()
-        {
-            if (IsCheckedID3v1)
-                return TagType.ID3V1;
-
-            if (IsCheckedID3v2)
-                return TagType.ID3V2;
-
-            return TagType.none;
         }
 
         private void ResetMainGrid()
@@ -428,84 +356,18 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
-        private void UndoCommandExecute()
-            => SetHistoryStepToMainGrid(HistoryStepType.Undo);
+        private void UndoCommandExecute() { }
 
         private bool UndoCommandCanExecute()
             => HistoryPosition > 0;
 
-        private void RedoCommandExecute()
-            => SetHistoryStepToMainGrid(HistoryStepType.Redo);
+        private void RedoCommandExecute() { }
 
         private bool RedoCommandCanExecute()
             => HistoryCount > 0 && HistoryPosition < HistoryCount;
 
-        private void HistoryConfirmCommandExecute()
-        {
-            if (!Audiofiles.Any(a => a.HasErrors))
-            {
-                var actualCollection = HistoryService
-                    .LastChanges
-                    .Audiofiles
-                    .ToList();
-
-                List<Audiofile> audiofiles = null;
-                var selectedTag = GetTagTypeSelection();
-                switch (selectedTag)
-                {
-                    case TagType.ID3V1:
-                        audiofiles = AudioFileConverter
-                            .AudiofilesID3v1ViewModelToAudiofiles(
-                            Audiofiles as IEnumerable<AudiofileID3v1ViewModel>)
-                            .ToList();
-                        break;
-                    case TagType.ID3V2:
-                        audiofiles = AudioFileConverter
-                            .AudiofilesViewModelToAudiofiles(Audiofiles)
-                            .ToList();
-                        break;
-                }
-
-                for (var i = 0; i < actualCollection.Count; i++)
-                {
-                    if (!AudioFileComparerService
-                        .AreTheSame(audiofiles[i], actualCollection[i]))
-                    {
-                        var currentFilename = HistoryService
-                            .GetCurrentFilename(actualCollection[i].ID);
-
-                        var path = HistoryService.LastChanges.Path;
-                        if (currentFilename != audiofiles[i].Filename)
-                        {
-                            var currentFilepath = $"{path}{currentFilename}";
-                            FileService.Rename(currentFilepath, audiofiles[i].Filename);
-                        }
-
-                        UpdateTag(audiofiles[i], path);
-                    }
-                }
-
-                HistoryService.Clear();
-                UpdateHistoryProperties();
-            }
-        }
-
-        private void UpdateTag(Audiofile audiofile, string path)
-        {
-            var filepath = $"{path}{audiofile.Filename}";
-            switch (audiofile.TagType)
-            {
-                case TagType.ID3V1:
-                    ID3v1Service
-                        .UpdateTag(audiofile, filepath, TagVersion.ID3V11);
-                    break;
-                case TagType.ID3V2:
-                    ID3v2Service
-                        .UpdateTag(audiofile, filepath, TagVersion.ID3V24);
-                    break;
-            }
-        }
-
+        private void HistoryConfirmCommandExecute() { }
+        
         private bool CheckID3v1CommandCanExecute()
             => IsEnabledDataGrid;
 
@@ -524,6 +386,6 @@ namespace AudioTAGEditor.ViewModels
         private bool HistoryCancelCommandCanExectute()
             => HistoryCount > 0 && HistoryPosition < HistoryCount;
 
-        #endregion//Methods
+        #endregion // Methods
     }
 }

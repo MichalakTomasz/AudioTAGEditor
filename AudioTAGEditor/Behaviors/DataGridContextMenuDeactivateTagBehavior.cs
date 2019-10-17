@@ -108,6 +108,15 @@ namespace AudioTAGEditor.Behaviors
         {
             if (audioFileViewModel != null)
             {
+                var tagType = audioFileViewModel.TagType.ToString();
+                if (MessageBox.Show($"You are trying to remove {tagType} " +
+                    "Tag from file. After that you wouldn't be able to " + 
+                    "restore tag. Are you sure whether remove that tag or not?",
+                    "Attention",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                    return;
+
                 var fileFullPath = $"{SelectedPath}{audioFileViewModel.Filename}";
                 switch (audioFileViewModel.TagType)
                 {

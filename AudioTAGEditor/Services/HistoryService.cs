@@ -9,8 +9,13 @@ namespace AudioTAGEditor.Services
     {
         #region Constructor
 
-        public HistoryService(IAudiofileConverter audioFileConverter)
-            => this.audioFileConverter = audioFileConverter;
+        public HistoryService(
+            IAudiofileConverter audioFileConverter,
+            IAudiofileComparerService audiofileComparer)
+        {
+            this.audioFileConverter = audioFileConverter;
+            this.audiofileComparer = audiofileComparer;
+        }
 
         #endregion //Constructor
 
@@ -161,8 +166,14 @@ namespace AudioTAGEditor.Services
             history.Clear();
             Count = 0;
             Position = 0;
+            currentFilenames.Clear();
         }
-                
+
+        /// <summary>
+        /// Gets current filename by analyzing all history changes until now.
+        /// </summary>
+        /// <param name="id">File identifier.</param>
+        /// <returns>Returns string filename.</returns>
         public string GetCurrentFilename(Guid id)
         {
             var hasKey = currentFilenames.ContainsKey(id);
@@ -184,6 +195,29 @@ namespace AudioTAGEditor.Services
                 currentFilenames.Add(id, filename);
         }
 
+
+        /// <summary>
+        /// Checks if file at specified ID has any changes since current history position
+        /// </summary>
+        /// <param name="id">Identifier of file</param>
+        /// <returns>Boolean result</returns>
+        public bool HasChangesSinceCurrentHistoryPosition(Guid id)
+        {
+            return history.Where((h, i) => i >= Position)?
+               .SelectMany(s => s.Audiofiles.Where(a => a.ID == id))?
+               .Any() ?? false;
+        }
+
+        public bool HasTagChangesSienceCurrentPosition(Audiofile audiofile)
+        {
+            if (!HasChangesSinceCurrentHistoryPosition(audiofile.ID))
+                return false;
+
+            return history.Where((h, i) => i >= Position)?
+               .SelectMany(s => s.Audiofiles.Where(a => a.ID == audiofile.ID))?
+               .Any(a => !audiofileComparer.AreTheSameTags(audiofile, a)) ?? false;
+        }
+
         public void ResetPosition()
             => Position = history.Count;
                 
@@ -193,15 +227,14 @@ namespace AudioTAGEditor.Services
 
         public int Count { get; private set; }
         public int Position { get; private set; }
-
-        public HistoryObject LastChanges => history.LastOrDefault();
-                
+                        
         #endregion // Properties
 
         #region Fields
 
         private readonly List<HistoryObject> history = new List<HistoryObject>();
         private readonly IAudiofileConverter audioFileConverter;
+        private readonly IAudiofileComparerService audiofileComparer;
         private HistoryObject currentHistoryObject;
         private Dictionary<Guid, string> currentFilenames = new Dictionary<Guid, string>();
 

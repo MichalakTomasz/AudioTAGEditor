@@ -8,7 +8,6 @@ namespace AudioTAGEditor.Services
     {
         int Count { get; }
         int Position { get; }
-        HistoryObject LastChanges { get; }
 
         void ResetPosition();
         void Clear();
@@ -19,5 +18,7 @@ namespace AudioTAGEditor.Services
         HistoryObject Undo(IEnumerable<Audiofile> audioFiles);
         HistoryObject Redo(IEnumerable<Audiofile> audioFiles);
         string GetCurrentFilename(Guid id);
+        bool HasChangesSinceCurrentHistoryPosition(Guid id);
+        bool HasTagChangesSienceCurrentPosition(Audiofile audiofile);
     }
 }

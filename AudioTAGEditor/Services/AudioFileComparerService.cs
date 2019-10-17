@@ -4,19 +4,33 @@ namespace AudioTAGEditor.Services
 {
     public class AudiofileComparerService : IAudiofileComparerService
     {
-        public bool AreTheSame(Audiofile sourceFile, Audiofile fileToCompare)
+        public bool AreTheSame(Audiofile sourcefile, Audiofile fileToCompare)
         {
-            return !(sourceFile.Album != fileToCompare.Album ||
-                sourceFile.Artist != fileToCompare.Artist ||
-                sourceFile.Comment != fileToCompare.Comment ||
-                sourceFile.Filename != fileToCompare.Filename ||
-                sourceFile.Genre != fileToCompare.Genre ||
-                sourceFile.HasTag != fileToCompare.HasTag ||
-                sourceFile.TagType != fileToCompare.TagType ||
-                sourceFile.TagVersion != fileToCompare.TagVersion ||
-                sourceFile.Title != fileToCompare.Title ||
-                sourceFile.TrackNumber != fileToCompare.TrackNumber ||
-                sourceFile.Year != fileToCompare.Year);
+            return !(sourcefile.Album != fileToCompare.Album ||
+                sourcefile.Artist != fileToCompare.Artist ||
+                sourcefile.Comment != fileToCompare.Comment ||
+                sourcefile.Filename != fileToCompare.Filename ||
+                sourcefile.Genre != fileToCompare.Genre ||
+                sourcefile.HasTag != fileToCompare.HasTag ||
+                sourcefile.TagType != fileToCompare.TagType ||
+                sourcefile.TagVersion != fileToCompare.TagVersion ||
+                sourcefile.Title != fileToCompare.Title ||
+                sourcefile.TrackNumber != fileToCompare.TrackNumber ||
+                sourcefile.Year != fileToCompare.Year);
+        }
+
+        public bool AreTheSameTags(Audiofile sourcefile, Audiofile fileToCompare)
+        {
+            return !(sourcefile.Album != fileToCompare.Album ||
+                sourcefile.Artist != fileToCompare.Artist ||
+                sourcefile.Comment != fileToCompare.Comment ||
+                sourcefile.Filename != fileToCompare.Filename ||
+                sourcefile.Genre != fileToCompare.Genre ||
+                sourcefile.HasTag != fileToCompare.HasTag ||
+                sourcefile.TagType != fileToCompare.TagType ||
+                sourcefile.TagVersion != fileToCompare.TagVersion ||
+                sourcefile.Title != fileToCompare.Title ||
+                sourcefile.Year != fileToCompare.Year);
         }
     }
 }

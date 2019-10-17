@@ -56,6 +56,22 @@
                                   Command="{Binding HistoryCancelCommand, Mode=OneTime}" />
                 </RibbonGroup>
             </RibbonTab>
+            <i:Interaction.Behaviors>
+                <b:HistoryBehavior
+                    ID3v1Service="{Binding ID3v1Service, Mode=OneTime}"
+                    ID3v2Service="{Binding ID3v2Service, Mode=OneTime}"
+                    Audiofiles="{Binding Audiofiles, Mode=TwoWay}"
+                    IsCheckedID3v1="{Binding IsCheckedID3v1, Mode=TwoWay}"
+                    IsCheckedID3v2="{Binding IsCheckedID3v2, Mode=TwoWay}"
+                    AudiofileConverter="{Binding AudiofileConverter,Mode=OneTime}"
+                    HistoryService="{Binding HistoryService, Mode=OneTime}"
+                    FileService="{Binding FileService, Mode=OneTime}"
+                    SelectedPath="{Binding SelectedPath, Mode=OneWay}"
+                    HistoryCount="{Binding HistoryCount,Mode=TwoWay}"
+                    HistoryPosition="{Binding HistoryPosition, Mode=TwoWay}"
+                    EventAggregator="{Binding EventAggregator, Mode=OneTime}"
+                    ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneWay}"/>
+            </i:Interaction.Behaviors>
         </Ribbon>
         <ToolBar Grid.Row="1">
             <RadioButton
@@ -85,7 +101,7 @@
                 x:Name="ExplorerTree"
                 Grid.Column="0"
                 Command="{Binding ExpandNodeCommand, Mode=OneTime}"
-                FilesFullPath="{Binding FilePathCollection, Mode=OneWayToSource}"
+                FilesFullPath="{Binding FilepathCollection, Mode=OneWayToSource}"
                 FilesFilter="{Binding FilesFilter, Mode=OneTime}"
                 SelectedPath="{Binding SelectedPath, Mode=OneWayToSource}" />
             <DataGrid
@@ -99,12 +115,12 @@
                 <i:Interaction.Behaviors>
                     <b:DataGridEditBehavior
                         HistoryService="{Binding HistoryService, Mode=OneTime}"
-                        AudioFileConverter="{Binding AudioFileConverter, Mode=OneTime}"
+                        AudioFileConverter="{Binding AudiofileConverter, Mode=OneTime}"
                         FileService="{Binding FileService, Mode=OneTime}"
                         ID3v1Service="{Binding ID3v1Service, Mode=OneTime}"
                         ID3v2Service="{Binding ID3v2Service, Mode=OneTime}"
                         SelectedPath="{Binding SelectedPath, Mode=OneWay}" 
-                        AudioFileComparerService="{Binding AudioFileComparerService, Mode=OneTime}"
+                        AudioFileComparerService="{Binding AudiofileComparerService, Mode=OneTime}"
                         ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneTime}"
                         IsCheckedID3v1="{Binding IsCheckedID3v1, Mode=OneWay}"
                         IsCheckedID3v2="{Binding IsCheckedID3v2, Mode=OneWay}"
