@@ -52,8 +52,11 @@
                         LargeImageSource="{StaticResource confirm}"
                         SmallImageSource="{StaticResource confirm}"
                         Command="{Binding HistoryConfirmCommand, Mode=OneTime}"/>
-                    <RibbonButton Label="Cancel"
-                                  Command="{Binding HistoryCancelCommand, Mode=OneTime}" />
+                    <RibbonButton 
+                        Label="Cancel"
+                        LargeImageSource="{StaticResource cancel}"
+                        SmallImageSource="{StaticResource cancel}"
+                        Command="{Binding HistoryCancelCommand, Mode=OneTime}" />
                 </RibbonGroup>
             </RibbonTab>
             <i:Interaction.Behaviors>
