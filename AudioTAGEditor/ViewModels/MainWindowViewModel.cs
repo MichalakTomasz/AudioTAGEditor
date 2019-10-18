@@ -142,6 +142,17 @@ namespace AudioTAGEditor.ViewModels
 
         #endregion//DataGridFiles
 
+        #region StatusBar
+
+        private string logMessage;
+        public string LogMessage
+        {
+            get { return logMessage; }
+            set { SetProperty(ref logMessage, value); }
+        }
+
+        #endregion // StatusBar
+
         #endregion // Properties
 
         #region Commands

@@ -13,7 +13,8 @@
               Title="Audio TAG Editor"
               Height="600"
               Width="1200"
-              x:Name="MainRibbonWindow">
+              x:Name="MainRibbonWindow"
+              WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -228,8 +229,18 @@
         <StatusBar 
             Grid.Row="3"
             Height="20">
-            <TextBlock 
-                Text="{Binding SelectedPath, ElementName=ExplorerTree, Mode=OneWay}" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width=".7*"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                        Grid.Column="0"
+                        Text="{Binding SelectedPath, ElementName=ExplorerTree, Mode=OneWay}" />
+                <TextBlock
+                    Grid.Column="1"
+                    Text="{Binding LogMessage, Mode=OneWay}"/>
+            </Grid>
         </StatusBar>
     </Grid>
 </RibbonWindow>

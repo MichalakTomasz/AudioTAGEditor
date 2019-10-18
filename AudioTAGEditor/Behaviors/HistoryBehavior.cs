@@ -7,6 +7,7 @@ using System.Windows.Interactivity;
 using System.Linq;
 using AudioTAGEditor.Services;
 using Prism.Events;
+using System;
 
 namespace AudioTAGEditor.Behaviors
 {
@@ -200,18 +201,24 @@ namespace AudioTAGEditor.Behaviors
             ribbonButtonConfirm = ribbonGroupItems[2] as RibbonButton;
             ribbonButtonCancel = ribbonGroupItems[3] as RibbonButton;
 
-            ribbonButtonUndo.PreviewMouseLeftButtonDown += RibbonButtonUndo_PreviewMouseLeftButtonDown;
-            ribbonButtonRedo.PreviewMouseLeftButtonDown += RibbonButtonRedo_PreviewMouseLeftButtonDown;
-            ribbonButtonConfirm.PreviewMouseLeftButtonDown += RibbonButtonConfirm_PreviewMouseLeftButtonDown;
-            ribbonButtonCancel.PreviewMouseLeftButtonDown += RibbonButtonCancel_PreviewMouseLeftButtonDown;
+            ribbonButtonUndo.PreviewMouseLeftButtonDown += 
+                RibbonButtonUndo_PreviewMouseLeftButtonDown;
+            ribbonButtonRedo.PreviewMouseLeftButtonDown += 
+                RibbonButtonRedo_PreviewMouseLeftButtonDown;
+            ribbonButtonConfirm.PreviewMouseLeftButtonDown += 
+                RibbonButtonConfirm_PreviewMouseLeftButtonDown;
+            ribbonButtonCancel.PreviewMouseLeftButtonDown += 
+                RibbonButtonCancel_PreviewMouseLeftButtonDown;
         }
 
-        private void RibbonButtonCancel_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void RibbonButtonCancel_PreviewMouseLeftButtonDown(
+            object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             throw new System.NotImplementedException();
         }
 
-        private void RibbonButtonConfirm_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void RibbonButtonConfirm_PreviewMouseLeftButtonDown(
+            object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (!Audiofiles.Any(a => a.HasErrors))
             {
@@ -232,6 +239,8 @@ namespace AudioTAGEditor.Behaviors
                         break;
                 }
 
+                var changedAudiofiles = new List<Audiofile>();
+                var changedFilenames = new Dictionary<Guid, string>();
                 audiofiles.ForEach(a =>
                 {
                     var hasChanges = HistoryService.HasChangesSinceCurrentHistoryPosition(a.ID);
@@ -242,6 +251,7 @@ namespace AudioTAGEditor.Behaviors
                         {
                             var oldFullFilename = $"{SelectedPath}{currentFilename}";
                             FileService.Rename(oldFullFilename, a.Filename);
+                            changedFilenames.Add(a.ID, a.Filename);
                         }
 
                         var hasTagChanges = HistoryService
@@ -249,7 +259,15 @@ namespace AudioTAGEditor.Behaviors
                         if (hasTagChanges)
                             UpdateTag(a, SelectedPath);
                     }
+                    changedAudiofiles.Add(a);
                 });
+
+                HistoryService.Add(
+                    changedAudiofiles, 
+                    ChangeActionType.Mixed, 
+                    SelectedPath, 
+                    changedFilenames);
+                UpdateHistoryProperties();
                 ExplorerTreeView.Refresh();
                 MessageBox.Show(
                     "History was restored successlfully.",
@@ -259,10 +277,12 @@ namespace AudioTAGEditor.Behaviors
             }
         }
 
-        private void RibbonButtonRedo_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void RibbonButtonRedo_PreviewMouseLeftButtonDown(
+            object sender, System.Windows.Input.MouseButtonEventArgs e)
             => SetHistoryStepToMainGrid(HistoryStepType.Redo);
 
-        private void RibbonButtonUndo_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void RibbonButtonUndo_PreviewMouseLeftButtonDown(
+            object sender, System.Windows.Input.MouseButtonEventArgs e)
             => SetHistoryStepToMainGrid(HistoryStepType.Undo);
 
         private TagType GetTagTypeSelection()

@@ -12,10 +12,7 @@ namespace AudioTAGEditor.Services
         public HistoryService(
             IAudiofileConverter audioFileConverter,
             IAudiofileComparerService audiofileComparer)
-        {
-            this.audioFileConverter = audioFileConverter;
-            this.audiofileComparer = audiofileComparer;
-        }
+            => this.audiofileComparer = audiofileComparer;
 
         #endregion //Constructor
 
@@ -43,14 +40,13 @@ namespace AudioTAGEditor.Services
             IEnumerable<Audiofile> audioFiles,
             ChangeActionType changeActionType,
             string path,
-            IEnumerable<string> newFilenames)
+            IDictionary<Guid, string> newFilenames)
         {
-            if (changeActionType == ChangeActionType.Filename)
+            if (changeActionType == ChangeActionType.Filename || 
+                changeActionType == ChangeActionType.Mixed)
             {
-                var tempAudioFiles = audioFiles.ToList();
-                var tempNewAudioFiles = newFilenames.ToList();
-                for (int i = 0; i < audioFiles.Count(); i++)
-                    SetCurrentFilename(tempAudioFiles[i].ID, tempNewAudioFiles[i]);
+                foreach (var item in newFilenames)
+                    SetCurrentFilename(item.Key, item.Value);
             } 
             else
                 throw new Exception("Wrong call Push method parameters.");
@@ -73,7 +69,8 @@ namespace AudioTAGEditor.Services
            string path,
            string newFilename)
         {
-            if (changeActionType == ChangeActionType.Filename)
+            if (changeActionType == ChangeActionType.Filename ||
+                changeActionType == ChangeActionType.Mixed)
                 SetCurrentFilename(audioFile.ID, newFilename);
             else
                 throw new Exception("Wrong call Push method parameters.");
@@ -85,7 +82,6 @@ namespace AudioTAGEditor.Services
         {
             if (Position > 0)
             {
-
                 currentHistoryObject = history[--Position];
                 
                 var historyAudioFiles = currentHistoryObject.Audiofiles;
@@ -181,10 +177,8 @@ namespace AudioTAGEditor.Services
                 return currentFilenames[id];
             else
                 return history
-                    .FirstOrDefault()?
-                    .Audiofiles?
-                    .FirstOrDefault(a => a.ID == id)?
-                    .Filename; 
+                    .FirstOrDefault(f => f.Audiofiles.Any(a => a.ID == id))
+                    .Audiofiles.FirstOrDefault(f => f.ID == id).Filename; 
         }
 
         private void SetCurrentFilename(Guid id, string filename)
@@ -233,7 +227,6 @@ namespace AudioTAGEditor.Services
         #region Fields
 
         private readonly List<HistoryObject> history = new List<HistoryObject>();
-        private readonly IAudiofileConverter audioFileConverter;
         private readonly IAudiofileComparerService audiofileComparer;
         private HistoryObject currentHistoryObject;
         private Dictionary<Guid, string> currentFilenames = new Dictionary<Guid, string>();
