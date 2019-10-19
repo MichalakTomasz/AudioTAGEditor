@@ -271,7 +271,7 @@ namespace AudioTAGEditor.Behaviors
                     case TagType.ID3V1:
                         audiofiles = AudiofileConverter
                             .AudiofilesID3v1ViewModelToAudiofiles(
-                            Audiofiles as IEnumerable<AudiofileID3v1ViewModel>)
+                            Audiofiles)
                             .ToList();
                         break;
                     case TagType.ID3V2:

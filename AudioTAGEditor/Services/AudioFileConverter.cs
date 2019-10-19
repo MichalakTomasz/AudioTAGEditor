@@ -70,12 +70,12 @@ namespace AudioTAGEditor.Services
            => mapper.Map<Audiofile>(audioFileID3v1ViewModel);
 
         public IEnumerable<Audiofile> AudiofilesID3v1ViewModelToAudiofiles(
-            IEnumerable<AudiofileID3v1ViewModel> audioFilesID3v1ViewModel)
+            IEnumerable<AudiofileViewModel> audioFilesID3v1ViewModel)
         {
             var result = new List<Audiofile>();
             audioFilesID3v1ViewModel.ToList().ForEach(a =>
             {
-                var tempAudioFile = AudiofileID3v1ViewModelToAudiofile(a);
+                var tempAudioFile = AudiofileID3v1ViewModelToAudiofile(a as AudiofileID3v1ViewModel);
                 result.Add(tempAudioFile);
             });
 
