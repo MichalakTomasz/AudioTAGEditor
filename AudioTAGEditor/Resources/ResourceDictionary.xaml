@@ -30,4 +30,7 @@
     <BitmapImage x:Key="error"
                  UriSource="/Images/error.png" />
 
+    <BitmapImage x:Key="execute"
+                 UriSource="/Images/execute.png" />
+
 </ResourceDictionary>

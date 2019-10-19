@@ -291,7 +291,9 @@ namespace AudioTAGEditor.Behaviors
                                 HistoryService.Add(audioFileBeforeEdit, ChangeActionType.ID3v1, SelectedPath);
                                 UpdateHistoryProperties();
 
-                                log = LogService.Add(LogMessageStatusType.Information, "ID3v1 Tag changed.");
+                                log = LogService.Add(
+                                    LogMessageStatusType.Information, 
+                                    "ID3v1 Tag was changed.");
                                 LogMessageStatusType = log.LogMessageStatusType;
                                 LogMessage = log.Message;
                             }
@@ -302,7 +304,7 @@ namespace AudioTAGEditor.Behaviors
                                 HistoryService.Add(audioFileBeforeEdit, ChangeActionType.ID3v2, SelectedPath);
                                 UpdateHistoryProperties();
 
-                                log = LogService.Add(LogMessageStatusType.Information, "ID3v2 Tag changed.");
+                                log = LogService.Add(LogMessageStatusType.Information, "ID3v2 Tag was changed.");
                                 LogMessageStatusType = log.LogMessageStatusType;
                                 LogMessage = log.Message;
                             }

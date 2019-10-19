@@ -35,7 +35,73 @@
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
             <RibbonTab Header="Edit filenames">
+                <RibbonGroup Header="Cut">
+                    <RibbonCheckBox Label="Space"/>
+                    <RibbonCheckBox Label="Dot"/>
+                    <RibbonCheckBox Label="Underscore"/>
+                    <RibbonCheckBox Label="Dash"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Replace">
+                    <RibbonCheckBox Label="Dot to space"/>
+                    <RibbonCheckBox Label="Underscore to space"/>
+                    <RibbonCheckBox Label="Dash to space"/>
 
+                </RibbonGroup>
+                <RibbonGroup Header="Replace">
+                    <RibbonCheckBox Label="Space to dot"/>
+                    <RibbonCheckBox Label="Space to underscore"/>
+                    <RibbonCheckBox Label="Space to Dash"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Change">
+                    <RibbonRadioButton Label="First capital letter"/>
+                    <RibbonRadioButton Label="All first words capital letters"/>
+                    <RibbonRadioButton Label="Upper case"/>
+                    <RibbonRadioButton Label="Lower case"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Insert at position">
+                    <RibbonTextBox 
+                        Label="Position    "
+                        TextBoxWidth="20"/>
+                    <RibbonTextBox 
+                        Label="Text to cut"
+                        TextBoxWidth="120"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Cut text at position">
+                    <RibbonTextBox
+                        Label="Position"
+                        TextBoxWidth="20"/>
+                    <RibbonTextBox
+                        Label="Count   "
+                        TextBoxWidth="20"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Cut text">
+                    <RibbonTextBox
+                            Label="Text to cut"/>
+                </RibbonGroup>
+                <RibbonGroup 
+                    Header="Replace text">
+                    <RibbonTextBox
+                        Label="Text to cut"/>
+                    <RibbonTextBox
+                        Label="New text  "/>
+                </RibbonGroup>
+                <RibbonGroup Header="Insert numberings">
+                    <RibbonTextBox
+                        Label="Position"
+                        TextBoxWidth="20"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Change from ID3">
+                    <RibbonTextBox 
+                        Label="Pattern"
+                        TextBoxWidth="150"/>
+                    <RibbonTwoLineText Text="&lt;title&gt; &lt;album&gt; &lt;artist&gt; &lt;no&gt; &lt;genre&gt; &lt;year&gt;"></RibbonTwoLineText>
+                </RibbonGroup>
+                <RibbonGroup>
+                    <RibbonButton 
+                    Label="Execute"
+                    LargeImageSource="{StaticResource execute}"
+                    SmallImageSource="{StaticResource execute}"/>
+                </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="Edit tags">
 
