@@ -7,6 +7,7 @@
               xmlns:prism="http://prismlibrary.com/"
               prism:ViewModelLocator.AutoWireViewModel="True"
               xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+              xmlns:c="clr-namespace:AudioTAGEditor.Converters"
               xmlns:b="clr-namespace:AudioTAGEditor.Behaviors"
               xmlns:tx="clr-namespace:ExplorerTreeView;assembly=ExplorerTreeView"
               mc:Ignorable="d"
@@ -15,6 +16,9 @@
               Width="1200"
               x:Name="MainRibbonWindow"
               WindowStartupLocation="CenterScreen">
+    <RibbonWindow.Resources>
+        <c:LogMessageStatusTypeToImageConverter x:Key="LogMessageStatusTypeToImageConverter"/>
+    </RibbonWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -34,7 +38,7 @@
 
             </RibbonTab>
             <RibbonTab Header="Edit tags">
-                
+
             </RibbonTab>
             <RibbonTab Header="History">
                 <RibbonGroup Header="History">
@@ -74,7 +78,11 @@
                     HistoryCount="{Binding HistoryCount,Mode=TwoWay}"
                     HistoryPosition="{Binding HistoryPosition, Mode=TwoWay}"
                     EventAggregator="{Binding EventAggregator, Mode=OneTime}"
-                    ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneWay}"/>
+                    ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneWay}"
+                    LogService="{Binding LogService,Mode=OneTime}"
+                    LogMessage="{Binding LogMessage, Mode=OneWayToSource}"
+                    LogMessageStatusType="{Binding LogMessageStatusType, Mode=OneWayToSource}"/>
+                    
             </i:Interaction.Behaviors>
         </Ribbon>
         <ToolBar Grid.Row="1">
@@ -86,7 +94,7 @@
                     Source="{StaticResource id3v1-logo}"
                     Width="32" />
             </RadioButton>
-            
+
             <RadioButton
                 GroupName="ID3Group"
                 IsChecked="{Binding IsCheckedID3v2, Mode=TwoWay}"
@@ -123,18 +131,24 @@
                         FileService="{Binding FileService, Mode=OneTime}"
                         ID3v1Service="{Binding ID3v1Service, Mode=OneTime}"
                         ID3v2Service="{Binding ID3v2Service, Mode=OneTime}"
+                        LogService="{Binding LogService, Mode=OneTime}"
                         SelectedPath="{Binding SelectedPath, Mode=OneWay}" 
                         AudioFileComparerService="{Binding AudiofileComparerService, Mode=OneTime}"
                         ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneTime}"
                         IsCheckedID3v1="{Binding IsCheckedID3v1, Mode=OneWay}"
                         IsCheckedID3v2="{Binding IsCheckedID3v2, Mode=OneWay}"
                         HistoryCount="{Binding HistoryCount, Mode=OneWayToSource}"
-                        HistoryPosition="{Binding HistoryPosition, Mode=OneWayToSource}"/>
+                        HistoryPosition="{Binding HistoryPosition, Mode=OneWayToSource}"
+                        LogMessage="{Binding LogMessage, Mode=TwoWay}"
+                        LogMessageStatusType="{Binding LogMessageStatusType, Mode=TwoWay}"/>
                     <b:DataGridContextMenuDeactivateTagBehavior
                         SelectedPath="{Binding SelectedPath, Mode=OneWay}"
                         ID3v1Service="{Binding ID3v1Service, Mode=OneTime}"
                         ID3v2Service="{Binding ID3v2Service, Mode=OneTime}" 
-                        ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneTime}"/>
+                        ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneTime}"
+                        LogService="{Binding LogService, Mode=OneTime}"
+                        LogMessage="{Binding LogMessage, Mode=TwoWay}"
+                        LogMessageStatusType="{Binding LogMessageStatusType, Mode=TwoWay}"/>
                 </i:Interaction.Behaviors>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
@@ -228,19 +242,37 @@
         </Grid>
         <StatusBar 
             Grid.Row="3"
-            Height="20">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width=".7*"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+            Height="25">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0">
                 <TextBlock 
-                        Grid.Column="0"
-                        Text="{Binding SelectedPath, ElementName=ExplorerTree, Mode=OneWay}" />
-                <TextBlock
-                    Grid.Column="1"
+                    Text="{Binding SelectedPath, 
+                    ElementName=ExplorerTree, Mode=OneWay}" 
+                    Grid.ColumnSpan="2" Margin="0,0,8,0" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="1">
+                <StackPanel
+                    Orientation="Horizontal" Grid.ColumnSpan="2">
+                    <Image 
+                    Source="{
+                    Binding LogMessageStatusType, 
+                    Converter={StaticResource LogMessageStatusTypeToImageConverter},
+                    Mode=OneWay}"
+                    Width="20"
+                    Margin="5 0"/>
+                    <TextBlock 
                     Text="{Binding LogMessage, Mode=OneWay}"/>
-            </Grid>
+                </StackPanel>
+            </StatusBarItem>
         </StatusBar>
     </Grid>
 </RibbonWindow>

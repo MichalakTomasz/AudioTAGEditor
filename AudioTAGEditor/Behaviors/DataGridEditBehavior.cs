@@ -168,7 +168,48 @@ namespace AudioTAGEditor.Behaviors
                 typeof(DataGridEditBehavior), 
                 new PropertyMetadata(0));
 
-        #endregion// Dependency Properties
+
+        public ILogService LogService
+        {
+            get { return (ILogService)GetValue(LogServiceProperty); }
+            set { SetValue(LogServiceProperty, value); }
+        }
+
+        public static readonly DependencyProperty LogServiceProperty =
+            DependencyProperty.Register(
+                "LogService", 
+                typeof(ILogService), 
+                typeof(DataGridEditBehavior), new PropertyMetadata(null));
+
+
+        public string LogMessage
+        {
+            get { return (string)GetValue(LogMessageProperty); }
+            set { SetValue(LogMessageProperty, value); }
+        }
+
+        public static readonly DependencyProperty LogMessageProperty =
+            DependencyProperty.Register(
+                "LogMessage", 
+                typeof(string), 
+                typeof(DataGridEditBehavior), 
+                new PropertyMetadata(null));
+
+
+        public LogMessageStatusType LogMessageStatusType
+        {
+            get { return (LogMessageStatusType)GetValue(LogMessageStatusTypeProperty); }
+            set { SetValue(LogMessageStatusTypeProperty, value); }
+        }
+
+        public static readonly DependencyProperty LogMessageStatusTypeProperty =
+            DependencyProperty.Register(
+                "LogMessageStatusType", 
+                typeof(LogMessageStatusType), 
+                typeof(DataGridEditBehavior), 
+                new PropertyMetadata(LogMessageStatusType.None));
+
+        #endregion // Dependency Properties
 
         #region Methods
 
@@ -199,16 +240,29 @@ namespace AudioTAGEditor.Behaviors
         {
             if (e.EditAction == DataGridEditAction.Commit && !(e.Column.Header is CheckBox))
             {
-                var audioFileViewModel = e.EditingElement.DataContext as AudiofileViewModel;
-                if (!audioFileViewModel.HasErrors)
+                var audiofileViewModel = e.EditingElement.DataContext as AudiofileViewModel;
+                var filename = $"{SelectedPath}{audiofileViewModel.Filename}";
+                
+
+                if (!audiofileViewModel.HasErrors)
                 {
-                    var newAudioFile = AudioFileConverter.AudiofileViewModelToAudiofile(audioFileViewModel);
+                    var newAudioFile = AudioFileConverter.AudiofileViewModelToAudiofile(audiofileViewModel);
                     var audioFileFullPath = $"{SelectedPath}{newAudioFile.Filename}";
+                    LogItem log;
 
                     switch (e.Column.Header)
                     {
                         case "File Name":
                             var oldFilename = audioFileBeforeEdit.Filename;
+                            var exist = FileService.Exist(filename);
+                            if (exist)
+                            {
+                                log = LogService.Add(LogMessageStatusType.Error, "This folder contains file with the same name.");
+                                this.LogMessage = log.Message;
+                                this.LogMessageStatusType = log.LogMessageStatusType;
+                                return;
+                            }
+
                             if (oldFilename == newAudioFile.Filename)
                                 return;
 
@@ -222,6 +276,10 @@ namespace AudioTAGEditor.Behaviors
 
                             UpdateHistoryProperties();
                             ExplorerTreeView.Refresh();
+
+                            log = LogService.Add(LogMessageStatusType.Information, "Filename changed.");
+                            LogMessageStatusType = log.LogMessageStatusType;
+                            LogMessage = log.Message;
                             break;
                         default:
                             if (AudioFileComparerService.AreTheSame(audioFileBeforeEdit, newAudioFile))
@@ -232,6 +290,10 @@ namespace AudioTAGEditor.Behaviors
                                 ID3v1Service.UpdateTag(newAudioFile, audioFileFullPath, TagVersion.ID3V11);
                                 HistoryService.Add(audioFileBeforeEdit, ChangeActionType.ID3v1, SelectedPath);
                                 UpdateHistoryProperties();
+
+                                log = LogService.Add(LogMessageStatusType.Information, "ID3v1 Tag changed.");
+                                LogMessageStatusType = log.LogMessageStatusType;
+                                LogMessage = log.Message;
                             }
                                 
                             if (IsCheckedID3v2)
@@ -239,6 +301,10 @@ namespace AudioTAGEditor.Behaviors
                                 ID3v2Service.UpdateTag(newAudioFile, audioFileFullPath, TagVersion.ID3V20);
                                 HistoryService.Add(audioFileBeforeEdit, ChangeActionType.ID3v2, SelectedPath);
                                 UpdateHistoryProperties();
+
+                                log = LogService.Add(LogMessageStatusType.Information, "ID3v2 Tag changed.");
+                                LogMessageStatusType = log.LogMessageStatusType;
+                                LogMessage = log.Message;
                             }
                             break;
                     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace AudioTAGEditor.Services
 {
@@ -20,5 +21,8 @@ namespace AudioTAGEditor.Services
                 throw;
             }
         }
+
+        public bool Exist(string fullFilepath)
+            => File.Exists(fullFilepath);
     }
 }

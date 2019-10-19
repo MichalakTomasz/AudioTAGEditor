@@ -171,6 +171,48 @@ namespace AudioTAGEditor.Behaviors
                 typeof(HistoryBehavior),
                 new PropertyMetadata(null));
 
+
+        public ILogService LogService
+        {
+            get { return (ILogService)GetValue(LogServiceProperty); }
+            set { SetValue(LogServiceProperty, value); }
+        }
+
+        public static readonly DependencyProperty LogServiceProperty =
+            DependencyProperty.Register(
+                "LogService", 
+                typeof(ILogService), 
+                typeof(HistoryBehavior), 
+                new PropertyMetadata(null));
+
+
+        public string LogMessage
+        {
+            get { return (string)GetValue(LogMessageProperty); }
+            set { SetValue(LogMessageProperty, value); }
+        }
+
+        public static readonly DependencyProperty LogMessageProperty =
+            DependencyProperty.Register(
+                "LogMessage", 
+                typeof(string), 
+                typeof(HistoryBehavior), 
+                new PropertyMetadata(null));
+
+
+        public LogMessageStatusType LogMessageStatusType
+        {
+            get { return (LogMessageStatusType)GetValue(LogMessageStatusTypeProperty); }
+            set { SetValue(LogMessageStatusTypeProperty, value); }
+        }
+
+        public static readonly DependencyProperty LogMessageStatusTypeProperty =
+            DependencyProperty.Register(
+                "LogMessageStatusType", 
+                typeof(LogMessageStatusType), 
+                typeof(HistoryBehavior), 
+                new PropertyMetadata(LogMessageStatusType.None));
+
         public ExplorerTreeView.ExplorerTreeView ExplorerTreeView
         {
             get { return (ExplorerTreeView.ExplorerTreeView)GetValue(ExplorerTreeViewProperty); }
@@ -243,7 +285,8 @@ namespace AudioTAGEditor.Behaviors
                 var changedFilenames = new Dictionary<Guid, string>();
                 audiofiles.ForEach(a =>
                 {
-                    var hasChanges = HistoryService.HasChangesSinceCurrentHistoryPosition(a.ID);
+                    var hasChanges = HistoryService
+                    .HasChangesSinceCurrentHistoryPosition(a.ID);
                     if (hasChanges)
                     {
                         var currentFilename = HistoryService.GetCurrentFilename(a.ID);
@@ -267,13 +310,21 @@ namespace AudioTAGEditor.Behaviors
                     ChangeActionType.Mixed, 
                     SelectedPath, 
                     changedFilenames);
+                
                 UpdateHistoryProperties();
                 ExplorerTreeView.Refresh();
+                
                 MessageBox.Show(
                     "History was restored successlfully.",
                     "Informarion",
                      MessageBoxButton.OK,
                      MessageBoxImage.Information);
+
+                var log = LogService.Add(
+                    LogMessageStatusType.Information, 
+                    "History step was applied.");
+                LogMessageStatusType = log.LogMessageStatusType;
+                LogMessage = log.Message;
             }
         }
 

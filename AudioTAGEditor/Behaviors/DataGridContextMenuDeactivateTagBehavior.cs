@@ -66,6 +66,47 @@ namespace AudioTAGEditor.Behaviors
                 typeof(DataGridContextMenuDeactivateTagBehavior), 
                 new PropertyMetadata(null));
 
+
+        public string LogMessage
+        {
+            get { return (string)GetValue(LogMessageProperty); }
+            set { SetValue(LogMessageProperty, value); }
+        }
+
+        public static readonly DependencyProperty LogMessageProperty =
+            DependencyProperty.Register(
+                "LogMessage", 
+                typeof(string), 
+                typeof(DataGridContextMenuDeactivateTagBehavior), 
+                new PropertyMetadata(null));
+
+        public LogMessageStatusType LogMessageStatusType
+        {
+            get { return (LogMessageStatusType)GetValue(LogMessageStatusTypeProperty); }
+            set { SetValue(LogMessageStatusTypeProperty, value); }
+        }
+
+        public static readonly DependencyProperty LogMessageStatusTypeProperty =
+            DependencyProperty.Register(
+                "LogMessageStatusType", 
+                typeof(LogMessageStatusType), 
+                typeof(DataGridContextMenuDeactivateTagBehavior), 
+                new PropertyMetadata(LogMessageStatusType.None));
+
+
+        public ILogService LogService
+        {
+            get { return (ILogService)GetValue(LogServiceProperty); }
+            set { SetValue(LogServiceProperty, value); }
+        }
+
+        public static readonly DependencyProperty LogServiceProperty =
+            DependencyProperty.Register(
+                "LogService", typeof(ILogService), 
+                typeof(DataGridContextMenuDeactivateTagBehavior), 
+                new PropertyMetadata(null));
+
+
         #endregion // Dependency Properties
 
         #region Methods
@@ -122,12 +163,21 @@ namespace AudioTAGEditor.Behaviors
                 {
                     case TagType.ID3V1:
                         ID3v2Service.RemoveTag(fileFullPath);
+
+                        var log = LogService.Add(LogMessageStatusType.Information, "ID3v1Tag was removed.");
+                        LogMessageStatusType = log.LogMessageStatusType;
+                        LogMessage = log.Message;
                         break;
                     case TagType.ID3V2:
                         ID3v2Service.RemoveTag(fileFullPath);
+
+                        log = LogService.Add(LogMessageStatusType.Information, "ID3v2 Tag was removed.");
+                        LogMessageStatusType = log.LogMessageStatusType;
+                        LogMessage = log.Message;
                         break;
                 }
                 ExplorerTreeView.ExecuteSelectedNodeEvents();
+
             }
             else new Exception("Not set view model reference");
         }

@@ -21,4 +21,13 @@
     <BitmapImage x:Key="cancel"
                  UriSource="/Images/cancel.png" />
 
+    <BitmapImage x:Key="warning"
+                 UriSource="/Images/warnning.png" />
+
+    <BitmapImage x:Key="info"
+                 UriSource="/Images/info.png" />
+
+    <BitmapImage x:Key="error"
+                 UriSource="/Images/error.png" />
+
 </ResourceDictionary>

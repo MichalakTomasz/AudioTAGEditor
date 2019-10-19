@@ -23,7 +23,8 @@ namespace AudioTAGEditor.ViewModels
             IAudiofileConverter audioFileConverter,
             IFileService fileService,
             IHistoryService historyService,
-            IAudiofileComparerService audiofileComparerService)
+            IAudiofileComparerService audiofileComparerService,
+            ILogService logService)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
             ID3v1Service = id3v1Service;
@@ -33,6 +34,7 @@ namespace AudioTAGEditor.ViewModels
             FileService = fileService;
             HistoryService = historyService;
             AudiofileComparerService = audiofileComparerService;
+            LogService = logService;
             eventAggregator.GetEvent<AudiofileMessageSentEvent>()
                 .Subscribe(ExecuteMessage);
         }
@@ -86,6 +88,7 @@ namespace AudioTAGEditor.ViewModels
 
         public IHistoryService HistoryService { get; }
         public IAudiofileComparerService AudiofileComparerService { get; }
+        public ILogService LogService { get; }
         public IAudiofileConverter AudiofileConverter { get; }
         public IFileService FileService { get; }
         public IID3Service ID3v1Service { get; }
@@ -149,6 +152,13 @@ namespace AudioTAGEditor.ViewModels
         {
             get { return logMessage; }
             set { SetProperty(ref logMessage, value); }
+        }
+
+        private LogMessageStatusType logMessageStatusType;
+        public LogMessageStatusType LogMessageStatusType
+        {
+            get { return logMessageStatusType; }
+            set { SetProperty(ref logMessageStatusType, value); }
         }
 
         #endregion // StatusBar

@@ -121,10 +121,12 @@
     <Compile Include="Behaviors\DataGridContextMenuDeactivateTagBehavior.cs" />
     <Compile Include="Behaviors\DataGridEditBehavior.cs" />
     <Compile Include="Behaviors\HistoryBehavior.cs" />
+    <Compile Include="Converters\LogMessageStatusTypeToImageConverter.cs" />
     <Compile Include="Models\Audiofile.cs" />
     <Compile Include="Models\ChangeActionType.cs" />
     <Compile Include="Models\HistoryObject.cs" />
     <Compile Include="Models\HistoryStepType.cs" />
+    <Compile Include="Models\LogItem.cs" />
     <Compile Include="Models\LogMessageStatusType.cs" />
     <Compile Include="Services\AudiofileComparerService.cs" />
     <Compile Include="Services\FileService.cs" />
@@ -209,6 +211,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\info.png" />
+    <Resource Include="Images\warning.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
