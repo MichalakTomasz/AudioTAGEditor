@@ -7,181 +7,188 @@ namespace AudioTAGEditor.Services
 {
     public class FilenameEditService : IFilenameEditService
     {
-        public IEnumerable<string> CutSpace(IEnumerable<string> collection)
-            => ReplaceIntoCollection(collection, " ", "");
+        public IEnumerable<Audiofile> CutSpace(IEnumerable<Audiofile> audiofiles)
+            => ReplaceIntoFilenames(audiofiles, " ", "");
 
-        public IEnumerable<string> CutDot(IEnumerable<string> collection)
-            => ReplaceIntoCollection(collection, ".", "");
+        public IEnumerable<Audiofile> CutDot(IEnumerable<Audiofile> audiofiles)
+            => ReplaceIntoFilenames(audiofiles, ".", "");
 
-        public IEnumerable<string> CutUnderscore(IEnumerable<string> collection)
-            => ReplaceIntoCollection(collection, "_", "");
+        public IEnumerable<Audiofile> CutUnderscore(IEnumerable<Audiofile> audiofiles)
+            => ReplaceIntoFilenames(audiofiles, "_", "");
 
-        public IEnumerable<string> CutDash(IEnumerable<string> collection)
-            => ReplaceIntoCollection(collection, "-", "");
+        public IEnumerable<Audiofile> CutDash(IEnumerable<Audiofile> audiofiles)
+            => ReplaceIntoFilenames(audiofiles, "-", "");
 
-        public IEnumerable<string> ReplaceDotToSpace(IEnumerable<string> collection)
-            => ReplaceIntoCollection(collection, ".", " ");
+        public IEnumerable<Audiofile> ReplaceDotToSpace(IEnumerable<Audiofile> audiofiles)
+            => ReplaceIntoFilenames(audiofiles, ".", " ");
 
-        public IEnumerable<string> ReplaceUnderscoreToSpace(IEnumerable<string> collection)
-            => ReplaceIntoCollection(collection, "_", " ");
+        public IEnumerable<Audiofile> ReplaceUnderscoreToSpace(IEnumerable<Audiofile> audiofiles)
+            => ReplaceIntoFilenames(audiofiles, "_", " ");
 
-        public IEnumerable<string> ReplaceDashToSpace(IEnumerable<string> collection)
-            => ReplaceIntoCollection(collection, "-", " ");
+        public IEnumerable<Audiofile> ReplaceDashToSpace(IEnumerable<Audiofile> audiofiles)
+            => ReplaceIntoFilenames(audiofiles, "-", " ");
 
-        public IEnumerable<string> ReplaceSpaceToDot(IEnumerable<string> collection)
-            => ReplaceIntoCollection(collection, " ", ".");
+        public IEnumerable<Audiofile> ReplaceSpaceToDot(IEnumerable<Audiofile> audiofiles)
+            => ReplaceIntoFilenames(audiofiles, " ", ".");
 
-        public IEnumerable<string> ReplaceSpaceToUnderscore(IEnumerable<string> collection)
-            => ReplaceIntoCollection(collection, " ", "_");
+        public IEnumerable<Audiofile> ReplaceSpaceToUnderscore(IEnumerable<Audiofile> audiofiles)
+            => ReplaceIntoFilenames(audiofiles, " ", "_");
 
-        public IEnumerable<string> ReplaceSpaceToDash(IEnumerable<string> collection)
-            => ReplaceIntoCollection(collection, " ", "-");
+        public IEnumerable<Audiofile> ReplaceSpaceToDash(IEnumerable<Audiofile> audiofiles)
+            => ReplaceIntoFilenames(audiofiles, " ", "-");
 
-        public IEnumerable<string> ReplaceText(
-            IEnumerable<string> collection, string oldText, string newText)
-            => ReplaceIntoCollection(collection, oldText, newText);
+        public IEnumerable<Audiofile> ReplaceText(
+            IEnumerable<Audiofile> audiofiles, string oldText, string newText)
+            => ReplaceIntoFilenames(audiofiles, oldText, newText);
 
-        public IEnumerable<string> CutText(IEnumerable<string> collection, string textToCut)
+        public IEnumerable<Audiofile> CutText(IEnumerable<Audiofile> audiofiles, string textToCut)
         {
-            var resultCollection = new List<string>();
-            collection.ToList().ForEach(element =>
+            var resultCollection = new List<Audiofile>();
+            audiofiles.ToList().ForEach(element =>
             {
                 int startIndex;
-                if ((startIndex = element.IndexOf(textToCut)) > -1)
+                if ((startIndex = element.Filename.IndexOf(textToCut)) > -1)
                 {
-                    var count = element.Length;
-                    var tempString = element.Remove(startIndex, count);
-                    resultCollection.Add(tempString);
+                    var count = element.Filename.Length;
+                    element.Filename = element.Filename.Remove(startIndex, count);
                 }
+
+                resultCollection.Add(element);
             });
 
             return resultCollection;
         }
 
-        public IEnumerable<string> CutText(
-            IEnumerable<string> collection, int position, int count)
+        public IEnumerable<Audiofile> CutText(
+            IEnumerable<Audiofile> audiofiles, int position, int count)
         {
-            var resultCollection = new List<string>();
-            collection.ToList().ForEach(element =>
+            var resultCollection = new List<Audiofile>();
+            audiofiles.ToList().ForEach(element =>
             {
-                if (position - 1 < element.Length)
+                if (position - 1 < element.Filename.Length)
                 {
-                    var tempString = element.Remove(position - 1, count);
-                    resultCollection.Add(tempString);
+                    element.Filename = element.Filename.Remove(position - 1, count);
                 }
-                else
-                    resultCollection.Add(element);
+
+                resultCollection.Add(element);
             });
 
             return resultCollection;
         }
 
-        public IEnumerable<string> InsertTextFromPosition(
-            IEnumerable<string> collection, int position, string text)
+        public IEnumerable<Audiofile> InsertTextFromPosition(
+            IEnumerable<Audiofile> audiofiles, int position, string text)
         {
-            var resultCollection = new List<string>();
-            collection.ToList().ForEach(element =>
+            var resultCollection = new List<Audiofile>();
+            audiofiles.ToList().ForEach(element =>
             {
-                if (position - 1 < element.Length)
+                if (position - 1 < element.Filename.Length)
                 {
-                    var tempString = element.Insert(position - 1, text);
-                    resultCollection.Add(tempString);
+                    element.Filename = element.Filename.Insert(position - 1, text);
                 }
-                else
-                    resultCollection.Add(element);
+
+                resultCollection.Add(element);
             });
 
             return resultCollection;
         }
 
-        public IEnumerable<string> FirstCapitalLetter(IEnumerable<string> collection)
+        public IEnumerable<Audiofile> FirstCapitalLetter(IEnumerable<Audiofile> audiofiles)
         {
-            var resultCollection = new List<string>();
+            var resultCollection = new List<Audiofile>();
 
-            collection.ToList().ForEach(c =>
+            audiofiles.ToList().ForEach(c =>
             {
-                var first = c[0].ToString().ToUpper();
-                var tempString = $"{first}{c.Substring(1)}";
-                resultCollection.Add(tempString);
+                var first = c.Filename[0].ToString().ToUpper();
+                c.Filename = $"{first}{c.Filename.Substring(1)}";
+                resultCollection.Add(c);
             });
 
             return resultCollection;
         }
 
-        public IEnumerable<string> AllFirstCapitalLetters(IEnumerable<string> collection)
+        public IEnumerable<Audiofile> AllFirstCapitalLetters(IEnumerable<Audiofile> audiofile)
         {
             var firstLetterIndexes = new List<int>();
-            var resultCollection = new List<string>();
+            var resultCollection = new List<Audiofile>();
 
-            collection.ToList().ForEach(element =>
+            audiofile.ToList().ForEach(element =>
             {
-                for (var i = 0; i < element.Length; i++)
-                    if (element[i] == ' ' && element[i + 1] != ' ')
+                for (var i = 0; i < element.Filename.Length; i++)
+                    if (element.Filename[i] == ' ' && element.Filename[i + 1] != ' ')
                         firstLetterIndexes.Add(i + 1);
 
                 var position = 0;
                 var resultString = new StringBuilder();
-                for (var i = 0; i < element.Length; i++)
+                for (var i = 0; i < element.Filename.Length; i++)
                 {
-                    if (i == element[position++])
-                        resultString.Append(element[i].ToString().ToUpper());
-                    else resultString.Append(element[i].ToString());
+                    if (i == element.Filename[position++])
+                        resultString.Append(element.Filename[i].ToString().ToUpper());
+                    else resultString.Append(element.Filename[i].ToString());
                 }
-                resultCollection.Add(resultString.ToString());
+                element.Filename = resultString.ToString();
+                resultCollection.Add(element);
             });
 
             return resultCollection;
         }
 
-        public IEnumerable<string> UpperCase(IEnumerable<string> collection)
+        public IEnumerable<Audiofile> UpperCase(IEnumerable<Audiofile> audiofiles)
         {
-            var resultCollection = new List<string>();
-            collection.ToList().ForEach(c => resultCollection.Add(c.ToUpper()));
+            var resultCollection = new List<Audiofile>();
+            audiofiles.ToList().ForEach(c =>
+                {
+                    var newFilename = c.Filename.ToUpper();
+                    c.Filename = newFilename;
+                    resultCollection.Add(c);
+                });
 
             return resultCollection;
         }
 
-        public IEnumerable<string> LowerCase(IEnumerable<string> collection)
+        public IEnumerable<Audiofile> LowerCase(IEnumerable<Audiofile> audiofiles)
         {
-            var resultCollection = new List<string>();
-            collection.ToList().ForEach(c => resultCollection.Add(c.ToLower()));
+            var resultCollection = new List<Audiofile>();
+            audiofiles.ToList().ForEach(c =>
+            {
+                c.Filename = c.Filename.ToUpper();
+                resultCollection.Add(c);
+            });
 
             return resultCollection;
         }
 
-        public IEnumerable<string> InsertNumbering(IEnumerable<string> collection, int position)
+        public IEnumerable<Audiofile> InsertNumbering(IEnumerable<Audiofile> audiofiles, int position)
         {
-            var resultCollection = new List<string>();
-            var elements = collection.ToList();
+            var resultCollection = new List<Audiofile>();
+            var elements = audiofiles.ToList();
             var count = elements.Count;
             var counterLength = count.ToString().Length;
             var tempString = new StringBuilder();
             for (int i = 0; i < count; i++)
             {
-                if (position - 1 < elements[i].Length)
+                if (position - 1 < elements[i].Filename.Length)
                 {
                     tempString.Clear();
                     tempString.Append(i);
                     while (tempString.Length < counterLength)
                         tempString.Insert(0, "0");
-                    var resultString = elements[i]
+                    elements[i].Filename = elements[i].Filename
                         .Insert(position - 1, tempString.ToString());
-                    resultCollection.Add(resultString);
                 }
-                else
-                    resultCollection.Add(elements[i]);
+                resultCollection.Add(elements[i]);
             }
             return resultCollection;
         }
 
-        public IEnumerable<string> ChangeByPattern(
-            IEnumerable<Audiofile> collection, string pattern)
+        public IEnumerable<Audiofile> ChangeByPattern(
+            IEnumerable<Audiofile> audiofiles, string pattern)
         {
-            var resultCollection = new List<string>();
+            var resultCollection = new List<Audiofile>();
             var tempString = new StringBuilder();
             var tempIndex = -1;
 
-            collection.ToList().ForEach(c =>
+            audiofiles.ToList().ForEach(c =>
             {
                 tempString.Clear();
                 tempString.Append(pattern);
@@ -214,21 +221,24 @@ namespace AudioTAGEditor.Services
                         }
                     }
                 }
-                resultCollection.Add(tempString.ToString());
+                c.Filename = tempString.ToString();
+                resultCollection.Add(c);
             });
-            
         
             return resultCollection;
         }
 
-        private IEnumerable<string> ReplaceIntoCollection(
-            IEnumerable<string> collection,
+        private IEnumerable<Audiofile> ReplaceIntoFilenames(
+            IEnumerable<Audiofile> audiofiles,
             string oldCharacter,
             string newCharacter)
         {
-            var resultCollection = new List<string>();
-            collection.ToList().ForEach(c =>
-                resultCollection.Add(c.Replace(oldCharacter, newCharacter)));
+            var resultCollection = new List<Audiofile>();
+            audiofiles.ToList().ForEach(c =>
+            {
+                c.Filename = c.Filename.Replace(oldCharacter, newCharacter);
+                resultCollection.Add(c);
+            });
 
             return resultCollection;
         }

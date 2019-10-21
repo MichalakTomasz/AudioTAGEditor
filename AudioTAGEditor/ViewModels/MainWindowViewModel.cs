@@ -726,7 +726,8 @@ namespace AudioTAGEditor.ViewModels
 
         void ExecuteExecuteFilenameEditCommand(ExplorerTreeView.ExplorerTreeView explorerTreeView)
         {
-            var audioFiles = ConvertAudioFilesViewModelsFromGridToAudioFiles();
+            var audiofiles = ConvertAudioFilesViewModelsFromGridToAudioFiles();
+            if (isCheckedCutSpace) audiofiles = FilenameEditService.CutSpace(audiofiles);
             
         }
 

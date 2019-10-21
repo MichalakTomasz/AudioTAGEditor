@@ -5,25 +5,25 @@ namespace AudioTAGEditor.Services
 {
     public interface IFilenameEditService
     {
-        IEnumerable<string> AllFirstCapitalLetters(IEnumerable<string> collection);
-        IEnumerable<string> CutDash(IEnumerable<string> collection);
-        IEnumerable<string> CutDot(IEnumerable<string> collection);
-        IEnumerable<string> CutSpace(IEnumerable<string> collection);
-        IEnumerable<string> CutUnderscore(IEnumerable<string> collection);
-        IEnumerable<string> CutText(IEnumerable<string> collection, string textToCut);
-        IEnumerable<string> CutText(IEnumerable<string> collection, int position, int count);
-        IEnumerable<string> FirstCapitalLetter(IEnumerable<string> collection);
-        IEnumerable<string> LowerCase(IEnumerable<string> collection);
-        IEnumerable<string> InsertNumbering(IEnumerable<string> collection, int position);
-        IEnumerable<string> InsertTextFromPosition(IEnumerable<string> collection, int position, string text);
-        IEnumerable<string> ReplaceDashToSpace(IEnumerable<string> collection);
-        IEnumerable<string> ReplaceDotToSpace(IEnumerable<string> collection);
-        IEnumerable<string> ReplaceSpaceToDash(IEnumerable<string> collection);
-        IEnumerable<string> ReplaceSpaceToDot(IEnumerable<string> collection);
-        IEnumerable<string> ReplaceSpaceToUnderscore(IEnumerable<string> collection);
-        IEnumerable<string> ReplaceUnderscoreToSpace(IEnumerable<string> collection);
-        IEnumerable<string> ReplaceText(IEnumerable<string> collection, string oldText, string newText);
-        IEnumerable<string> UpperCase(IEnumerable<string> collection);
-        IEnumerable<string> ChangeByPattern(IEnumerable<Audiofile> collection, string pattern);
+        IEnumerable<Audiofile> AllFirstCapitalLetters(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> CutDash(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> CutDot(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> CutSpace(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> CutUnderscore(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> CutText(IEnumerable<Audiofile> audiofiles, string textToCut);
+        IEnumerable<Audiofile> CutText(IEnumerable<Audiofile> audiofiles, int position, int count);
+        IEnumerable<Audiofile> FirstCapitalLetter(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> LowerCase(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> InsertNumbering(IEnumerable<Audiofile> audiofiles, int position);
+        IEnumerable<Audiofile> InsertTextFromPosition(IEnumerable<Audiofile> audiofiles, int position, string text);
+        IEnumerable<Audiofile> ReplaceDashToSpace(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> ReplaceDotToSpace(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> ReplaceSpaceToDash(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> ReplaceSpaceToDot(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> ReplaceSpaceToUnderscore(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> ReplaceUnderscoreToSpace(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> ReplaceText(IEnumerable<Audiofile> audiofiles, string oldText, string newText);
+        IEnumerable<Audiofile> UpperCase(IEnumerable<Audiofile> audiofiles);
+        IEnumerable<Audiofile> ChangeByPattern(IEnumerable<Audiofile> audiofiles, string pattern);
     }
 }
