@@ -1,5 +1,6 @@
 ﻿using AudioTAGEditor.Models;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -11,7 +12,19 @@ namespace AudioTAGEditor.Services
             => ReplaceIntoFilenames(audiofiles, " ", "");
 
         public IEnumerable<Audiofile> CutDot(IEnumerable<Audiofile> audiofiles)
-            => ReplaceIntoFilenames(audiofiles, ".", "");
+        {
+            var resultCollection = new List<Audiofile>();
+            audiofiles.ToList().ForEach(a =>
+            {
+                var tempFilename = Path.GetFileNameWithoutExtension(a.Filename)
+                .Replace(".", "");
+                var tempExtension = Path.GetExtension(a.Filename);
+                a.Filename = $"{tempFilename}{tempExtension}";
+                resultCollection.Add(a);
+            });
+
+            return resultCollection;
+        }
 
         public IEnumerable<Audiofile> CutUnderscore(IEnumerable<Audiofile> audiofiles)
             => ReplaceIntoFilenames(audiofiles, "_", "");
@@ -111,20 +124,26 @@ namespace AudioTAGEditor.Services
         {
             var firstLetterIndexes = new List<int>();
             var resultCollection = new List<Audiofile>();
+            var resultString = new StringBuilder();
 
             audiofile.ToList().ForEach(element =>
             {
+                firstLetterIndexes.Clear();
+                if (element.Filename.Length > 0) firstLetterIndexes.Add(0);
                 for (var i = 0; i < element.Filename.Length; i++)
                     if (element.Filename[i] == ' ' && element.Filename[i + 1] != ' ')
                         firstLetterIndexes.Add(i + 1);
-
+                   
                 var position = 0;
-                var resultString = new StringBuilder();
+                resultString.Clear();
                 for (var i = 0; i < element.Filename.Length; i++)
                 {
-                    if (i == element.Filename[position++])
+                    if (position < firstLetterIndexes.Count() && i == firstLetterIndexes[position])
+                    {
                         resultString.Append(element.Filename[i].ToString().ToUpper());
-                    else resultString.Append(element.Filename[i].ToString());
+                        position++;
+                    }   
+                    else resultString.Append(element.Filename[i].ToString().ToLower());
                 }
                 element.Filename = resultString.ToString();
                 resultCollection.Add(element);
@@ -151,7 +170,7 @@ namespace AudioTAGEditor.Services
             var resultCollection = new List<Audiofile>();
             audiofiles.ToList().ForEach(c =>
             {
-                c.Filename = c.Filename.ToUpper();
+                c.Filename = c.Filename.ToLower();
                 resultCollection.Add(c);
             });
 
