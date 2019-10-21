@@ -26,6 +26,7 @@ namespace AudioTAGEditor
             containerRegistry.RegisterSingleton<IHistoryService, HistoryService>();
             containerRegistry.Register<IAudiofileComparerService, AudiofileComparerService>();
             containerRegistry.RegisterSingleton<ILogService, LogService>();
+            containerRegistry.Register<IFilenameEditService, FilenameEditService>();
             
             var config = new MapperConfiguration(c =>
             {

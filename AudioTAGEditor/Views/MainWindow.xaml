@@ -34,73 +34,133 @@
                         Command="{Binding ExitCommand, Mode=OneTime}" />
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
-            <RibbonTab Header="Edit filenames">
-                <RibbonGroup Header="Cut">
-                    <RibbonCheckBox Label="Space"/>
-                    <RibbonCheckBox Label="Dot"/>
-                    <RibbonCheckBox Label="Underscore"/>
-                    <RibbonCheckBox Label="Dash"/>
-                </RibbonGroup>
-                <RibbonGroup Header="Replace">
-                    <RibbonCheckBox Label="Dot to space"/>
-                    <RibbonCheckBox Label="Underscore to space"/>
-                    <RibbonCheckBox Label="Dash to space"/>
-
-                </RibbonGroup>
-                <RibbonGroup Header="Replace">
-                    <RibbonCheckBox Label="Space to dot"/>
-                    <RibbonCheckBox Label="Space to underscore"/>
-                    <RibbonCheckBox Label="Space to Dash"/>
-                </RibbonGroup>
-                <RibbonGroup Header="Change">
-                    <RibbonRadioButton Label="First capital letter"/>
-                    <RibbonRadioButton Label="All first words capital letters"/>
-                    <RibbonRadioButton Label="Upper case"/>
-                    <RibbonRadioButton Label="Lower case"/>
-                </RibbonGroup>
-                <RibbonGroup Header="Insert at position">
-                    <RibbonTextBox 
-                        Label="Position    "
-                        TextBoxWidth="20"/>
-                    <RibbonTextBox 
-                        Label="Text to cut"
-                        TextBoxWidth="120"/>
-                </RibbonGroup>
-                <RibbonGroup Header="Cut text at position">
-                    <RibbonTextBox
-                        Label="Position"
-                        TextBoxWidth="20"/>
-                    <RibbonTextBox
-                        Label="Count   "
-                        TextBoxWidth="20"/>
-                </RibbonGroup>
-                <RibbonGroup Header="Cut text">
-                    <RibbonTextBox
-                            Label="Text to cut"/>
+            <RibbonTab 
+                Header="Edit filenames">
+                <RibbonGroup 
+                    Header="Cut"
+                    IsEnabled="{Binding IsEnabledCutGroup, Mode=TwoWay}">
+                    <RibbonCheckBox 
+                        Label="Space"
+                        IsChecked="{Binding IsCheckedCutSpace, Mode=TwoWay}"/>
+                    <RibbonCheckBox 
+                        Label="Dot"
+                        IsChecked="{Binding IsCheckedCutDot, Mode=TwoWay}"/>
+                    <RibbonCheckBox 
+                        Label="Underscore"
+                        IsChecked="{Binding IsCheckedCutUnderscore, Mode=TwoWay}"/>
+                    <RibbonCheckBox 
+                        Label="Dash"
+                        IsChecked="{Binding IsCheckedCutDash, Mode=TwoWay}"/>
                 </RibbonGroup>
                 <RibbonGroup 
-                    Header="Replace text">
-                    <RibbonTextBox
-                        Label="Text to cut"/>
-                    <RibbonTextBox
-                        Label="New text  "/>
+                    Header="Replace"
+                    IsEnabled="{Binding IsEnabledReplaceToSpaceGroup, Mode=TwoWay}">
+                    <RibbonCheckBox 
+                        Label="Dot to space"
+                        IsChecked="{Binding IsCheckedReplaceDotToSpace, Mode=TwoWay}"/>
+                    <RibbonCheckBox 
+                        Label="Underscore to space"
+                        IsChecked="{Binding IsCheckedReplaceUnderscoreToSpace, Mode=TwoWay}"/>
+                    <RibbonCheckBox 
+                        Label="Dash to space"
+                        IsChecked="{Binding IsCheckedReplaceDashToSpace, Mode=TwoWay}"/>
                 </RibbonGroup>
-                <RibbonGroup Header="Insert numberings">
+                <RibbonGroup 
+                    Header="Replace"
+                    IsEnabled="{Binding IsEnabledReplaceFromSpaceGroup, Mode=TwoWay}">
+                    <RibbonCheckBox 
+                        Label="Space to dot"
+                        IsChecked="{Binding IsCheckedReplaceSpaceToDot, Mode=TwoWay}"/>
+                    <RibbonCheckBox 
+                        Label="Space to underscore"
+                        IsChecked="{Binding IsCheckedReplaceSpaceToUnderscore, Mode=TwoWay}"/>
+                    <RibbonCheckBox 
+                        Label="Space to Dash"
+                        IsChecked="{Binding IsCheckedReplaceSpaceToDash, Mode=TwoWay}"/>
+                </RibbonGroup>
+                <RibbonGroup 
+                    Header="Change"
+                    IsEnabled="{Binding IsEnabledChangeGroup, Mode=TwoWay}">
+                    <RibbonRadioButton 
+                        Label="First capital letter"
+                        IsChecked="{Binding IsCheckedChangeFirstCapitalLetter, Mode=TwoWay}"/>
+                    <RibbonRadioButton 
+                        Label="All first capital letters"
+                        IsChecked="{Binding IsCheckedChangeAllFirstCapitalLetters, Mode=TwoWay}"/>
+                    <RibbonRadioButton 
+                        Label="Upper case"
+                        IsChecked="{Binding IsCheckedChangeUpperCase, Mode=TwoWay}"/>
+                    <RibbonRadioButton 
+                        Label="Lower case"
+                        IsChecked="{Binding IsCheckedChangeLowerCase, Mode=TwoWay}"/>
+                </RibbonGroup>
+                <RibbonGroup 
+                    Header="Insert from position"
+                    IsEnabled="{Binding IsEnabledInsertFromPositionGroup, Mode=TwoWay}">
+                    <RibbonTextBox 
+                        Label="Position    "
+                        TextBoxWidth="20"
+                        Text="{Binding InsertFromPositionPosition, Mode=TwoWay}"/>
+                    <RibbonTextBox 
+                        Label="Text insert"
+                        TextBoxWidth="120"
+                        Text="{Binding InsertFromPositionText, Mode=TwoWay}"/>
+                </RibbonGroup>
+                <RibbonGroup 
+                    Header="Cut text from position"
+                    IsEnabled="{Binding IsEnabledCutFromPositionGroup, Mode=TwoWay}">
                     <RibbonTextBox
                         Label="Position"
-                        TextBoxWidth="20"/>
+                        TextBoxWidth="20"
+                        Text="{Binding CutFromPositionPosition, Mode=TwoWay}"/>
+                    <RibbonTextBox
+                        Label="Count   "
+                        TextBoxWidth="20"
+                        Text="{Binding CutFromPositionCount, Mode=TwoWay}"/>
                 </RibbonGroup>
-                <RibbonGroup Header="Change from ID3">
+                <RibbonGroup 
+                    Header="Cut text"
+                    IsEnabled="{Binding IsEnabledCutTextGroup, Mode=TwoWay}">
+                    <RibbonTextBox
+                        Label="Text to cut"
+                        Text="{Binding CutTextText, Mode=TwoWay}"/>
+                </RibbonGroup>
+                <RibbonGroup 
+                    Header="Replace text"
+                    IsEnabled="{Binding IsEnabledReplaceTextGroup, Mode=TwoWay}">
+                    <RibbonTextBox
+                        Label="Text to cut"
+                        Text="{Binding ReplaceTextOldText, Mode=TwoWay}"/>
+                    <RibbonTextBox
+                        Label="New text  "
+                        Text="{Binding ReplaceTextNewText, Mode=TwoWay}"/>
+                </RibbonGroup>
+                <RibbonGroup 
+                    Header="Insert numbering"
+                    IsEnabled="{Binding IsEnabledInsertNumberingGroup, Mode=TwoWay}">
+                    <RibbonTextBox
+                        Label="Position"
+                        TextBoxWidth="20"
+                        Text="{Binding InsertNumberingPosition, Mode=TwoWay}"/>
+                </RibbonGroup>
+                <RibbonGroup 
+                    Header="Change from ID3"
+                    IsEnabled="{Binding IsEnabledChangeFromID3Group, Mode=TwoWay}">
                     <RibbonTextBox 
                         Label="Pattern"
-                        TextBoxWidth="150"/>
+                        TextBoxWidth="200"
+                        Text="{Binding ChangeFromID3Pattern, Mode=TwoWay}"/>
                     <RibbonTwoLineText Text="&lt;title&gt; &lt;album&gt; &lt;artist&gt; &lt;no&gt; &lt;genre&gt; &lt;year&gt;"></RibbonTwoLineText>
                 </RibbonGroup>
-                <RibbonGroup>
+                <RibbonGroup 
+                    Header="Execute"
+                    IsEnabled="{Binding IsEnabledExecuteEditFilenamesGroup, Mode=TwoWay}">
                     <RibbonButton 
-                    Label="Execute"
-                    LargeImageSource="{StaticResource execute}"
-                    SmallImageSource="{StaticResource execute}"/>
+                        Label="Execute"
+                        LargeImageSource="{StaticResource execute}"
+                        SmallImageSource="{StaticResource execute}"
+                        Command="{Binding ExecuteFilenamesEditCommand, Mode=OneTime}"
+                        CommandParameter="{Binding ElementName=ExplorerTree}"/>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="Edit tags">
@@ -148,7 +208,6 @@
                     LogService="{Binding LogService,Mode=OneTime}"
                     LogMessage="{Binding LogMessage, Mode=OneWayToSource}"
                     LogMessageStatusType="{Binding LogMessageStatusType, Mode=OneWayToSource}"/>
-                    
             </i:Interaction.Behaviors>
         </Ribbon>
         <ToolBar Grid.Row="1">

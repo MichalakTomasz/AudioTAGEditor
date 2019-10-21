@@ -234,14 +234,12 @@ namespace AudioTAGEditor.Behaviors
         {
             base.OnAttached();
             var ribbon = AssociatedObject;
-            var tabs = ribbon.Items;
-            var historyTab = tabs[2] as RibbonTab;
+            var historyTab = ribbon.Items[2] as RibbonTab;
             var ribbonGroup = historyTab.Items[0] as RibbonGroup;
-            var ribbonGroupItems = ribbonGroup.Items;
-            ribbonButtonUndo = ribbonGroupItems[0] as RibbonButton;
-            ribbonButtonRedo = ribbonGroupItems[1] as RibbonButton;
-            ribbonButtonConfirm = ribbonGroupItems[2] as RibbonButton;
-            ribbonButtonCancel = ribbonGroupItems[3] as RibbonButton;
+            ribbonButtonUndo = ribbonGroup.Items[0] as RibbonButton;
+            ribbonButtonRedo = ribbonGroup.Items[1] as RibbonButton;
+            ribbonButtonConfirm = ribbonGroup.Items[2] as RibbonButton;
+            ribbonButtonCancel = ribbonGroup.Items[3] as RibbonButton;
 
             ribbonButtonUndo.PreviewMouseLeftButtonDown += 
                 RibbonButtonUndo_PreviewMouseLeftButtonDown;

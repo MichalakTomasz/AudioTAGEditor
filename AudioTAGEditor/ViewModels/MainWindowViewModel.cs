@@ -24,7 +24,8 @@ namespace AudioTAGEditor.ViewModels
             IFileService fileService,
             IHistoryService historyService,
             IAudiofileComparerService audiofileComparerService,
-            ILogService logService)
+            ILogService logService,
+            IFilenameEditService filenameEditService)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
             ID3v1Service = id3v1Service;
@@ -35,6 +36,7 @@ namespace AudioTAGEditor.ViewModels
             HistoryService = historyService;
             AudiofileComparerService = audiofileComparerService;
             LogService = logService;
+            FilenameEditService = filenameEditService;
             eventAggregator.GetEvent<AudiofileMessageSentEvent>()
                 .Subscribe(ExecuteMessage);
         }
@@ -42,7 +44,297 @@ namespace AudioTAGEditor.ViewModels
         #endregion//Constructor
 
         #region Properties
-        
+
+        #region Ribbon
+
+        #region Tab EditFilenames
+
+        #region Cut
+
+        private bool isEnabledCutGroup;
+        public bool IsEnabledCutGroup
+        {
+            get { return isEnabledCutGroup; }
+            set { SetProperty(ref isEnabledCutGroup, value); }
+        }
+
+        private bool isCheckedCutSpace;
+        public bool IsCheckedCutSpace
+        {
+            get { return isCheckedCutSpace; }
+            set { SetProperty(ref isCheckedCutSpace, value); }
+        }
+
+        private bool isCheckedCutDot;
+        public bool IsCheckedCutDot
+        {
+            get { return isCheckedCutDot; }
+            set { SetProperty(ref isCheckedCutDot, value); }
+        }
+
+        private bool isCheckedCutUnderscore;
+        public bool IsCheckedCutUnderscore
+        {
+            get { return isCheckedCutUnderscore; }
+            set { SetProperty(ref isCheckedCutUnderscore, value); }
+        }
+
+        private bool isCheckedCutDash;
+        public bool IsCheckedCutDash
+        {
+            get { return isCheckedCutDash; }
+            set { SetProperty(ref isCheckedCutDash, value); }
+        }
+
+        #endregion // Cut
+
+        #region Replace to space
+
+        private bool isEnabledReplaceToSpaceGroup;
+        public bool IsEnabledReplaceToSpaceGroup
+        {
+            get { return isEnabledReplaceToSpaceGroup; }
+            set { SetProperty(ref isEnabledReplaceToSpaceGroup, value); }
+        }
+
+        private bool isCheckedReplaceDotToSpace;
+        public bool IsCheckedReplaceDotToSpace
+        {
+            get { return isCheckedReplaceDotToSpace; }
+            set { SetProperty(ref isCheckedReplaceDotToSpace, value); }
+        }
+
+        private bool isCheckedReplaceUnderscoreToSpace;
+        public bool IsCheckedReplaceUnderscoreToSpace
+        {
+            get { return isCheckedReplaceUnderscoreToSpace; }
+            set { SetProperty(ref isCheckedReplaceUnderscoreToSpace, value); }
+        }
+
+        private bool isCheckedReplaceDashToSpace;
+        public bool IsCheckedReplaceDashToSpace
+        {
+            get { return isCheckedReplaceDashToSpace; }
+            set { SetProperty(ref isCheckedReplaceDashToSpace, value); }
+        }
+
+        #endregion // Replace ot space
+
+        #region Replace from space
+
+        private bool isEnabledReplaceFromSpaceGroup;
+        public bool IsEnabledReplaceFromSpaceGroup
+        {
+            get { return isEnabledReplaceFromSpaceGroup; }
+            set { SetProperty(ref isEnabledReplaceFromSpaceGroup, value); }
+        }
+
+        private bool isCheckedReplaceSpaceToDot;
+        public bool IsCheckedReplaceSpaceToDot
+        {
+            get { return isCheckedReplaceSpaceToDot; }
+            set { SetProperty(ref isCheckedReplaceSpaceToDot, value); }
+        }
+
+        private bool isCheckedReplaceSpaceToUnderscore;
+        public bool IsCheckedReplaceSpaceToUnderscore
+        {
+            get { return isCheckedReplaceSpaceToUnderscore; }
+            set { SetProperty(ref isCheckedReplaceSpaceToUnderscore, value); }
+        }
+
+        private bool isCheckedReplaceSpaceToDash;
+        public bool IsCheckedReplaceSpaceToDash
+        {
+            get { return isCheckedReplaceSpaceToDash; }
+            set { SetProperty(ref isCheckedReplaceSpaceToDash, value); }
+        }
+
+        #endregion // Replace from space
+
+        #region Change
+
+        private bool isEnabledChangeGroup;
+        public bool IsEnabledChangeGroup
+        {
+            get { return isEnabledChangeGroup; }
+            set { SetProperty(ref isEnabledChangeGroup, value); }
+        }
+
+        private bool isCheckedChangeFirstCapitalLetter;
+        public bool IsCheckedChangeFirstCapitalLetter
+        {
+            get { return isCheckedChangeFirstCapitalLetter; }
+            set { SetProperty(ref isCheckedChangeFirstCapitalLetter, value); }
+        }
+
+        private bool isCheckedChangeAllFirstCapitalLetters;
+        public bool IsCheckedChangeAllFirstCapitalLetters
+        {
+            get { return isCheckedChangeAllFirstCapitalLetters; }
+            set { SetProperty(ref isCheckedChangeAllFirstCapitalLetters, value); }
+        }
+
+        private bool isCheckedChangeUpperCase;
+        public bool IsCheckedChangeUpperCase
+        {
+            get { return isCheckedChangeUpperCase; }
+            set { SetProperty(ref isCheckedChangeUpperCase, value); }
+        }
+
+        private bool isCheckedChangeLowerCase;
+        public bool IsCheckedChangeLowerCase
+        {
+            get { return isCheckedChangeLowerCase; }
+            set { SetProperty(ref isCheckedChangeLowerCase, value); }
+        }
+
+        #endregion // Change
+
+        #region Insert from position
+
+        private bool isEnabledInsertFromPositionGroup;
+        public bool IsEnabledInsertFromPositionGroup
+        {
+            get { return isEnabledInsertFromPositionGroup; }
+            set { SetProperty(ref isEnabledInsertFromPositionGroup, value); }
+        }
+
+        private int? insertFromPositionPosition;
+        public int? InsertFromPositionPosition
+        {
+            get { return insertFromPositionPosition; }
+            set { SetProperty(ref insertFromPositionPosition, value); }
+        }
+
+        private string InsertFormPositionText;
+        public string InsertFromPositionText
+        {
+            get { return InsertFormPositionText; }
+            set { SetProperty(ref InsertFormPositionText, value); }
+        }
+
+        #endregion // Insert from position
+
+        #region Cut from position
+
+        private bool isEnabledCutFromPositionGroup;
+        public bool IsEnabledCutFromPositionGroup
+        {
+            get { return isEnabledCutFromPositionGroup; }
+            set { SetProperty(ref isEnabledCutFromPositionGroup, value); }
+        }
+
+        private int? cutFromPositionPosition;
+        public int? CutFromPositionPosition
+        {
+            get { return cutFromPositionPosition; }
+            set { SetProperty(ref cutFromPositionPosition, value); }
+        }
+
+        private int? cutFromPositionCount;
+        public int? CutFromPositionCount
+        {
+            get { return cutFromPositionCount; }
+            set { SetProperty(ref cutFromPositionCount, value); }
+        }
+
+        #endregion // Cut from position
+
+        #region Cut text
+
+        private bool isEnabledCutTextGroup;
+        public bool IsEnabledCutTextGroup
+        {
+            get { return isEnabledCutTextGroup; }
+            set { SetProperty(ref isEnabledCutTextGroup, value); }
+        }
+
+        private string cutTextText;
+        public string CutTextText
+        {
+            get { return cutTextText; }
+            set { SetProperty(ref cutTextText, value); }
+        }
+
+        #endregion // Cut text
+
+        #region Replace text
+
+        private bool isEnabledReplaceTextGroup;
+        public bool IsEnabledReplaceTextGroup
+        {
+            get { return isEnabledReplaceTextGroup; }
+            set { SetProperty(ref isEnabledReplaceTextGroup, value); }
+        }
+
+        private string replaceTextOldText;
+        public string ReplaceTextOldText
+        {
+            get { return replaceTextOldText; }
+            set { SetProperty(ref replaceTextOldText, value); }
+        }
+
+        private string replaceTextNewText;
+        public string ReplaceTextNewText
+        {
+            get { return replaceTextNewText; }
+            set { SetProperty(ref replaceTextNewText, value); }
+        }
+
+        #endregion // Replace text
+
+        #region Insert numbering
+
+        private bool isEnabledInsertNumberingGroup;
+        public bool IsEnabledInsertNumberingGroup
+        {
+            get { return isEnabledInsertNumberingGroup; }
+            set { SetProperty(ref isEnabledInsertNumberingGroup, value); }
+        }
+
+        private int? insertNumberingPosition;
+        public int? InsertNumberingPosition
+        {
+            get { return insertNumberingPosition; }
+            set { SetProperty(ref insertNumberingPosition, value); }
+        }
+
+        #endregion // Insert numbering
+
+        #region Change from ID3
+
+        private bool isEnabledChangeFromID3Group;
+        public bool IsEnabledChangeFromID3Group
+        {
+            get { return isEnabledChangeFromID3Group; }
+            set { SetProperty(ref isEnabledChangeFromID3Group, value); }
+        }
+
+        private string changeFromID3Pattern;
+        public string ChangeFromID3Pattern
+        {
+            get { return changeFromID3Pattern; }
+            set { SetProperty(ref changeFromID3Pattern, value); }
+        }
+
+        #endregion // Change form ID3
+
+        #endregion // Tab EditFilenames
+
+        #region Execute
+
+        private bool isEnabledExecuteEditFilenamesGroup;
+        public bool IsEnabledExecuteEditFilenamesGroup
+        {
+            get { return isEnabledExecuteEditFilenamesGroup; }
+            set { SetProperty(ref isEnabledExecuteEditFilenamesGroup, value); }
+        }
+
+        #endregion // Execute
+
+        #endregion // Ribbon
+
         #region ToolBar
 
         private bool isCheckedID3v1;
@@ -89,11 +381,12 @@ namespace AudioTAGEditor.ViewModels
         public IHistoryService HistoryService { get; }
         public IAudiofileComparerService AudiofileComparerService { get; }
         public ILogService LogService { get; }
+        public IFilenameEditService FilenameEditService { get; }
         public IAudiofileConverter AudiofileConverter { get; }
         public IFileService FileService { get; }
         public IID3Service ID3v1Service { get; }
         public IID3Service ID3v2Service { get; }
-        public IEventAggregator EventAggregator { get;}
+        public IEventAggregator EventAggregator { get; }
 
         #endregion // DatagridEditBehaviors
 
@@ -233,7 +526,14 @@ namespace AudioTAGEditor.ViewModels
             new DelegateCommand(
                 HistoryCancelCommandExecute,
                 HistoryCancelCommandCanExectute));
-        
+
+        private ICommand executeFilenamesEditCommand;
+        public ICommand ExecuteFilenamesEditCommand =>
+            executeFilenamesEditCommand ?? (executeFilenamesEditCommand = 
+            new DelegateCommand<ExplorerTreeView.ExplorerTreeView>(
+                ExecuteExecuteFilenameEditCommand, 
+                CanExecuteExecuteFilenameEditCommand));
+
         #endregion//Commands
 
         #region Methods
@@ -337,6 +637,7 @@ namespace AudioTAGEditor.ViewModels
             Audiofiles = audioFiles;
             AllFilesChecked = true;
             CheckAllFilesCommandExecute();
+            RefreshEnabledEditFilenamesGroups();
         }
         
         private void UpdateHistoryProperties()
@@ -406,6 +707,65 @@ namespace AudioTAGEditor.ViewModels
 
         private bool HistoryCancelCommandCanExectute()
             => HistoryCount > 0 && HistoryPosition < HistoryCount;
+
+        private IEnumerable<Audiofile> ConvertAudioFilesViewModelsFromGridToAudioFiles()
+        {
+            var selectedTag = ResolveTagToActivate();
+            switch (selectedTag)
+            {
+                case TagType.ID3V1:
+                    return AudiofileConverter
+                        .AudiofilesID3v1ViewModelToAudiofiles(Audiofiles);
+                case TagType.ID3V2:
+                    return AudiofileConverter
+                        .AudiofilesViewModelToAudiofiles(Audiofiles);
+                default: 
+                    return null;
+            }
+        }
+
+        void ExecuteExecuteFilenameEditCommand(ExplorerTreeView.ExplorerTreeView explorerTreeView)
+        {
+            var audioFiles = ConvertAudioFilesViewModelsFromGridToAudioFiles();
+            
+        }
+
+        bool CanExecuteExecuteFilenameEditCommand(ExplorerTreeView.ExplorerTreeView explorerTreeView)
+        {
+            return true;
+        }
+
+        private void RefreshEnabledEditFilenamesGroups()
+        {
+            if (Audiofiles?.Count() > 0)
+            {
+                IsEnabledCutGroup = true;
+                IsEnabledReplaceToSpaceGroup = true;
+                IsEnabledReplaceFromSpaceGroup = true;
+                IsEnabledChangeGroup = true;
+                IsEnabledInsertFromPositionGroup = true;
+                IsEnabledCutFromPositionGroup = true;
+                IsEnabledCutTextGroup = true;
+                IsEnabledReplaceTextGroup = true;
+                IsEnabledInsertNumberingGroup = true;
+                IsEnabledChangeFromID3Group = true;
+                IsEnabledExecuteEditFilenamesGroup = true;
+            }
+            else
+            {
+                IsEnabledCutGroup = false;
+                IsEnabledReplaceToSpaceGroup = false;
+                IsEnabledReplaceFromSpaceGroup = false;
+                IsEnabledChangeGroup = false;
+                IsEnabledInsertFromPositionGroup = false;
+                IsEnabledCutFromPositionGroup = false;
+                IsEnabledCutTextGroup = false;
+                IsEnabledReplaceTextGroup = false;
+                IsEnabledInsertNumberingGroup = false;
+                IsEnabledChangeFromID3Group = false;
+                IsEnabledExecuteEditFilenamesGroup = false;
+            }
+        }
 
         #endregion // Methods
     }
