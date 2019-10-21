@@ -726,9 +726,68 @@ namespace AudioTAGEditor.ViewModels
 
         void ExecuteExecuteFilenameEditCommand(ExplorerTreeView.ExplorerTreeView explorerTreeView)
         {
+            if (Audiofiles.Any(a => a.HasErrors))
+                return;
+
             var audiofiles = ConvertAudioFilesViewModelsFromGridToAudioFiles();
-            if (isCheckedCutSpace) audiofiles = FilenameEditService.CutSpace(audiofiles);
-            
+
+            if (IsCheckedCutSpace) audiofiles = 
+                    FilenameEditService.CutSpace(audiofiles);
+            if (IsCheckedCutDot) audiofiles = 
+                    FilenameEditService.CutDot(audiofiles);
+            if (IsCheckedCutUnderscore) audiofiles = 
+                    FilenameEditService.CutUnderscore(audiofiles);
+            if (IsCheckedCutDash) audiofiles = 
+                    FilenameEditService.CutDash(audiofiles);
+
+            if (IsCheckedReplaceDotToSpace) audiofiles = 
+                    FilenameEditService.ReplaceDotToSpace(audiofiles);
+            if (IsCheckedReplaceUnderscoreToSpace) audiofiles = 
+                    FilenameEditService.ReplaceUnderscoreToSpace(audiofiles);
+            if (IsCheckedReplaceDashToSpace) audiofiles = 
+                    FilenameEditService.ReplaceDashToSpace(audiofiles);
+
+            if (IsCheckedReplaceSpaceToDot) audiofiles = 
+                    FilenameEditService.ReplaceSpaceToDot(audiofiles);
+            if (IsCheckedReplaceSpaceToUnderscore) audiofiles = 
+                    FilenameEditService.ReplaceSpaceToUnderscore(audiofiles);
+            if (IsCheckedReplaceSpaceToDash) audiofiles = 
+                    FilenameEditService.ReplaceSpaceToDash(audiofiles);
+
+            if (IsCheckedChangeFirstCapitalLetter) audiofiles = 
+                    FilenameEditService.FirstCapitalLetter(audiofiles);
+            if (IsCheckedChangeAllFirstCapitalLetters) audiofiles = 
+                    FilenameEditService.AllFirstCapitalLetters(audiofiles);
+            if (IsCheckedChangeUpperCase) audiofiles = 
+                    FilenameEditService.UpperCase(audiofiles);
+            if (IsCheckedChangeLowerCase) audiofiles = 
+                    FilenameEditService.LowerCase(audiofiles);
+
+            if (InsertFromPositionPosition != null && 
+                !string.IsNullOrWhiteSpace(InsertFromPositionText))
+                audiofiles = FilenameEditService.InsertTextFromPosition(
+                    audiofiles, InsertFromPositionPosition.Value, InsertFromPositionText);
+
+            if (CutFromPositionPosition != null && CutFromPositionCount != null)
+                audiofiles = FilenameEditService.CutText(
+                    audiofiles, CutFromPositionPosition.Value, 
+                    CutFromPositionCount.Value);
+
+            if (!string.IsNullOrWhiteSpace(CutTextText))
+                audiofiles = FilenameEditService.CutText(audiofiles, CutTextText);
+
+            if (!string.IsNullOrWhiteSpace(replaceTextOldText) && 
+                !string.IsNullOrWhiteSpace(ReplaceTextNewText))
+                audiofiles = FilenameEditService.ReplaceText(
+                    audiofiles, ReplaceTextNewText, ReplaceTextNewText);
+
+            if (InsertNumberingPosition != null)
+                audiofiles = FilenameEditService.InsertNumbering(
+                    audiofiles, InsertNumberingPosition.Value);
+
+            if (!string.IsNullOrWhiteSpace(ChangeFromID3Pattern))
+                audiofiles = FilenameEditService.ChangeByPattern(
+                    audiofiles, ChangeFromID3Pattern);
         }
 
         bool CanExecuteExecuteFilenameEditCommand(ExplorerTreeView.ExplorerTreeView explorerTreeView)
