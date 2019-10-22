@@ -209,12 +209,12 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref insertFromPositionPosition, value); }
         }
 
-        private string InsertFormPositionText;
+        private string insertFromPositionText;
         [RegularExpression("[^<>:\"\\|/?*]+")]
         public string InsertFromPositionText
         {
-            get { return InsertFormPositionText; }
-            set { SetProperty(ref InsertFormPositionText, value); }
+            get { return insertFromPositionText; }
+            set { SetProperty(ref insertFromPositionText, value); }
         }
 
         #endregion // Insert from position
@@ -739,63 +739,140 @@ namespace AudioTAGEditor.ViewModels
 
             var audiofiles = ConvertAudioFilesViewModelsFromGridToAudioFiles();
 
-            if (IsCheckedCutSpace) audiofiles = 
+            #region Cut
+
+            if (IsCheckedCutSpace) audiofiles =
                     FilenameEditService.CutSpace(audiofiles);
-            if (IsCheckedCutDot) audiofiles = 
+
+            if (IsCheckedCutDot) audiofiles =
                     FilenameEditService.CutDot(audiofiles);
-            if (IsCheckedCutUnderscore) audiofiles = 
+
+            if (IsCheckedCutUnderscore) audiofiles =
                     FilenameEditService.CutUnderscore(audiofiles);
-            if (IsCheckedCutDash) audiofiles = 
+
+            if (IsCheckedCutDash) audiofiles =
                     FilenameEditService.CutDash(audiofiles);
 
-            if (IsCheckedReplaceDotToSpace) audiofiles = 
+            #endregion // Cut
+
+            #region Replace to space
+
+            if (IsCheckedReplaceDotToSpace) audiofiles =
                     FilenameEditService.ReplaceDotToSpace(audiofiles);
-            if (IsCheckedReplaceUnderscoreToSpace) audiofiles = 
+
+            if (IsCheckedReplaceUnderscoreToSpace) audiofiles =
                     FilenameEditService.ReplaceUnderscoreToSpace(audiofiles);
-            if (IsCheckedReplaceDashToSpace) audiofiles = 
+
+            if (IsCheckedReplaceDashToSpace) audiofiles =
                     FilenameEditService.ReplaceDashToSpace(audiofiles);
 
-            if (IsCheckedReplaceSpaceToDot) audiofiles = 
+            #endregion // Replace to spece
+
+            #region Replace from space
+
+            if (IsCheckedReplaceSpaceToDot) audiofiles =
                     FilenameEditService.ReplaceSpaceToDot(audiofiles);
-            if (IsCheckedReplaceSpaceToUnderscore) audiofiles = 
+
+            if (IsCheckedReplaceSpaceToUnderscore) audiofiles =
                     FilenameEditService.ReplaceSpaceToUnderscore(audiofiles);
-            if (IsCheckedReplaceSpaceToDash) audiofiles = 
+
+            if (IsCheckedReplaceSpaceToDash) audiofiles =
                     FilenameEditService.ReplaceSpaceToDash(audiofiles);
 
-            if (IsCheckedChangeFirstCapitalLetter) audiofiles = 
+
+            #endregion // Replace from space
+
+            #region Change
+
+            if (IsCheckedChangeFirstCapitalLetter) audiofiles =
                     FilenameEditService.FirstCapitalLetter(audiofiles);
-            if (IsCheckedChangeAllFirstCapitalLetters) audiofiles = 
+
+            if (IsCheckedChangeAllFirstCapitalLetters) audiofiles =
                     FilenameEditService.AllFirstCapitalLetters(audiofiles);
-            if (IsCheckedChangeUpperCase) audiofiles = 
+
+            if (IsCheckedChangeUpperCase) audiofiles =
                     FilenameEditService.UpperCase(audiofiles);
-            if (IsCheckedChangeLowerCase) audiofiles = 
+
+            if (IsCheckedChangeLowerCase) audiofiles =
                     FilenameEditService.LowerCase(audiofiles);
 
-            if (InsertFromPositionPosition != null && 
+            #endregion  // Change
+
+            #region Insert from position
+
+            if (InsertFromPositionPosition != null &&
                 !string.IsNullOrWhiteSpace(InsertFromPositionText))
+            {
                 audiofiles = FilenameEditService.InsertTextFromPosition(
                     audiofiles, InsertFromPositionPosition.Value, InsertFromPositionText);
 
+                InsertFromPositionPosition = null;
+                InsertFromPositionText = null;
+            }
+
+            #endregion // Insert from position
+
+            #region Cut from position
+
             if (CutFromPositionPosition != null && CutFromPositionCount != null)
+            {
                 audiofiles = FilenameEditService.CutText(
-                    audiofiles, CutFromPositionPosition.Value, 
+                    audiofiles, CutFromPositionPosition.Value,
                     CutFromPositionCount.Value);
 
-            if (!string.IsNullOrWhiteSpace(CutTextText))
-                audiofiles = FilenameEditService.CutText(audiofiles, CutTextText);
+                CutFromPositionPosition = null;
+                CutFromPositionCount = null;
+            }
 
-            if (!string.IsNullOrWhiteSpace(replaceTextOldText) && 
+            #endregion // Cut from position
+
+            #region Cut text
+
+            if (!string.IsNullOrWhiteSpace(CutTextText))
+            {
+                audiofiles = FilenameEditService.CutText(audiofiles, CutTextText);
+                CutTextText = null;
+            }
+
+            #endregion // Cut text
+
+            #region Replace text
+
+            if (!string.IsNullOrWhiteSpace(ReplaceTextOldText) &&
                 !string.IsNullOrWhiteSpace(ReplaceTextNewText))
+            {
                 audiofiles = FilenameEditService.ReplaceText(
                     audiofiles, ReplaceTextNewText, ReplaceTextNewText);
 
+                ReplaceTextOldText = null;
+                ReplaceTextNewText = null;
+            }
+
+            #endregion // Replace text
+
+            #region Insert numbering
+
             if (InsertNumberingPosition != null)
+            {
                 audiofiles = FilenameEditService.InsertNumbering(
                     audiofiles, InsertNumberingPosition.Value);
 
+                InsertNumberingPosition = null;
+            }
+
+            #endregion // Insert numbering
+
+            #region Change from ID3
+
             if (!string.IsNullOrWhiteSpace(ChangeFromID3Pattern))
+            {
                 audiofiles = FilenameEditService.ChangeByPattern(
                     audiofiles, ChangeFromID3Pattern);
+
+                ChangeFromID3Pattern = null;
+            }
+
+            #endregion // Change from ID3
         }
 
         bool CanExecuteExecuteFilenameEditCommand(ExplorerTreeView.ExplorerTreeView explorerTreeView)

@@ -98,14 +98,14 @@
                     Header="Insert from position"
                     IsEnabled="{Binding IsEnabledInsertFromPositionGroup, Mode=TwoWay}">
                     <RibbonTextBox 
-                        Label="Position    "
+                        Label="Position"
                         TextBoxWidth="20"
                         Text="{Binding 
                         InsertFromPositionPosition, 
                         Mode=TwoWay,
                         UpdateSourceTrigger=PropertyChanged}"/>
                     <RibbonTextBox 
-                        Label="Text insert"
+                        Label="Text      "
                         TextBoxWidth="120"
                         Text="{Binding 
                         InsertFromPositionText, 
