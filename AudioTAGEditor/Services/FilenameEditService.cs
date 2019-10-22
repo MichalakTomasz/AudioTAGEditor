@@ -79,9 +79,7 @@ namespace AudioTAGEditor.Services
             audiofiles.ToList().ForEach(element =>
             {
                 if (position - 1 < element.Filename.Length)
-                {
                     element.Filename = element.Filename.Remove(position - 1, count);
-                }
 
                 resultCollection.Add(element);
             });
@@ -189,7 +187,7 @@ namespace AudioTAGEditor.Services
                 if (position - 1 < elements[i].Filename.Length)
                 {
                     tempString.Clear();
-                    tempString.Append(i);
+                    tempString.Append(i + 1);
                     while (tempString.Length < counterLength)
                         tempString.Insert(0, "0");
                     elements[i].Filename = elements[i].Filename
@@ -240,7 +238,9 @@ namespace AudioTAGEditor.Services
                         }
                     }
                 }
-                c.Filename = tempString.ToString();
+                var extension = Path.GetExtension(c.Filename);
+                var newFilename = $"{tempString.ToString()}{extension}";
+                c.Filename = newFilename;
                 resultCollection.Add(c);
             });
         

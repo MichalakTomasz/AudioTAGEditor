@@ -2,17 +2,18 @@
 using AudioTAGEditor.Services;
 using Commons;
 using EventAggregator;
+using LibValidation;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Mvvm;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Windows.Input;
 using Unity;
 
 namespace AudioTAGEditor.ViewModels
 {
-    public class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : BindableBaseWithValidation
     {
         #region Constructor
 
@@ -201,6 +202,7 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private int? insertFromPositionPosition;
+        [Range(1, 255)]
         public int? InsertFromPositionPosition
         {
             get { return insertFromPositionPosition; }
@@ -208,6 +210,7 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private string InsertFormPositionText;
+        [RegularExpression("[^<>:\"\\|/?*]+")]
         public string InsertFromPositionText
         {
             get { return InsertFormPositionText; }
@@ -226,6 +229,7 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private int? cutFromPositionPosition;
+        [Range(1, 255)]
         public int? CutFromPositionPosition
         {
             get { return cutFromPositionPosition; }
@@ -233,6 +237,7 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private int? cutFromPositionCount;
+        [Range(1, 255)]
         public int? CutFromPositionCount
         {
             get { return cutFromPositionCount; }
@@ -276,6 +281,7 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private string replaceTextNewText;
+        [RegularExpression("[^<>:\"\\|/?*]+")]
         public string ReplaceTextNewText
         {
             get { return replaceTextNewText; }
@@ -294,6 +300,7 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private int? insertNumberingPosition;
+        [Range(1, 255)]
         public int? InsertNumberingPosition
         {
             get { return insertNumberingPosition; }
@@ -312,6 +319,7 @@ namespace AudioTAGEditor.ViewModels
         }
 
         private string changeFromID3Pattern;
+        [RegularExpression("[^:\"\\|/?*]+")]
         public string ChangeFromID3Pattern
         {
             get { return changeFromID3Pattern; }
@@ -319,8 +327,6 @@ namespace AudioTAGEditor.ViewModels
         }
 
         #endregion // Change form ID3
-
-        #endregion // Tab EditFilenames
 
         #region Execute
 
@@ -333,6 +339,8 @@ namespace AudioTAGEditor.ViewModels
 
         #endregion // Execute
 
+        #endregion // Tab EditFilenames
+        
         #endregion // Ribbon
 
         #region ToolBar

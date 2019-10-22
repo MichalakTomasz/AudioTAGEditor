@@ -100,11 +100,17 @@
                     <RibbonTextBox 
                         Label="Position    "
                         TextBoxWidth="20"
-                        Text="{Binding InsertFromPositionPosition, Mode=TwoWay}"/>
+                        Text="{Binding 
+                        InsertFromPositionPosition, 
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}"/>
                     <RibbonTextBox 
                         Label="Text insert"
                         TextBoxWidth="120"
-                        Text="{Binding InsertFromPositionText, Mode=TwoWay}"/>
+                        Text="{Binding 
+                        InsertFromPositionText, 
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}"/>
                 </RibbonGroup>
                 <RibbonGroup 
                     Header="Cut text from position"
@@ -112,28 +118,43 @@
                     <RibbonTextBox
                         Label="Position"
                         TextBoxWidth="20"
-                        Text="{Binding CutFromPositionPosition, Mode=TwoWay}"/>
+                        Text="{Binding 
+                        CutFromPositionPosition, 
+                        Mode=TwoWay, 
+                        UpdateSourceTrigger=PropertyChanged}"/>
                     <RibbonTextBox
                         Label="Count   "
                         TextBoxWidth="20"
-                        Text="{Binding CutFromPositionCount, Mode=TwoWay}"/>
+                        Text="{Binding 
+                        CutFromPositionCount, 
+                        Mode=TwoWay, 
+                        UpdateSourceTrigger=PropertyChanged}"/>
                 </RibbonGroup>
                 <RibbonGroup 
                     Header="Cut text"
                     IsEnabled="{Binding IsEnabledCutTextGroup, Mode=TwoWay}">
                     <RibbonTextBox
                         Label="Text to cut"
-                        Text="{Binding CutTextText, Mode=TwoWay}"/>
+                        Text="{Binding 
+                        CutTextText, 
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}"/>
                 </RibbonGroup>
                 <RibbonGroup 
                     Header="Replace text"
                     IsEnabled="{Binding IsEnabledReplaceTextGroup, Mode=TwoWay}">
                     <RibbonTextBox
                         Label="Text to cut"
-                        Text="{Binding ReplaceTextOldText, Mode=TwoWay}"/>
+                        Text="{Binding 
+                        ReplaceTextOldText, 
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}"/>
                     <RibbonTextBox
                         Label="New text  "
-                        Text="{Binding ReplaceTextNewText, Mode=TwoWay}"/>
+                        Text="{Binding 
+                        ReplaceTextNewText, 
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}"/>
                 </RibbonGroup>
                 <RibbonGroup 
                     Header="Insert numbering"
@@ -141,7 +162,10 @@
                     <RibbonTextBox
                         Label="Position"
                         TextBoxWidth="20"
-                        Text="{Binding InsertNumberingPosition, Mode=TwoWay}"/>
+                        Text="{Binding 
+                        InsertNumberingPosition, 
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}"/>
                 </RibbonGroup>
                 <RibbonGroup 
                     Header="Change from ID3"
@@ -149,7 +173,10 @@
                     <RibbonTextBox 
                         Label="Pattern"
                         TextBoxWidth="200"
-                        Text="{Binding ChangeFromID3Pattern, Mode=TwoWay}"/>
+                        Text="{Binding 
+                        ChangeFromID3Pattern, 
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}"/>
                     <RibbonTwoLineText Text="&lt;title&gt; &lt;album&gt; &lt;artist&gt; &lt;no&gt; &lt;genre&gt; &lt;year&gt;"></RibbonTwoLineText>
                 </RibbonGroup>
                 <RibbonGroup 
