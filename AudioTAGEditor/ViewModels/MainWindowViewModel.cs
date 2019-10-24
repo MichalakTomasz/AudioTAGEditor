@@ -26,7 +26,8 @@ namespace AudioTAGEditor.ViewModels
             IHistoryService historyService,
             IAudiofileComparerService audiofileComparerService,
             ILogService logService,
-            IFilenameEditService filenameEditService)
+            IFilenameEditService filenameEditService,
+            IAudiofieleCloneService audiofieleCloneService)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
             ID3v1Service = id3v1Service;
@@ -38,6 +39,7 @@ namespace AudioTAGEditor.ViewModels
             AudiofileComparerService = audiofileComparerService;
             LogService = logService;
             FilenameEditService = filenameEditService;
+            this.audiofieleCloneService = audiofieleCloneService;
             eventAggregator.GetEvent<AudiofileMessageSentEvent>()
                 .Subscribe(ExecuteMessage);
         }
@@ -536,6 +538,8 @@ namespace AudioTAGEditor.ViewModels
                 HistoryCancelCommandCanExectute));
 
         private ICommand executeFilenamesEditCommand;
+        private readonly IAudiofieleCloneService audiofieleCloneService;
+
         public ICommand ExecuteFilenamesEditCommand =>
             executeFilenamesEditCommand ?? (executeFilenamesEditCommand = 
             new DelegateCommand<ExplorerTreeView.ExplorerTreeView>(
@@ -716,7 +720,8 @@ namespace AudioTAGEditor.ViewModels
         private bool HistoryCancelCommandCanExectute()
             => HistoryCount > 0 && HistoryPosition < HistoryCount;
 
-        private IEnumerable<Audiofile> ConvertAudioFilesViewModelsFromGridToAudioFiles(IEnumerable<AudiofileViewModel> audiofileViewModels)
+        private IEnumerable<Audiofile> ConvertAudioFilesViewModelsToAudioFiles(
+            IEnumerable<AudiofileViewModel> audiofileViewModels)
         {
             var selectedTag = ResolveTagToActivate();
             switch (selectedTag)
@@ -732,7 +737,8 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
-        private IEnumerable<AudiofileViewModel> ConvertAudiofilesToAudiofilesViewModel(IEnumerable<Audiofile> audiofiles)
+        private IEnumerable<AudiofileViewModel> ConvertAudiofilesToAudiofilesViewModel(
+            IEnumerable<Audiofile> audiofiles)
         {
             var selectedTag = ResolveTagToActivate();
             switch (selectedTag)
@@ -748,7 +754,7 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
-        private IEnumerable<AudiofileViewModel> ReplaceMainAudiofilesViewModel(
+        private IEnumerable<AudiofileViewModel> ReplaceChangedIntoGridAudiofilesViewModel(
             IEnumerable<AudiofileViewModel> audiofilesViewModel)
         {
             var resultCollection = new List<AudiofileViewModel>();
@@ -757,7 +763,10 @@ namespace AudioTAGEditor.ViewModels
                 var tempAudiofileViewModel = audiofilesViewModel
                 .FirstOrDefault(e => e.ID == a.ID);
                 if (tempAudiofileViewModel != null)
+                {
+                    tempAudiofileViewModel.IsChecked = a.IsChecked;
                     resultCollection.Add(tempAudiofileViewModel);
+                }
             });
 
             return resultCollection;
@@ -768,66 +777,67 @@ namespace AudioTAGEditor.ViewModels
             if (Audiofiles.Any(a => a.HasErrors))
                 return;
 
-            var selectedAudioFilesViewModel = Audiofiles.Where(a => a.IsChecked);
-            var selectedAudiofiles = ConvertAudioFilesViewModelsFromGridToAudioFiles(
-                selectedAudioFilesViewModel);
+            var checkedAudioFilesViewModel = Audiofiles.Where(a => a.IsChecked);
+            var checkedAudiofiles = 
+                ConvertAudioFilesViewModelsToAudioFiles(checkedAudioFilesViewModel);
+            var tempAudiofiles = audiofieleCloneService.Clone(checkedAudiofiles);
 
             #region Cut
 
-            if (IsCheckedCutSpace) selectedAudiofiles =
-                    FilenameEditService.CutSpace(selectedAudiofiles);
+            if (IsCheckedCutSpace) tempAudiofiles =
+                    FilenameEditService.CutSpace(tempAudiofiles);
 
-            if (IsCheckedCutDot) selectedAudiofiles =
-                    FilenameEditService.CutDot(selectedAudiofiles);
+            if (IsCheckedCutDot) tempAudiofiles =
+                    FilenameEditService.CutDot(tempAudiofiles);
 
-            if (IsCheckedCutUnderscore) selectedAudiofiles =
-                    FilenameEditService.CutUnderscore(selectedAudiofiles);
+            if (IsCheckedCutUnderscore) tempAudiofiles =
+                    FilenameEditService.CutUnderscore(tempAudiofiles);
 
-            if (IsCheckedCutDash) selectedAudiofiles =
-                    FilenameEditService.CutDash(selectedAudiofiles);
+            if (IsCheckedCutDash) tempAudiofiles =
+                    FilenameEditService.CutDash(tempAudiofiles);
 
             #endregion // Cut
 
             #region Replace to space
 
-            if (IsCheckedReplaceDotToSpace) selectedAudiofiles =
-                    FilenameEditService.ReplaceDotToSpace(selectedAudiofiles);
+            if (IsCheckedReplaceDotToSpace) tempAudiofiles =
+                    FilenameEditService.ReplaceDotToSpace(tempAudiofiles);
 
-            if (IsCheckedReplaceUnderscoreToSpace) selectedAudiofiles =
-                    FilenameEditService.ReplaceUnderscoreToSpace(selectedAudiofiles);
+            if (IsCheckedReplaceUnderscoreToSpace) tempAudiofiles =
+                    FilenameEditService.ReplaceUnderscoreToSpace(tempAudiofiles);
 
-            if (IsCheckedReplaceDashToSpace) selectedAudiofiles =
-                    FilenameEditService.ReplaceDashToSpace(selectedAudiofiles);
+            if (IsCheckedReplaceDashToSpace) tempAudiofiles =
+                    FilenameEditService.ReplaceDashToSpace(tempAudiofiles);
 
             #endregion // Replace to spece
 
             #region Replace from space
 
-            if (IsCheckedReplaceSpaceToDot) selectedAudiofiles =
-                    FilenameEditService.ReplaceSpaceToDot(selectedAudiofiles);
+            if (IsCheckedReplaceSpaceToDot) tempAudiofiles =
+                    FilenameEditService.ReplaceSpaceToDot(tempAudiofiles);
 
-            if (IsCheckedReplaceSpaceToUnderscore) selectedAudiofiles =
-                    FilenameEditService.ReplaceSpaceToUnderscore(selectedAudiofiles);
+            if (IsCheckedReplaceSpaceToUnderscore) tempAudiofiles =
+                    FilenameEditService.ReplaceSpaceToUnderscore(tempAudiofiles);
 
-            if (IsCheckedReplaceSpaceToDash) selectedAudiofiles =
-                    FilenameEditService.ReplaceSpaceToDash(selectedAudiofiles);
+            if (IsCheckedReplaceSpaceToDash) tempAudiofiles =
+                    FilenameEditService.ReplaceSpaceToDash(tempAudiofiles);
 
 
             #endregion // Replace from space
 
             #region Change
 
-            if (IsCheckedChangeFirstCapitalLetter) selectedAudiofiles =
-                    FilenameEditService.FirstCapitalLetter(selectedAudiofiles);
+            if (IsCheckedChangeFirstCapitalLetter) tempAudiofiles =
+                    FilenameEditService.FirstCapitalLetter(tempAudiofiles);
 
-            if (IsCheckedChangeAllFirstCapitalLetters) selectedAudiofiles =
-                    FilenameEditService.AllFirstCapitalLetters(selectedAudiofiles);
+            if (IsCheckedChangeAllFirstCapitalLetters) tempAudiofiles =
+                    FilenameEditService.AllFirstCapitalLetters(tempAudiofiles);
 
-            if (IsCheckedChangeUpperCase) selectedAudiofiles =
-                    FilenameEditService.UpperCase(selectedAudiofiles);
+            if (IsCheckedChangeUpperCase) tempAudiofiles =
+                    FilenameEditService.UpperCase(tempAudiofiles);
 
-            if (IsCheckedChangeLowerCase) selectedAudiofiles =
-                    FilenameEditService.LowerCase(selectedAudiofiles);
+            if (IsCheckedChangeLowerCase) tempAudiofiles =
+                    FilenameEditService.LowerCase(tempAudiofiles);
 
             #endregion  // Change
 
@@ -836,9 +846,9 @@ namespace AudioTAGEditor.ViewModels
             if (InsertFromPositionPosition != null &&
                 !string.IsNullOrWhiteSpace(InsertFromPositionText))
             {
-                var audioFiles = ConvertAudioFilesViewModelsFromGridToAudioFiles(Audiofiles);
-                selectedAudiofiles = FilenameEditService.InsertTextFromPosition(
-                    selectedAudiofiles, InsertFromPositionPosition.Value, InsertFromPositionText);
+                var audioFiles = ConvertAudioFilesViewModelsToAudioFiles(Audiofiles);
+                tempAudiofiles = FilenameEditService.InsertTextFromPosition(
+                    tempAudiofiles, InsertFromPositionPosition.Value, InsertFromPositionText);
 
                 InsertFromPositionPosition = null;
                 InsertFromPositionText = null;
@@ -850,8 +860,8 @@ namespace AudioTAGEditor.ViewModels
 
             if (CutFromPositionPosition != null && CutFromPositionCount != null)
             {
-                selectedAudiofiles = FilenameEditService.CutText(
-                    selectedAudiofiles, CutFromPositionPosition.Value,
+                tempAudiofiles = FilenameEditService.CutText(
+                    tempAudiofiles, CutFromPositionPosition.Value,
                     CutFromPositionCount.Value);
 
                 CutFromPositionPosition = null;
@@ -864,7 +874,7 @@ namespace AudioTAGEditor.ViewModels
 
             if (!string.IsNullOrWhiteSpace(CutTextText))
             {
-                selectedAudiofiles = FilenameEditService.CutText(selectedAudiofiles, CutTextText);
+                tempAudiofiles = FilenameEditService.CutText(tempAudiofiles, CutTextText);
                 CutTextText = null;
             }
 
@@ -875,8 +885,8 @@ namespace AudioTAGEditor.ViewModels
             if (!string.IsNullOrWhiteSpace(ReplaceTextOldText) &&
                 !string.IsNullOrWhiteSpace(ReplaceTextNewText))
             {
-                selectedAudiofiles = FilenameEditService.ReplaceText(
-                    selectedAudiofiles, ReplaceTextNewText, ReplaceTextNewText);
+                tempAudiofiles = FilenameEditService.ReplaceText(
+                    tempAudiofiles, ReplaceTextNewText, ReplaceTextNewText);
 
                 ReplaceTextOldText = null;
                 ReplaceTextNewText = null;
@@ -889,7 +899,7 @@ namespace AudioTAGEditor.ViewModels
             if (InsertNumberingPosition != null)
             {
                 var audiofiles = 
-                    ConvertAudioFilesViewModelsFromGridToAudioFiles(Audiofiles);
+                    ConvertAudioFilesViewModelsToAudioFiles(Audiofiles);
                 audiofiles = FilenameEditService.InsertNumbering(
                     audiofiles, InsertNumberingPosition.Value);
 
@@ -904,19 +914,26 @@ namespace AudioTAGEditor.ViewModels
 
             if (!string.IsNullOrWhiteSpace(ChangeFromID3Pattern))
             {
-                selectedAudiofiles = FilenameEditService.ChangeByPattern(
-                    selectedAudiofiles, ChangeFromID3Pattern);
+                tempAudiofiles = FilenameEditService.ChangeByPattern(
+                    tempAudiofiles, ChangeFromID3Pattern);
 
                 ChangeFromID3Pattern = null;
             }
 
             #endregion // Change from ID3
 
-            var checkedEditedAudiofilesViewModel =
-                ConvertAudiofilesToAudiofilesViewModel(selectedAudiofiles);
+            if (AudiofileComparerService.AreTheSameTags(checkedAudiofiles, tempAudiofiles))
+                return;
 
-            Audiofiles = 
-                ReplaceMainAudiofilesViewModel(checkedEditedAudiofilesViewModel);
+            
+
+            var checkedEditedAudiofilesViewModel =
+                ConvertAudiofilesToAudiofilesViewModel(tempAudiofiles);
+
+            var changedAudiofilesViewModel = 
+                ReplaceChangedIntoGridAudiofilesViewModel(checkedEditedAudiofilesViewModel);
+
+            
         }
 
         bool CanExecuteExecuteFilenameEditCommand(ExplorerTreeView.ExplorerTreeView explorerTreeView)

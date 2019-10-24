@@ -129,11 +129,13 @@
     <Compile Include="Models\HistoryStepType.cs" />
     <Compile Include="Models\LogItem.cs" />
     <Compile Include="Models\LogMessageStatusType.cs" />
+    <Compile Include="Services\AudiofileCloneService.cs" />
     <Compile Include="Services\AudiofileComparerService.cs" />
     <Compile Include="Services\FilenameEditService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\AudiofileConverter.cs" />
     <Compile Include="Services\HistoryService.cs" />
+    <Compile Include="Services\IAudiofieleCloneService.cs" />
     <Compile Include="Services\IAudiofileComparerService.cs" />
     <Compile Include="Services\IAudiofileConverter.cs" />
     <Compile Include="Services\IFilenameEditService.cs" />
