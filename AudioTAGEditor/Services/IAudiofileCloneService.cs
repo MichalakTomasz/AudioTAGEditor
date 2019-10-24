@@ -3,7 +3,7 @@ using AudioTAGEditor.Models;
 
 namespace AudioTAGEditor.Services
 {
-    public interface IAudiofieleCloneService
+    public interface IAudiofileCloneService
     {
         Audiofile Clone(Audiofile audiofile);
         IEnumerable<Audiofile> Clone(IEnumerable<Audiofile> audiofiles);

@@ -8,22 +8,25 @@ namespace AudioTAGEditor.Services
 {
     public class FilenameEditService : IFilenameEditService
     {
+        public FilenameEditService(IAudiofileCloneService audiofieleCloneService)
+            => this.audiofileCloneService = audiofieleCloneService;
+
         public IEnumerable<Audiofile> CutSpace(IEnumerable<Audiofile> audiofiles)
             => ReplaceIntoFilenames(audiofiles, " ", "");
 
         public IEnumerable<Audiofile> CutDot(IEnumerable<Audiofile> audiofiles)
         {
-            var resultCollection = new List<Audiofile>();
-            audiofiles.ToList().ForEach(a =>
+            var clonedAudiofiles = audiofileCloneService.Clone(audiofiles);
+            
+            clonedAudiofiles.ToList().ForEach(a =>
             {
                 var tempFilename = Path.GetFileNameWithoutExtension(a.Filename)
                 .Replace(".", "");
                 var tempExtension = Path.GetExtension(a.Filename);
                 a.Filename = $"{tempFilename}{tempExtension}";
-                resultCollection.Add(a);
             });
 
-            return resultCollection;
+            return clonedAudiofiles;
         }
 
         public IEnumerable<Audiofile> CutUnderscore(IEnumerable<Audiofile> audiofiles)
@@ -56,8 +59,8 @@ namespace AudioTAGEditor.Services
 
         public IEnumerable<Audiofile> CutText(IEnumerable<Audiofile> audiofiles, string textToCut)
         {
-            var resultCollection = new List<Audiofile>();
-            audiofiles.ToList().ForEach(element =>
+            var clonedAudiofiles = audiofileCloneService.Clone(audiofiles);
+            clonedAudiofiles.ToList().ForEach(element =>
             {
                 int startIndex;
                 if ((startIndex = element.Filename.IndexOf(textToCut)) > -1)
@@ -65,66 +68,58 @@ namespace AudioTAGEditor.Services
                     var count = element.Filename.Length;
                     element.Filename = element.Filename.Remove(startIndex, count);
                 }
-
-                resultCollection.Add(element);
             });
 
-            return resultCollection;
+            return clonedAudiofiles;
         }
 
         public IEnumerable<Audiofile> CutText(
             IEnumerable<Audiofile> audiofiles, int position, int count)
         {
-            var resultCollection = new List<Audiofile>();
-            audiofiles.ToList().ForEach(element =>
+            var clonedAudiofiles = audiofileCloneService.Clone(audiofiles);
+            clonedAudiofiles.ToList().ForEach(element =>
             {
                 if (position - 1 < element.Filename.Length)
                     element.Filename = element.Filename.Remove(position - 1, count);
-
-                resultCollection.Add(element);
             });
 
-            return resultCollection;
+            return clonedAudiofiles;
         }
 
         public IEnumerable<Audiofile> InsertTextFromPosition(
             IEnumerable<Audiofile> audiofiles, int position, string text)
         {
-            var resultCollection = new List<Audiofile>();
-            audiofiles.ToList().ForEach(element =>
+            var clonedAudiofiles = audiofileCloneService.Clone(audiofiles);
+            clonedAudiofiles.ToList().ForEach(element =>
             {
                 if (position - 1 < element.Filename.Length)
                 {
                     element.Filename = element.Filename.Insert(position - 1, text);
                 }
-
-                resultCollection.Add(element);
             });
 
-            return resultCollection;
+            return clonedAudiofiles;
         }
 
         public IEnumerable<Audiofile> FirstCapitalLetter(IEnumerable<Audiofile> audiofiles)
         {
-            var resultCollection = new List<Audiofile>();
-
-            audiofiles.ToList().ForEach(c =>
+            var clonedAudiofiles = audiofileCloneService.Clone(audiofiles);
+            clonedAudiofiles.ToList().ForEach(c =>
             {
                 var first = c.Filename[0].ToString().ToUpper();
                 c.Filename = $"{first}{c.Filename.Substring(1)}";
-                resultCollection.Add(c);
             });
 
-            return resultCollection;
+            return clonedAudiofiles;
         }
 
-        public IEnumerable<Audiofile> AllFirstCapitalLetters(IEnumerable<Audiofile> audiofile)
+        public IEnumerable<Audiofile> AllFirstCapitalLetters(IEnumerable<Audiofile> audiofiles)
         {
             var firstLetterIndexes = new List<int>();
-            var resultCollection = new List<Audiofile>();
             var resultString = new StringBuilder();
+            var clonedAudiofiles = audiofileCloneService.Clone(audiofiles);
 
-            audiofile.ToList().ForEach(element =>
+            clonedAudiofiles.ToList().ForEach(element =>
             {
                 firstLetterIndexes.Clear();
                 if (element.Filename.Length > 0) firstLetterIndexes.Add(0);
@@ -144,68 +139,62 @@ namespace AudioTAGEditor.Services
                     else resultString.Append(element.Filename[i].ToString().ToLower());
                 }
                 element.Filename = resultString.ToString();
-                resultCollection.Add(element);
             });
 
-            return resultCollection;
+            return clonedAudiofiles;
         }
 
         public IEnumerable<Audiofile> UpperCase(IEnumerable<Audiofile> audiofiles)
         {
-            var resultCollection = new List<Audiofile>();
+            var clonedAudiofiles = audiofileCloneService.Clone(audiofiles);
             audiofiles.ToList().ForEach(c =>
                 {
                     var newFilename = c.Filename.ToUpper();
                     c.Filename = newFilename;
-                    resultCollection.Add(c);
                 });
 
-            return resultCollection;
+            return clonedAudiofiles;
         }
 
         public IEnumerable<Audiofile> LowerCase(IEnumerable<Audiofile> audiofiles)
         {
-            var resultCollection = new List<Audiofile>();
-            audiofiles.ToList().ForEach(c =>
-            {
-                c.Filename = c.Filename.ToLower();
-                resultCollection.Add(c);
-            });
+            var clonedAudiofiles = audiofileCloneService.Clone(audiofiles);
+            clonedAudiofiles.ToList().ForEach(c =>
+                c.Filename = c.Filename.ToLower());
 
-            return resultCollection;
+            return clonedAudiofiles;
         }
 
         public IEnumerable<Audiofile> InsertNumbering(IEnumerable<Audiofile> audiofiles, int position)
         {
-            var resultCollection = new List<Audiofile>();
-            var elements = audiofiles.ToList();
-            var count = elements.Count;
+            var clonedCollection = audiofileCloneService.Clone(audiofiles).ToList();
+            var count = clonedCollection.Count;
             var counterLength = count.ToString().Length;
             var tempString = new StringBuilder();
             for (int i = 0; i < count; i++)
             {
-                if (position - 1 < elements[i].Filename.Length)
+                if (position - 1 < clonedCollection[i].Filename.Length)
                 {
                     tempString.Clear();
                     tempString.Append(i + 1);
                     while (tempString.Length < counterLength)
                         tempString.Insert(0, "0");
-                    elements[i].Filename = elements[i].Filename
+                    clonedCollection[i].Filename = clonedCollection[i].Filename
                         .Insert(position - 1, tempString.ToString());
                 }
-                resultCollection.Add(elements[i]);
             }
-            return resultCollection;
+
+            return clonedCollection;
         }
 
         public IEnumerable<Audiofile> ChangeByPattern(
             IEnumerable<Audiofile> audiofiles, string pattern)
         {
-            var resultCollection = new List<Audiofile>();
+            var clonedCollection = audiofileCloneService.Clone(audiofiles);
             var tempString = new StringBuilder();
             var tempIndex = -1;
 
-            audiofiles.ToList().ForEach(c =>
+            clonedCollection.ToList().ForEach(c =>
             {
                 tempString.Clear();
                 tempString.Append(pattern);
@@ -241,10 +230,9 @@ namespace AudioTAGEditor.Services
                 var extension = Path.GetExtension(c.Filename);
                 var newFilename = $"{tempString.ToString()}{extension}";
                 c.Filename = newFilename;
-                resultCollection.Add(c);
             });
         
-            return resultCollection;
+            return clonedCollection;
         }
 
         private IEnumerable<Audiofile> ReplaceIntoFilenames(
@@ -252,14 +240,11 @@ namespace AudioTAGEditor.Services
             string oldCharacter,
             string newCharacter)
         {
-            var resultCollection = new List<Audiofile>();
-            audiofiles.ToList().ForEach(c =>
-            {
-                c.Filename = c.Filename.Replace(oldCharacter, newCharacter);
-                resultCollection.Add(c);
-            });
+            var clonedCollection = audiofileCloneService.Clone(audiofiles);
+            clonedCollection.ToList().ForEach(c =>
+                c.Filename = c.Filename.Replace(oldCharacter, newCharacter));
 
-            return resultCollection;
+            return clonedCollection;
         }
 
         #region Const Strings
@@ -274,6 +259,7 @@ namespace AudioTAGEditor.Services
                 {CommonTagProperties.Genre, "<genre>" },
                 {CommonTagProperties.Year, "<year>" }
         };
+        private readonly IAudiofileCloneService audiofileCloneService;
 
         #endregion // Const Strings
     }

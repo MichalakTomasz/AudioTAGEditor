@@ -135,7 +135,7 @@
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\AudiofileConverter.cs" />
     <Compile Include="Services\HistoryService.cs" />
-    <Compile Include="Services\IAudiofieleCloneService.cs" />
+    <Compile Include="Services\IAudiofileCloneService.cs" />
     <Compile Include="Services\IAudiofileComparerService.cs" />
     <Compile Include="Services\IAudiofileConverter.cs" />
     <Compile Include="Services\IFilenameEditService.cs" />

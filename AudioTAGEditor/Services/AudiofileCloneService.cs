@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace AudioTAGEditor.Services
 {
-    public class AudiofileCloneService : IAudiofieleCloneService
+    public class AudiofileCloneService : IAudiofileCloneService
     {
         public Audiofile Clone(Audiofile audiofile)
         {
