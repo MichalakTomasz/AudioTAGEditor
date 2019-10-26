@@ -9,7 +9,7 @@ namespace AudioTAGEditor.Services
         int Count { get; }
         int Position { get; }
 
-        void ResetPosition();
+        HistoryObject GoToLast();
         void Clear();
         void Add(Audiofile audioFile, ChangeActionType changeActionType, string path);
         void Add(IEnumerable<Audiofile> audioFiles, ChangeActionType changeActionType, string path);

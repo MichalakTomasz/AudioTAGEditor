@@ -170,14 +170,22 @@
                 <RibbonGroup 
                     Header="Change from ID3"
                     IsEnabled="{Binding IsEnabledChangeFromID3Group, Mode=TwoWay}">
-                    <RibbonTextBox 
+                    <RibbonComboBox 
                         Label="Pattern"
-                        TextBoxWidth="200"
+                        SelectionBoxWidth="200"
+                        IsEditable="True"
                         Text="{Binding 
                         ChangeFromID3Pattern, 
                         Mode=TwoWay,
-                        UpdateSourceTrigger=PropertyChanged}"/>
-                    <RibbonTwoLineText Text="&lt;title&gt; &lt;album&gt; &lt;artist&gt; &lt;no&gt; &lt;genre&gt; &lt;year&gt;"></RibbonTwoLineText>
+                        UpdateSourceTrigger=PropertyChanged}">
+                        <RibbonGallery>
+                            <RibbonGalleryCategory 
+                                ItemsSource="{Binding EditFromID3Patterns, Mode=OneWay}"/>
+                            
+                        </RibbonGallery>
+                    </RibbonComboBox>
+                    <RibbonTwoLineText 
+                        Text="&lt;title&gt; &lt;album&gt; &lt;artist&gt; &lt;no&gt; &lt;genre&gt; &lt;year&gt;"/>
                 </RibbonGroup>
                 <RibbonGroup 
                     Header="Execute"
@@ -187,7 +195,7 @@
                         LargeImageSource="{StaticResource execute}"
                         SmallImageSource="{StaticResource execute}"
                         Command="{Binding ExecuteFilenamesEditCommand, Mode=OneTime}"
-                        CommandParameter="{Binding ElementName=ExplorerTree}"/>
+                        CommandParameter="{Binding ElementName=ExplorerTree, Mode=OneWay}"/>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="Edit tags">
@@ -209,33 +217,15 @@
                         Label="Confirm"
                         LargeImageSource="{StaticResource confirm}"
                         SmallImageSource="{StaticResource confirm}"
-                        Command="{Binding HistoryConfirmCommand, Mode=OneTime}"/>
+                        Command="{Binding HistoryConfirmCommand, Mode=OneTime}"
+                        CommandParameter="{Binding ElementName=ExplorerTree, Mode=OneWay}"/>
                     <RibbonButton 
                         Label="Cancel"
                         LargeImageSource="{StaticResource cancel}"
                         SmallImageSource="{StaticResource cancel}"
-                        Command="{Binding HistoryCancelCommand, Mode=OneTime}" />
+                        Command="{Binding HistoryCancelCommand, Mode=OneTime}"/>
                 </RibbonGroup>
             </RibbonTab>
-            <i:Interaction.Behaviors>
-                <b:HistoryBehavior
-                    ID3v1Service="{Binding ID3v1Service, Mode=OneTime}"
-                    ID3v2Service="{Binding ID3v2Service, Mode=OneTime}"
-                    Audiofiles="{Binding Audiofiles, Mode=TwoWay}"
-                    IsCheckedID3v1="{Binding IsCheckedID3v1, Mode=TwoWay}"
-                    IsCheckedID3v2="{Binding IsCheckedID3v2, Mode=TwoWay}"
-                    AudiofileConverter="{Binding AudiofileConverter,Mode=OneTime}"
-                    HistoryService="{Binding HistoryService, Mode=OneTime}"
-                    FileService="{Binding FileService, Mode=OneTime}"
-                    SelectedPath="{Binding SelectedPath, Mode=OneWay}"
-                    HistoryCount="{Binding HistoryCount,Mode=TwoWay}"
-                    HistoryPosition="{Binding HistoryPosition, Mode=TwoWay}"
-                    EventAggregator="{Binding EventAggregator, Mode=OneTime}"
-                    ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneWay}"
-                    LogService="{Binding LogService,Mode=OneTime}"
-                    LogMessage="{Binding LogMessage, Mode=OneWayToSource}"
-                    LogMessageStatusType="{Binding LogMessageStatusType, Mode=OneWayToSource}"/>
-            </i:Interaction.Behaviors>
         </Ribbon>
         <ToolBar Grid.Row="1">
             <RadioButton
@@ -246,7 +236,6 @@
                     Source="{StaticResource id3v1-logo}"
                     Width="32" />
             </RadioButton>
-
             <RadioButton
                 GroupName="ID3Group"
                 IsChecked="{Binding IsCheckedID3v2, Mode=TwoWay}"
@@ -267,7 +256,12 @@
                 Command="{Binding ExpandNodeCommand, Mode=OneTime}"
                 FilesFullPath="{Binding FilepathCollection, Mode=OneWayToSource}"
                 FilesFilter="{Binding FilesFilter, Mode=OneTime}"
-                SelectedPath="{Binding SelectedPath, Mode=OneWayToSource}" />
+                SelectedPath="{Binding SelectedPath, Mode=OneWayToSource}">
+                <i:Interaction.Behaviors>
+                    <b:ExplorerTreeViewReferenceBehavior 
+                        ExplorerTreeView="{Binding ExplorerTreeView, Mode=OneWayToSource}"/>
+                </i:Interaction.Behaviors>
+            </tx:ExplorerTreeView>
             <DataGrid
                 Grid.Column="1"
                 AutoGenerateColumns="False"
@@ -276,23 +270,19 @@
                 CanUserAddRows="False"
                 CanUserSortColumns="False"
                 SelectionMode="Single">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="BeginningEdit">
+                        <prism:InvokeCommandAction
+                            Command="{Binding CellBeginingEditCommand, Mode=OneTime}"
+                            TriggerParameterPath="" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="CellEditEnding">
+                        <prism:InvokeCommandAction 
+                            Command="{Binding CellEditEndingCommandExecute, Mode=OneTime}" 
+                            TriggerParameterPath="" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <i:Interaction.Behaviors>
-                    <b:DataGridEditBehavior
-                        HistoryService="{Binding HistoryService, Mode=OneTime}"
-                        AudioFileConverter="{Binding AudiofileConverter, Mode=OneTime}"
-                        FileService="{Binding FileService, Mode=OneTime}"
-                        ID3v1Service="{Binding ID3v1Service, Mode=OneTime}"
-                        ID3v2Service="{Binding ID3v2Service, Mode=OneTime}"
-                        LogService="{Binding LogService, Mode=OneTime}"
-                        SelectedPath="{Binding SelectedPath, Mode=OneWay}" 
-                        AudioFileComparerService="{Binding AudiofileComparerService, Mode=OneTime}"
-                        ExplorerTreeView="{Binding ElementName=ExplorerTree, Mode=OneTime}"
-                        IsCheckedID3v1="{Binding IsCheckedID3v1, Mode=OneWay}"
-                        IsCheckedID3v2="{Binding IsCheckedID3v2, Mode=OneWay}"
-                        HistoryCount="{Binding HistoryCount, Mode=OneWayToSource}"
-                        HistoryPosition="{Binding HistoryPosition, Mode=OneWayToSource}"
-                        LogMessage="{Binding LogMessage, Mode=TwoWay}"
-                        LogMessageStatusType="{Binding LogMessageStatusType, Mode=TwoWay}"/>
                     <b:DataGridContextMenuDeactivateTagBehavior
                         SelectedPath="{Binding SelectedPath, Mode=OneWay}"
                         ID3v1Service="{Binding ID3v1Service, Mode=OneTime}"

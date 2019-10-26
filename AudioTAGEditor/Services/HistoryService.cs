@@ -212,8 +212,13 @@ namespace AudioTAGEditor.Services
                .Any(a => !audiofileComparer.AreTheSameTags(audiofile, a)) ?? false;
         }
 
-        public void ResetPosition()
-            => Position = history.Count;
+        public HistoryObject GoToLast()
+        {
+            Position = history.Count;
+            Count = history.Count;
+            return history.LastOrDefault();
+        }
+
                 
         #endregion // Methods
 
