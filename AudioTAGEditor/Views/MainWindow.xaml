@@ -53,7 +53,7 @@
                         IsChecked="{Binding IsCheckedCutDash, Mode=TwoWay}"/>
                 </RibbonGroup>
                 <RibbonGroup 
-                    Header="Replace"
+                    Header="Replace to space"
                     IsEnabled="{Binding IsEnabledReplaceToSpaceGroup, Mode=TwoWay}">
                     <RibbonCheckBox 
                         Label="Dot to space"
@@ -66,7 +66,7 @@
                         IsChecked="{Binding IsCheckedReplaceDashToSpace, Mode=TwoWay}"/>
                 </RibbonGroup>
                 <RibbonGroup 
-                    Header="Replace"
+                    Header="Replace from space"
                     IsEnabled="{Binding IsEnabledReplaceFromSpaceGroup, Mode=TwoWay}">
                     <RibbonCheckBox 
                         Label="Space to dot"
@@ -81,16 +81,16 @@
                 <RibbonGroup 
                     Header="Change"
                     IsEnabled="{Binding IsEnabledChangeGroup, Mode=TwoWay}">
-                    <RibbonRadioButton 
+                    <RibbonRadioButton IsThreeState="True"
                         Label="First capital letter"
                         IsChecked="{Binding IsCheckedChangeFirstCapitalLetter, Mode=TwoWay}"/>
-                    <RibbonRadioButton 
+                    <RibbonRadioButton IsThreeState="True"
                         Label="All first capital letters"
                         IsChecked="{Binding IsCheckedChangeAllFirstCapitalLetters, Mode=TwoWay}"/>
-                    <RibbonRadioButton 
+                    <RibbonRadioButton IsThreeState="True"
                         Label="Upper case"
                         IsChecked="{Binding IsCheckedChangeUpperCase, Mode=TwoWay}"/>
-                    <RibbonRadioButton 
+                    <RibbonRadioButton IsThreeState="True"
                         Label="Lower case"
                         IsChecked="{Binding IsCheckedChangeLowerCase, Mode=TwoWay}"/>
                 </RibbonGroup>
@@ -103,7 +103,11 @@
                         Text="{Binding 
                         InsertFromPositionPosition, 
                         Mode=TwoWay,
-                        UpdateSourceTrigger=PropertyChanged}"/>
+                        UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <b:RibbonTextBoxResetBehavior/>
+                        </i:Interaction.Behaviors>
+                    </RibbonTextBox>
                     <RibbonTextBox 
                         Label="Text      "
                         TextBoxWidth="120"
@@ -121,14 +125,22 @@
                         Text="{Binding 
                         CutFromPositionPosition, 
                         Mode=TwoWay, 
-                        UpdateSourceTrigger=PropertyChanged}"/>
+                        UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <b:RibbonTextBoxResetBehavior/>
+                        </i:Interaction.Behaviors>
+                    </RibbonTextBox>
                     <RibbonTextBox
                         Label="Count   "
                         TextBoxWidth="20"
                         Text="{Binding 
                         CutFromPositionCount, 
                         Mode=TwoWay, 
-                        UpdateSourceTrigger=PropertyChanged}"/>
+                        UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <b:RibbonTextBoxResetBehavior/>
+                        </i:Interaction.Behaviors>
+                    </RibbonTextBox>
                 </RibbonGroup>
                 <RibbonGroup 
                     Header="Cut text"
@@ -165,7 +177,11 @@
                         Text="{Binding 
                         InsertNumberingPosition, 
                         Mode=TwoWay,
-                        UpdateSourceTrigger=PropertyChanged}"/>
+                        UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <b:RibbonTextBoxResetBehavior/>
+                        </i:Interaction.Behaviors>
+                    </RibbonTextBox>
                 </RibbonGroup>
                 <RibbonGroup 
                     Header="Change from ID3"
@@ -181,7 +197,6 @@
                         <RibbonGallery>
                             <RibbonGalleryCategory 
                                 ItemsSource="{Binding EditFromID3Patterns, Mode=OneWay}"/>
-                            
                         </RibbonGallery>
                     </RibbonComboBox>
                     <RibbonTwoLineText 
@@ -197,6 +212,9 @@
                         Command="{Binding ExecuteFilenamesEditCommand, Mode=OneTime}"
                         CommandParameter="{Binding ElementName=ExplorerTree, Mode=OneWay}"/>
                 </RibbonGroup>
+                <i:Interaction.Behaviors>
+                    <b:EditFilenameRibbonGroupBehavior/>
+                </i:Interaction.Behaviors>
             </RibbonTab>
             <RibbonTab Header="Edit tags">
 

@@ -118,8 +118,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Behaviors\Behaior.cs" />
     <Compile Include="Behaviors\DataGridContextMenuDeactivateTagBehavior.cs" />
+    <Compile Include="Behaviors\EditFilenameRibbonGroupBehavior.cs" />
     <Compile Include="Behaviors\ExplorerTreeViewReferenceBehavior.cs" />
+    <Compile Include="Behaviors\RibbonTextBoxResetBehavior.cs" />
     <Compile Include="Converters\LogMessageStatusTypeToImageConverter.cs" />
     <Compile Include="Models\Audiofile.cs" />
     <Compile Include="Models\ChangeActionType.cs" />
