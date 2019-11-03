@@ -10,6 +10,7 @@
               xmlns:c="clr-namespace:AudioTAGEditor.Converters"
               xmlns:b="clr-namespace:AudioTAGEditor.Behaviors"
               xmlns:tx="clr-namespace:ExplorerTreeView;assembly=ExplorerTreeView"
+              xmlns:cc="clr-namespace:Commons;assembly=Commons"
               mc:Ignorable="d"
               Title="Audio TAG Editor"
               Height="600"
@@ -81,16 +82,20 @@
                 <RibbonGroup 
                     Header="Change"
                     IsEnabled="{Binding IsEnabledChangeGroup, Mode=TwoWay}">
-                    <RibbonRadioButton IsThreeState="True"
+                    <cc:UncheckableRibbonRadioButton
+                        CanUncheck="True"
                         Label="First capital letter"
                         IsChecked="{Binding IsCheckedChangeFirstCapitalLetter, Mode=TwoWay}"/>
-                    <RibbonRadioButton IsThreeState="True"
+                    <cc:UncheckableRibbonRadioButton
+                        CanUncheck="True"
                         Label="All first capital letters"
                         IsChecked="{Binding IsCheckedChangeAllFirstCapitalLetters, Mode=TwoWay}"/>
-                    <RibbonRadioButton IsThreeState="True"
+                    <cc:UncheckableRibbonRadioButton
+                        CanUncheck="True"
                         Label="Upper case"
                         IsChecked="{Binding IsCheckedChangeUpperCase, Mode=TwoWay}"/>
-                    <RibbonRadioButton IsThreeState="True"
+                    <cc:UncheckableRibbonRadioButton
+                        CanUncheck="True"
                         Label="Lower case"
                         IsChecked="{Binding IsCheckedChangeLowerCase, Mode=TwoWay}"/>
                 </RibbonGroup>
