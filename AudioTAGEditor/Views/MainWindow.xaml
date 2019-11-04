@@ -221,8 +221,40 @@
                     <b:EditFilenameRibbonGroupBehavior/>
                 </i:Interaction.Behaviors>
             </RibbonTab>
-            <RibbonTab Header="Edit tags">
-
+            <RibbonTab 
+                Header="Edit tags">
+                <RibbonGroup>
+                    <RibbonTextBox
+                        Label="Album"
+                        TextBoxWidth="150"
+                        Text="{Binding Album, Mode=TwoWay}"
+                        IsEnabled="{Binding IsEnabledAlbum, Mode=OneWay}"/>
+                    <RibbonTextBox
+                        Label="Artist  "
+                        TextBoxWidth="150"
+                        Text="{Binding Artist, Mode=TwoWay}"
+                        IsEnabled="{Binding IsEnabledArtist, Mode=OneWay}"/>
+                    <RibbonTextBox
+                        Label="Year  "
+                        TextBoxWidth="150"
+                        Text="{Binding Year, Mode=TwoWay}"
+                        IsEnabled="{Binding IsEnabledYear, Mode=OneWay}"/>
+                    <RibbonComboBox
+                        Label="Genre"
+                        SelectionBoxWidth="134"
+                        IsEditable="{Binding CanEditGenre, Mode=OneWay}"
+                        Text="{Binding Genre, Mode=TwoWay}"
+                        IsEnabled="{Binding IsEnabledGenre, Mode=OneWay}">
+                        <RibbonGallery>
+                            <RibbonGalleryCategory 
+                                ItemsSource="{Binding Genres, Mode=OneWay}"/>
+                        </RibbonGallery>
+                    </RibbonComboBox>
+                    <RibbonButton
+                        Label="Change"
+                        LargeImageSource="{StaticResource execute}"
+                        SmallImageSource="{StaticResource execute}"/>
+                </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="History">
                 <RibbonGroup Header="History">

@@ -353,7 +353,67 @@ namespace AudioTAGEditor.ViewModels
         #endregion // Execute
 
         #endregion // Tab EditFilenames
+
+        #region Edit tags
         
+        private string album;
+        public string Album
+        {
+            get { return album; }
+            set { SetProperty(ref album, value); }
+        }
+
+        private string artist;
+        public string Artist
+        {
+            get { return artist; }
+            set { SetProperty(ref artist, value); }
+        }
+
+        private string year;
+        public string Year
+        {
+            get { return year; }
+            set { SetProperty(ref year, value); }
+        }
+
+        private string genre;
+        public string Genre
+        {
+            get { return genre; }
+            set { SetProperty(ref genre, value); }
+        }
+
+        private bool isEnabledAlbum;
+        public bool IsEnabledAlbum
+        {
+            get { return isEnabledAlbum; }
+            set { SetProperty(ref isEnabledAlbum, value); }
+        }
+
+        private bool isEnabledArtist;
+        public bool IsEnabledArtist
+        {
+            get { return isEnabledArtist; }
+            set { SetProperty(ref isEnabledArtist, value); }
+        }
+
+        private bool isEnabledYear;
+        public bool IsEnabledYear
+        {
+            get { return isEnabledYear; }
+            set { SetProperty(ref isEnabledYear, value); }
+        }
+
+        private bool isEnabledGenre;
+        public bool IsEnabledGenre
+        {
+            get { return isEnabledGenre; }
+            set { SetProperty(ref isEnabledGenre, value); }
+        }
+
+        #endregion // Edit tags
+
         #endregion // Ribbon
 
         #region ToolBar
@@ -402,6 +462,13 @@ namespace AudioTAGEditor.ViewModels
         {
             get { return selectedPath; }
             set { SetProperty(ref selectedPath, value); }
+        }
+
+        private bool canEditGenre;
+        public bool CanEditGenre
+        {
+            get { return canEditGenre; }
+            set { SetProperty(ref canEditGenre, value); }
         }
 
         #region DataGridBehaviors
@@ -656,12 +723,14 @@ namespace AudioTAGEditor.ViewModels
         private void RefreshMainGrid(TagType tagType = TagType.none)
         {
             ResetMainGrid();
-            ResetAllGroups();
+            ResetEditTagsTab();
             historyService.Clear();
             UpdateHistoryProperties();
 
             IsEnabledDataGrid = (FilepathCollection?.Count() > 0);
-            AreEnabledAllGroups = IsEnabledDataGrid;
+            IsEnabledEditFienameTab = IsEnabledDataGrid;
+            IsEnabledEditTagsTab = IsEnabledDataGrid;
+
             if (!IsEnabledDataGrid) return;
 
             var localTagType = tagType;
@@ -700,6 +769,7 @@ namespace AudioTAGEditor.ViewModels
             AllFilesChecked = true;
             CheckAllFilesCommandExecute();
             RefreshEnabledEditFilenamesGroups();
+            RefreshEditTagValues();
         }
 
         private void ResetMainGrid()
@@ -708,6 +778,48 @@ namespace AudioTAGEditor.ViewModels
             AllFilesChecked = false;
             IsCheckedID3v1 = false;
             IsCheckedID3v2 = false;
+        }
+
+        private void ResetEditTagsTab()
+        {
+            Artist = null;
+            Album = null;
+            Year = null;
+            Genre = null;
+        }
+
+        private bool IsEnabledEditTagsTab
+        {
+            set
+            {
+                if (!value) ResetEditTagsTab();
+                IsEnabledAlbum = value;
+                IsEnabledArtist = value;
+                IsEnabledYear = value;
+                IsEnabledGenre = value;
+            }
+        }
+
+        private void RefreshEditTagValues()
+        {
+            var audiofile = Audiofiles.FirstOrDefault(a => a.HasTag);
+            if (audiofile != null)
+            {
+                var selectedTag = GetTagTypeSelection();
+                switch (selectedTag)
+                {
+                    case TagType.ID3V1:
+                        CanEditGenre = false;
+                        break;
+                    case TagType.ID3V2:
+                        CanEditGenre = true;
+                        break;
+                }
+                Artist = audiofile.Artist;
+                Album = audiofile.Album;
+                Year = audiofile.Year;
+                Genre = audiofile.Genre;
+            }
         }
 
         #endregion // Main grid
@@ -1355,11 +1467,11 @@ namespace AudioTAGEditor.ViewModels
 
         #region Activity
 
-        private bool AreEnabledAllGroups
+        private bool IsEnabledEditFienameTab
         {
             set
             {
-                if (!value) ResetAllGroups();
+                if (!value) ResetEditFilenameTab();
                 IsEnabledCutGroup = value;
                 IsEnabledReplaceToSpaceGroup = value;
                 IsEnabledReplaceFromSpaceGroup = value;
@@ -1374,7 +1486,7 @@ namespace AudioTAGEditor.ViewModels
             }
         }
 
-        private void ResetAllGroups()
+        private void ResetEditFilenameTab()
         {
             IsCheckedCutSpace = false;
             IsCheckedCutDot = false;
@@ -1420,7 +1532,9 @@ namespace AudioTAGEditor.ViewModels
             {
                 "<no>. <title>",
                 "<no> <title>",
-                "<no> <artist> - <album> - <title>",
+                "<no>-<title>",
+                "<no>-<artist>-<album>-<title>",
+                "<no> <artist> <album> <title>",
                 "<artist>-<album>-<title>"
             };
 
