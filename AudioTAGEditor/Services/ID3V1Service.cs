@@ -74,12 +74,8 @@ namespace AudioTAGEditor.Services
 
         public void UpdateTag(
             Audiofile audioFile, 
-            string filePath, 
-            TagVersion tagVersion = TagVersion.ID3V11)
+            string filePath)
         {
-            ID3v1TagVersion tagVersionToSave = 
-                TagVersion.ID3V10 == tagVersion ? 
-                ID3v1TagVersion.ID3v10 : ID3v1TagVersion.ID3v11;
 
             var genres = genreService.GetID3v1Genres();
             var genreIndex = genres.ToList().FindIndex(g => g == audioFile.Genre);
@@ -92,7 +88,6 @@ namespace AudioTAGEditor.Services
             }
             catch (Exception e)
             {
-
                 throw new Exception("Saving ID3v2 error");
             }
         }

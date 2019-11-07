@@ -12,8 +12,7 @@ namespace AudioTAGEditor.Services
         IReadOnlyList<string> GetGenres();
         void UpdateTag(
             Audiofile audioFile,
-            string filePath,
-            TagVersion tagVersion);
+            string filePath);
         void RemoveTag(string filePath);
     }
 }

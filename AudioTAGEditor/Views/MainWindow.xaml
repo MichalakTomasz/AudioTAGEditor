@@ -227,23 +227,35 @@
                     <RibbonTextBox
                         Label="Album"
                         TextBoxWidth="150"
-                        Text="{Binding Album, Mode=TwoWay}"
+                        Text="{Binding 
+                        Album, 
+                        Mode=TwoWay, 
+                        UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding IsEnabledAlbum, Mode=OneWay}"/>
                     <RibbonTextBox
                         Label="Artist  "
                         TextBoxWidth="150"
-                        Text="{Binding Artist, Mode=TwoWay}"
+                        Text="{Binding 
+                        Artist, 
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding IsEnabledArtist, Mode=OneWay}"/>
                     <RibbonTextBox
                         Label="Year  "
                         TextBoxWidth="150"
-                        Text="{Binding Year, Mode=TwoWay}"
+                        Text="{Binding 
+                        Year, 
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding IsEnabledYear, Mode=OneWay}"/>
                     <RibbonComboBox
                         Label="Genre"
                         SelectionBoxWidth="134"
                         IsEditable="{Binding CanEditGenre, Mode=OneWay}"
-                        Text="{Binding Genre, Mode=TwoWay}"
+                        Text="{Binding 
+                        Genre, 
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding IsEnabledGenre, Mode=OneWay}">
                         <RibbonGallery>
                             <RibbonGalleryCategory 
@@ -253,7 +265,8 @@
                     <RibbonButton
                         Label="Change"
                         LargeImageSource="{StaticResource execute}"
-                        SmallImageSource="{StaticResource execute}"/>
+                        SmallImageSource="{StaticResource execute}"
+                        Command="{Binding ChangeTagsCommand, Mode=OneTime}"/>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="History">

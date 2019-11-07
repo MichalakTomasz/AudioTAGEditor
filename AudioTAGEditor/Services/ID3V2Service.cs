@@ -35,7 +35,7 @@ namespace AudioTAGEditor.Services
                 audioFile.HasTag = true;
                 audioFile.Filename = filename;
                 audioFile.TagType = TagType.ID3V2;
-
+                
                 return audioFile;
             }
             else
@@ -56,8 +56,7 @@ namespace AudioTAGEditor.Services
 
         public void UpdateTag(
             Audiofile audioFile, 
-            string filePath, 
-            TagVersion tagVersion)
+            string filePath)
         {
             var id3v2Tag = mapper.Map(audioFile, new ID3v2Tag(filePath));
             try

@@ -651,13 +651,27 @@ namespace AudioTAGEditor.ViewModels
         private ICommand cellBeginingEditCommand;
         public ICommand CellBeginingEditCommand =>
             cellBeginingEditCommand ?? (cellBeginingEditCommand = 
-            new DelegateCommand<DataGridBeginningEditEventArgs>(ExecuteCellBeginingEditCommand));
+            new DelegateCommand<DataGridBeginningEditEventArgs>(
+                ExecuteCellBeginingEditCommand));
 
         private ICommand cellEditEndingCommandExecute;
         public ICommand CellEditEndingCommandExecute =>
             cellEditEndingCommandExecute ?? (cellEditEndingCommandExecute = 
             new DelegateCommand<DataGridCellEditEndingEventArgs>(
                 ExecuteCellEditEndingCommandExecute));
+
+        private ICommand changeTagsCommand;
+        public ICommand ChangeTagsCommand =>
+            changeTagsCommand ?? (changeTagsCommand = 
+            new DelegateCommand(
+                ExecuteChangeTagsCommand, 
+                CanExecuteChangeTagsCommand)
+            .ObservesProperty(() => Album)
+            .ObservesProperty(() => Artist)
+            .ObservesProperty(() => Year)
+            .ObservesProperty(() => Genre));
+
+        
 
         #endregion//Commands
 
@@ -945,11 +959,11 @@ namespace AudioTAGEditor.ViewModels
             {
                 case TagType.ID3V1:
                     ID3v1Service
-                        .UpdateTag(audiofile, filepath, TagVersion.ID3V11);
+                        .UpdateTag(audiofile, filepath);
                     break;
                 case TagType.ID3V2:
                     ID3v2Service
-                        .UpdateTag(audiofile, filepath, TagVersion.ID3V24);
+                        .UpdateTag(audiofile, filepath);
                     break;
             }
         }
@@ -1368,7 +1382,6 @@ namespace AudioTAGEditor.ViewModels
                 var audiofileViewModel = e.EditingElement.DataContext as AudiofileViewModel;
                 var filename = $"{SelectedPath}{audiofileViewModel.Filename}";
 
-
                 if (!audiofileViewModel.HasErrors)
                 {
                     var newAudioFile = audiofileConverter
@@ -1422,8 +1435,7 @@ namespace AudioTAGEditor.ViewModels
                             {
                                 ID3v1Service.UpdateTag(
                                     newAudioFile, 
-                                    audioFileFullPath, 
-                                    TagVersion.ID3V11);
+                                    audioFileFullPath);
                                 historyService.Add(
                                     audioFileBeforeEdit, 
                                     ChangeActionType.ID3v1, 
@@ -1442,8 +1454,7 @@ namespace AudioTAGEditor.ViewModels
                             {
                                 ID3v2Service.UpdateTag(
                                     newAudioFile, 
-                                    audioFileFullPath, 
-                                    TagVersion.ID3V20);
+                                    audioFileFullPath);
                                 historyService.Add(
                                     audioFileBeforeEdit, 
                                     ChangeActionType.ID3v2, 
@@ -1514,6 +1525,67 @@ namespace AudioTAGEditor.ViewModels
         }
 
         #endregion // Activity
+
+        #region Edit tags
+
+        void ExecuteChangeTagsCommand()
+        {
+            var selectedTag = GetTagTypeSelection();
+            var checkedAudiofilesViewModel = Audiofiles.Where(a => a.IsChecked);
+            var changedAudiofiles = 
+                audiofileConverter.AudiofilesViewModelToAudiofiles(
+                    checkedAudiofilesViewModel);
+
+            var changedAudiofilesViewModel = new List<AudiofileViewModel>();
+            checkedAudiofilesViewModel.ToList().ForEach(s =>
+            {
+                if (!string.IsNullOrWhiteSpace(Album))
+                    s.Album = Album;
+                if (!string.IsNullOrWhiteSpace(Artist))
+                    s.Artist = Artist;
+                if (!string.IsNullOrWhiteSpace(Year))
+                    s.Year = Year;
+                if (!string.IsNullOrWhiteSpace(Genre))
+                    s.Genre = Genre;
+                
+                var audiofile = audiofileConverter.AudiofileViewModelToAudiofile(s);
+                changedAudiofilesViewModel.Add(s);
+                var filepath = $"{SelectedPath}{audiofile.Filename}";
+                switch (selectedTag)
+                {
+                    case TagType.ID3V1:
+                        ID3v1Service.UpdateTag(audiofile, filepath);
+                        break;
+                    case TagType.ID3V2:
+                        ID3v2Service.UpdateTag(audiofile, filepath);
+                        break;
+                }
+            });
+
+            SetChangesToMainGrid(changedAudiofilesViewModel);
+
+            var changeTagType = selectedTag == 
+                TagType.ID3V1 ? 
+                ChangeActionType.ID3v1 : 
+                ChangeActionType.ID3v2;
+
+            var log = LogService.Add(LogMessageStatusType.Information, "Tags changed");
+            LogMessageStatusType = log.LogMessageStatusType;
+            LogMessage = log.Message;
+
+            historyService.Add(changedAudiofiles, changeTagType, SelectedPath);
+            UpdateHistoryProperties();
+        }
+
+        bool CanExecuteChangeTagsCommand()
+        {
+            return (!string.IsNullOrWhiteSpace(Artist) ||
+                !string.IsNullOrWhiteSpace(Album) ||
+                !string.IsNullOrWhiteSpace(Year) ||
+                !string.IsNullOrWhiteSpace(Genre));
+        }
+
+        #endregion // Edit tags
 
         #endregion // Methods
 
