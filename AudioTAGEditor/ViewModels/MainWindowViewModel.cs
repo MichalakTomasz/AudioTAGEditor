@@ -1282,7 +1282,7 @@ namespace AudioTAGEditor.ViewModels
                 !string.IsNullOrWhiteSpace(ReplaceTextNewText))
             {
                 editedAudiofiles = filenameEditService.ReplaceText(
-                    editedAudiofiles, ReplaceTextNewText, ReplaceTextNewText);
+                    editedAudiofiles, ReplaceTextOldText, ReplaceTextNewText);
 
                 ReplaceTextOldText = null;
                 ReplaceTextNewText = null;
@@ -1319,6 +1319,10 @@ namespace AudioTAGEditor.ViewModels
             Audiofiles = SetChangesToMainGrid(checkedEditedAudiofilesViewModel);
 
             ResetEditFilenameTab();
+
+            var log = LogService.Add(LogMessageStatusType.Information, "Filenames edited.");
+            LogMessageStatusType = log.LogMessageStatusType;
+            LogMessage = log.Message;
 
             #endregion // Summary
         }

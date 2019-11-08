@@ -4,5 +4,6 @@
     {
         void Rename(string path, string newFilename);
         bool Exist(string fullFilepath);
+        char[] InvalidFilenameChars { get; }
     }
 }

@@ -23,5 +23,8 @@ namespace AudioTAGEditor.Services
 
         public bool Exist(string fullFilepath)
             => File.Exists(fullFilepath);
+
+        public char[] InvalidFilenameChars
+            => Path.GetInvalidFileNameChars();
     }
 }

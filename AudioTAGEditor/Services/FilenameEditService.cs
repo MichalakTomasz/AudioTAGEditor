@@ -8,8 +8,19 @@ namespace AudioTAGEditor.Services
 {
     public class FilenameEditService : IFilenameEditService
     {
-        public FilenameEditService(IAudiofileCloneService audiofieleCloneService)
-            => this.audiofileCloneService = audiofieleCloneService;
+        #region Constructor
+
+        public FilenameEditService(
+            IAudiofileCloneService audiofieleCloneService,
+            IFileService fileService)
+        {
+            this.fileService = fileService;
+            this.audiofileCloneService = audiofieleCloneService;
+        }
+
+        #endregion // Constructor
+
+        #region Methods
 
         public IEnumerable<Audiofile> CutSpace(IEnumerable<Audiofile> audiofiles)
             => ReplaceIntoFilenames(audiofiles, " ", "");
@@ -17,7 +28,7 @@ namespace AudioTAGEditor.Services
         public IEnumerable<Audiofile> CutDot(IEnumerable<Audiofile> audiofiles)
         {
             var clonedAudiofiles = audiofileCloneService.Clone(audiofiles);
-            
+
             clonedAudiofiles.ToList().ForEach(a =>
             {
                 var tempFilename = Path.GetFileNameWithoutExtension(a.Filename)
@@ -65,7 +76,7 @@ namespace AudioTAGEditor.Services
                 int startIndex;
                 if ((startIndex = element.Filename.IndexOf(textToCut)) > -1)
                 {
-                    var count = element.Filename.Length;
+                    var count = textToCut.Length;
                     element.Filename = element.Filename.Remove(startIndex, count);
                 }
             });
@@ -126,7 +137,7 @@ namespace AudioTAGEditor.Services
                 for (var i = 0; i < element.Filename.Length; i++)
                     if (element.Filename[i] == ' ' && element.Filename[i + 1] != ' ')
                         firstLetterIndexes.Add(i + 1);
-                   
+
                 var position = 0;
                 resultString.Clear();
                 for (var i = 0; i < element.Filename.Length; i++)
@@ -135,7 +146,7 @@ namespace AudioTAGEditor.Services
                     {
                         resultString.Append(element.Filename[i].ToString().ToUpper());
                         position++;
-                    }   
+                    }
                     else resultString.Append(element.Filename[i].ToString().ToLower());
                 }
                 element.Filename = resultString.ToString();
@@ -148,10 +159,10 @@ namespace AudioTAGEditor.Services
         {
             var clonedAudiofiles = audiofileCloneService.Clone(audiofiles);
             audiofiles.ToList().ForEach(c =>
-                {
-                    var newFilename = c.Filename.ToUpper();
-                    c.Filename = newFilename;
-                });
+            {
+                var newFilename = c.Filename.ToUpper();
+                c.Filename = newFilename;
+            });
 
             return clonedAudiofiles;
         }
@@ -228,10 +239,14 @@ namespace AudioTAGEditor.Services
                     }
                 }
                 var extension = Path.GetExtension(c.Filename);
+                var invalidFielednameChars = fileService.InvalidFilenameChars;
+                foreach (var el in invalidFielednameChars)
+                    tempString.Replace(el.ToString(), "");
+
                 var newFilename = $"{tempString.ToString()}{extension}";
                 c.Filename = newFilename;
             });
-        
+
             return clonedCollection;
         }
 
@@ -247,6 +262,8 @@ namespace AudioTAGEditor.Services
             return clonedCollection;
         }
 
+        #endregion // Methods
+
         #region Const Strings
 
         private readonly Dictionary<CommonTagProperties, string> tags = 
@@ -260,6 +277,7 @@ namespace AudioTAGEditor.Services
                 {CommonTagProperties.Year, "<year>" }
         };
         private readonly IAudiofileCloneService audiofileCloneService;
+        private readonly IFileService fileService;
 
         #endregion // Const Strings
     }
