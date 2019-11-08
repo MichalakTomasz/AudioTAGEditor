@@ -104,7 +104,6 @@ namespace AudioTAGEditor.Behaviors
                 typeof(DataGridContextMenuDeactivateTagBehavior), 
                 new PropertyMetadata(null));
 
-
         #endregion // Dependency Properties
 
         #region Methods
@@ -162,14 +161,16 @@ namespace AudioTAGEditor.Behaviors
                     case TagType.ID3V1:
                         ID3v2Service.RemoveTag(fileFullPath);
 
-                        var log = LogService.Add(LogMessageStatusType.Information, "ID3v1Tag was removed.");
+                        var log = LogService.Add(
+                            LogMessageStatusType.Information, "ID3v1Tag was removed.");
                         LogMessageStatusType = log.LogMessageStatusType;
                         LogMessage = log.Message;
                         break;
                     case TagType.ID3V2:
                         ID3v2Service.RemoveTag(fileFullPath);
 
-                        log = LogService.Add(LogMessageStatusType.Information, "ID3v2 Tag was removed.");
+                        log = LogService.Add(
+                            LogMessageStatusType.Information, "ID3v2 Tag was removed.");
                         LogMessageStatusType = log.LogMessageStatusType;
                         LogMessage = log.Message;
                         break;

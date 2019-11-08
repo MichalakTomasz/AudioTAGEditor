@@ -130,7 +130,8 @@ namespace AudioTAGEditor.Behaviors
                     insertFromPositionPosition = ribbonGroupInsertTextFromPosition.Items
                         .Cast<RibbonTextBox>()?
                         .FirstOrDefault(c => c.Label == "Position");
-                    insertFromPositionPosition.TextChanged += InsertFromPositionPosition_TextChanged;
+                    insertFromPositionPosition.TextChanged += 
+                        InsertFromPositionPosition_TextChanged;
 
                     insertFormPositionText = ribbonGroupInsertTextFromPosition.Items
                         .Cast<RibbonTextBox>()?
