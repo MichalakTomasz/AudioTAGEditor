@@ -437,11 +437,6 @@
                         Binding="{Binding Year,
                         UpdateSourceTrigger=PropertyChanged}"
                         Width="40" />
-                    <DataGridTextColumn 
-                        Header="Tag version"
-                        Binding="{Binding TagVersion,
-                        UpdateSourceTrigger=LostFocus}"
-                        Width="80" />
                 </DataGrid.Columns>
                 <DataGrid.ContextMenu>
                     <ContextMenu>

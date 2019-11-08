@@ -897,6 +897,8 @@ namespace AudioTAGEditor.ViewModels
             {
                 case HistoryStepType.Undo:
                     resultHistoryObject = historyService.Undo(audioFiles);
+                    IsEnabledEditFienameTab = false;
+                    IsEnabledEditTagsTab = false;
                     break;
                 case HistoryStepType.Redo:
                     resultHistoryObject = historyService.Redo(audioFiles);
@@ -1025,17 +1027,20 @@ namespace AudioTAGEditor.ViewModels
             UpdateHistoryProperties();
             explorerTreeView.Refresh();
 
-            MessageBox.Show(
-                "History was restored successlfully.",
-                "Informarion",
-                 MessageBoxButton.OK,
-                 MessageBoxImage.Information);
-
             var log = LogService.Add(
                 LogMessageStatusType.Information,
                 "History step was applied.");
             LogMessageStatusType = log.LogMessageStatusType;
             LogMessage = log.Message;
+
+            IsEnabledEditFienameTab = true;
+            IsEnabledEditTagsTab = true;
+
+            MessageBox.Show(
+                "History was restored successlfully.",
+                "Informarion",
+                 MessageBoxButton.OK,
+                 MessageBoxImage.Information);
         }
 
         private bool HistoryConfirmCommandCanExecute(
@@ -1055,6 +1060,8 @@ namespace AudioTAGEditor.ViewModels
             }
 
             UpdateHistoryProperties();
+            IsEnabledEditFienameTab = true;
+            IsEnabledEditTagsTab = true;
         }
 
         private bool HistoryCancelCommandCanExectute()
@@ -1301,8 +1308,11 @@ namespace AudioTAGEditor.ViewModels
             var checkedEditedAudiofilesViewModel =
                 ConvertAudiofilesToAudiofilesViewModel(editedAudiofiles);
             historyService.Add(checkedAudiofiles, ChangeActionType.Filename, SelectedPath);
-            Audiofiles = SetChangesToMainGrid(checkedEditedAudiofilesViewModel);
             UpdateHistoryProperties();
+
+            Audiofiles = SetChangesToMainGrid(checkedEditedAudiofilesViewModel);
+
+            ResetEditFilenameTab();
 
             #endregion // Summary
         }
