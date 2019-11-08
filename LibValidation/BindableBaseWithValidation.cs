@@ -46,7 +46,8 @@ namespace LibValidation
             handler?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
 
-        protected override bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        protected override bool SetProperty<T>(
+            ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
             Validate(value, propertyName);
             return base.SetProperty(ref storage, value, propertyName);
@@ -62,6 +63,7 @@ namespace LibValidation
                 return null;
         }
 
-        private Dictionary<string, IEnumerable<string>> errorDictionary = new Dictionary<string, IEnumerable<string>>();
+        private Dictionary<string, IEnumerable<string>> errorDictionary = 
+            new Dictionary<string, IEnumerable<string>>();
     }
 }
