@@ -671,8 +671,6 @@ namespace AudioTAGEditor.ViewModels
             .ObservesProperty(() => Year)
             .ObservesProperty(() => Genre));
 
-        
-
         #endregion//Commands
 
         #region Methods

@@ -218,8 +218,7 @@ namespace AudioTAGEditor.Services
             Count = history.Count;
             return history.LastOrDefault();
         }
-
-                
+       
         #endregion // Methods
 
         #region Properties

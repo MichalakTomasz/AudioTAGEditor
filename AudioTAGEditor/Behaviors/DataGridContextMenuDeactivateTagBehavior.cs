@@ -66,7 +66,6 @@ namespace AudioTAGEditor.Behaviors
                 typeof(DataGridContextMenuDeactivateTagBehavior), 
                 new PropertyMetadata(null));
 
-
         public string LogMessage
         {
             get { return (string)GetValue(LogMessageProperty); }
@@ -92,7 +91,6 @@ namespace AudioTAGEditor.Behaviors
                 typeof(LogMessageStatusType), 
                 typeof(DataGridContextMenuDeactivateTagBehavior), 
                 new PropertyMetadata(LogMessageStatusType.None));
-
 
         public ILogService LogService
         {
