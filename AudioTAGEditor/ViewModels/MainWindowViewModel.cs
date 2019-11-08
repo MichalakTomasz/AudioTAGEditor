@@ -504,6 +504,13 @@ namespace AudioTAGEditor.ViewModels
             set { SetProperty(ref isEnabledDataGrid, value); }
         }
 
+        private bool isEnabledSelectAll;
+        public bool IsEnabledSelectAll
+        {
+            get { return isEnabledSelectAll; }
+            set { SetProperty(ref isEnabledSelectAll, value); }
+        }
+
         private bool allFilesChecked;
         public bool AllFilesChecked
         {
@@ -740,6 +747,7 @@ namespace AudioTAGEditor.ViewModels
             UpdateHistoryProperties();
 
             IsEnabledDataGrid = (FilepathCollection?.Count() > 0);
+            IsEnabledSelectAll = IsEnabledDataGrid;
             IsEnabledEditFienameTab = IsEnabledDataGrid;
             IsEnabledEditTagsTab = IsEnabledDataGrid;
 

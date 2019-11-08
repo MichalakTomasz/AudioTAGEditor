@@ -368,7 +368,8 @@
                         NotifyOnSourceUpdated=True,
                         UpdateSourceTrigger=PropertyChanged}">
                         <DataGridCheckBoxColumn.Header>
-                            <CheckBox 
+                            <CheckBox
+                                IsEnabled="{Binding IsEnabledSelectAll, Mode=OneWay}"
                                 DataContext="{Binding 
                                 DataContext, 
                                 ElementName=MainRibbonWindow}"
