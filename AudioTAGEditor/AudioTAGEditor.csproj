@@ -43,9 +43,6 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
-    <Reference Include="ExplorerTreeView">
-      <HintPath>..\..\TreeViewExplorer\ExplorerTreeView\bin\Debug\ExplorerTreeView.dll</HintPath>
-    </Reference>
     <Reference Include="IdSharp.Common-core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IdSharp.Common.1.0.1\lib\netstandard2.0\IdSharp.Common-core.dll</HintPath>
     </Reference>
@@ -194,6 +191,10 @@
     <Resource Include="Images\id3v2-logo.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ExplorerTreeView\ExplorerTreeView\ExplorerTreeView.csproj">
+      <Project>{EFDF5A6B-6572-4A49-BD59-35EEC4176C24}</Project>
+      <Name>ExplorerTreeView</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Commons\Commons.csproj">
       <Project>{A1C5BF91-3594-4999-8B88-99CDE6AC573F}</Project>
       <Name>Commons</Name>

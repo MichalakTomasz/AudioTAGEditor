@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using ExplorerTreeView;
+using System.Windows;
 using System.Windows.Interactivity;
 
 namespace AudioTAGEditor.Behaviors
