@@ -4,10 +4,12 @@ using IdSharp.Tagging.ID3v2;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Windows.Media.Imaging;
 
 namespace AudioTAGEditor.Services
 {
-    public class ID3V2Service : IID3Service
+    public class ID3V2Service : IID3Service, IID3V2ImageService
     {
         private readonly IGenreService genreService;
         private readonly IMapper mapper;
@@ -48,7 +50,7 @@ namespace AudioTAGEditor.Services
             }
         }
 
-        public TagVersion GetTagVersion(string filePath)
+        public TagVersion GetTagVersion(string filepath)
             => TagVersion.unknown;
 
         public IReadOnlyList<string> GetGenres()
@@ -80,5 +82,45 @@ namespace AudioTAGEditor.Services
                 throw new Exception("Removing ID3v2 error");
             }
         }
-    }  
+
+        #region IID3V2ImageService
+
+        public bool HasImages(string filepath)
+        {
+            if (!ID3v2Tag.DoesTagExist(filepath))
+                return false;
+
+            var tag = new ID3v2Tag(filepath);
+            return tag.PictureList?.Count > 0;
+        }
+
+        public IEnumerable<BitmapImage> GetImages(string filepath)
+        {
+            if (!ID3v2Tag.DoesTagExist(filepath))
+                yield return default;
+
+            var tag = new ID3v2Tag(filepath);
+            if (tag.PictureList?.Count == 0)
+                yield return default;
+
+            var imageBuffers = tag.PictureList.Select(p => p.PictureData);
+            foreach (var item in imageBuffers)
+                yield return ConvertToBitmapImage(item);
+        }
+
+        private BitmapImage ConvertToBitmapImage(byte[] buffer)
+        {
+            using (var memoryStream = new MemoryStream(buffer))
+            {
+                var image = new BitmapImage();
+                image.BeginInit();
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.StreamSource = memoryStream;
+                image.EndInit();
+                return image;
+            }
+        }
+
+        #endregion // IID3V2ImageService
+    }
 }

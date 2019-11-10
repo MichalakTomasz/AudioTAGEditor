@@ -142,6 +142,7 @@
     <Compile Include="Services\IFilenameEditService.cs" />
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IHistoryService.cs" />
+    <Compile Include="Services\IID3V2ImageService.cs" />
     <Compile Include="Services\ILogService.cs" />
     <Compile Include="Services\LogService.cs" />
     <Compile Include="ViewModels\AudiofileID3v1ViewModel.cs" />
@@ -227,6 +228,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\execute.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\left-arrow.png" />
+    <Resource Include="Images\right-arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\default-cover.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -33,4 +33,13 @@
     <BitmapImage x:Key="execute"
                  UriSource="/Images/execute.png" />
 
+    <BitmapImage x:Key="left-arrow"
+                 UriSource="/Images/left-arrow.png" />
+
+    <BitmapImage x:Key="right-arrow"
+                 UriSource="/Images/right-arrow.png" />
+
+    <BitmapImage x:Key="default-cover"
+                 UriSource="/Images/default-cover.png" />
+
 </ResourceDictionary>

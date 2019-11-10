@@ -20,6 +20,7 @@ namespace AudioTAGEditor
         {
             containerRegistry.Register<IID3Service, ID3V1Service>(nameof(ID3V1Service));
             containerRegistry.Register<IID3Service, ID3V2Service>(nameof(ID3V2Service));
+            containerRegistry.Register<IID3V2ImageService, ID3V2Service>();
             containerRegistry.Register<IGenreService, GenreService>();
             containerRegistry.Register<IAudiofileConverter, AudiofileConverter>();
             containerRegistry.Register<IFileService, FileService>();

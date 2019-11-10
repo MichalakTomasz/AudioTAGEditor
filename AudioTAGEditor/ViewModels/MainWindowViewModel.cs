@@ -12,6 +12,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Unity;
 
 namespace AudioTAGEditor.ViewModels
@@ -23,6 +24,7 @@ namespace AudioTAGEditor.ViewModels
         public MainWindowViewModel(
             [Dependency(nameof(ID3V1Service))]IID3Service id3v1Service,
             [Dependency(nameof(ID3V2Service))]IID3Service id3v2Service,
+            IID3V2ImageService id3v2ImageService,
             IEventAggregator eventAggregator,
             IAudiofileConverter audiofileConverter,
             IFileService fileService,
@@ -33,9 +35,11 @@ namespace AudioTAGEditor.ViewModels
             IAudiofileCloneService audiofieleCloneService)
         {
             FilesFilter = ".mp3|.flac|.mpc|.ogg|.aac";
+            ImageCover = (BitmapImage)App.Current.TryFindResource("default-cover");
             EditFromID3Patterns = EditFromID3PatterntsList;
             ID3v1Service = id3v1Service;
             ID3v2Service = id3v2Service;
+            id3V2ImageService = id3v2ImageService;
             this.eventAggregator = eventAggregator;
             this.audiofileConverter = audiofileConverter;
             this.fileService = fileService;
@@ -552,6 +556,38 @@ namespace AudioTAGEditor.ViewModels
 
         #endregion // StatusBar
 
+        #region Cover images
+
+        private BitmapImage imageCover;
+        public BitmapImage ImageCover
+        {
+            get { return imageCover; }
+            set { SetProperty(ref imageCover, value); }
+        }
+
+        private IEnumerable<BitmapImage> imageCovers;
+        public IEnumerable<BitmapImage> ImageCovers
+        {
+            get { return imageCovers; }
+            set { SetProperty(ref imageCovers, value); }
+        }
+
+        private int imageCoverCount;
+        public int ImageCoverCount
+        {
+            get { return imageCoverCount; }
+            set { SetProperty(ref imageCoverCount, value); }
+        }
+
+        private int imageCoverPosition;
+        public int ImageCoverPosition
+        {
+            get { return imageCoverPosition; }
+            set { SetProperty(ref imageCoverPosition, value); }
+        }
+
+        #endregion // cover images
+
         #endregion // Properties
 
         #region Commands
@@ -678,6 +714,24 @@ namespace AudioTAGEditor.ViewModels
             .ObservesProperty(() => Year)
             .ObservesProperty(() => Genre));
 
+        private DelegateCommand prevImageCoverCommand;
+        public DelegateCommand PrevImageCoverCommand =>
+            prevImageCoverCommand ?? (prevImageCoverCommand = 
+            new DelegateCommand(
+                ExecutePrevImageCoverCommand, 
+                CanExecutePrevImageCoverCommand)
+            .ObservesProperty(() => ImageCoverCount)
+            .ObservesProperty(() => ImageCoverPosition));
+
+        private DelegateCommand nextImageCoverCommand;
+        public DelegateCommand NextImageCoverCommand =>
+            nextImageCoverCommand ?? (nextImageCoverCommand = 
+            new DelegateCommand(
+                ExecuteNextImageCoverCommand, 
+                CanExecuteNextImageCoverCommand)
+            .ObservesProperty(() => ImageCoverCount)
+            .ObservesProperty(() => ImageCoverPosition));
+
         #endregion//Commands
 
         #region Methods
@@ -787,6 +841,7 @@ namespace AudioTAGEditor.ViewModels
 
             Audiofiles = audioFiles;
             AllFilesChecked = true;
+            GetCoverImages();
             CheckAllFilesCommandExecute();
             RefreshEnabledEditFilenamesGroups();
             RefreshEditTagValues();
@@ -798,6 +853,9 @@ namespace AudioTAGEditor.ViewModels
             AllFilesChecked = false;
             IsCheckedID3v1 = false;
             IsCheckedID3v2 = false;
+            ImageCover = (BitmapImage)App
+                .Current
+                .TryFindResource("default-cover");
         }
 
         private void ResetEditTagsTab()
@@ -1605,7 +1663,62 @@ namespace AudioTAGEditor.ViewModels
                 !string.IsNullOrWhiteSpace(Genre));
         }
 
+        private readonly IID3V2ImageService id3V2ImageService;
+
         #endregion // Edit tags
+
+        #region Images
+
+        private void GetCoverImages()
+        {
+            var filename = Audiofiles
+                .FirstOrDefault(a => id3V2ImageService
+                .HasImages($"{SelectedPath}{a.Filename}"))?.Filename;
+            var filepath = $"{SelectedPath}{filename}";
+            if (filename != null)
+            {
+                ImageCovers = id3V2ImageService.GetImages(filepath);
+                ImageCover = ImageCovers.FirstOrDefault();
+                ImageCoverCount = ImageCovers.Count();
+                ImageCoverPosition = 0;
+            }
+            else
+            {
+                ImageCover = (BitmapImage)App.Current.TryFindResource("default-cover");
+                ImageCoverCount = 0;
+                ImageCoverPosition = -1;
+            }     
+        }
+
+        void ExecuteNextImageCoverCommand()
+        {
+            if (ImageCoverPosition + 1 == ImageCoverCount)
+            {
+                ImageCoverPosition = 0;
+                ImageCover = ImageCovers.ElementAt(0);
+            }  
+            else
+                ImageCover = ImageCovers.ElementAt(++ImageCoverPosition);
+        }
+
+        bool CanExecuteNextImageCoverCommand()
+            => ImageCoverCount > 1 && ImageCoverPosition + 1 < ImageCoverCount;
+
+        void ExecutePrevImageCoverCommand()
+        {
+            if (ImageCoverPosition == 0)
+            {
+                ImageCoverPosition = ImageCoverPosition - 1;
+                ImageCover = ImageCovers.ElementAt(ImageCoverPosition);
+            }  
+            else
+                ImageCover = ImageCovers.ElementAt(--ImageCoverPosition);
+        }
+         
+        bool CanExecutePrevImageCoverCommand()
+            => ImageCoverCount > 0 && ImageCoverPosition > 0;
+
+        #endregion // Images
 
         #endregion // Methods
 
